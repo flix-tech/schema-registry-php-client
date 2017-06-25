@@ -1,0 +1,33 @@
+{
+  "name": "flix-tech/schema-registry-php-client",
+  "description": "A PHP 7.0+ API client for the Confluent Schema Registry",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Thomas Ploch",
+      "email": "thomas.ploch@flixbus.com"
+    }
+  ],
+  "require": {
+    "php": "~7.0",
+    "guzzlehttp/guzzle": "~6.0",
+    "roave/security-advisories": "dev-master",
+    "beberlei/assert": "~2.7"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~6.2",
+    "phpmetrics/phpmetrics": "~2.2",
+    "phpmetrics/composer-extension": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "FlixTech\\SchemaRegistryApi\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "FlixTech\\SchemaRegistryApi\\Test\\": "test/"
+    }
+  }
+}
