@@ -4,31 +4,13 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Test;
 
-use FlixTech\SchemaRegistryApi\Api;
-use FlixTech\SchemaRegistryApi\Client\AsyncGuzzleClient;
 use FlixTech\SchemaRegistryApi\Model\Schema\SchemaId;
-use FlixTech\SchemaRegistryApi\SchemaRegistry;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
 
-class ApiTest extends TestCase
+class SchemaTest extends ApiTestCase
 {
-    /**
-     * @var \GuzzleHttp\Psr7\Request[][]
-     */
-    private $requestContainer = [];
-
-    protected function setUp()
-    {
-
-    }
-
     /**
      * @test
      */
@@ -79,23 +61,5 @@ class ApiTest extends TestCase
         $id = SchemaId::create(1);
         $schema = $api->schema($id);
         $schema->rawSchema()->wait();
-    }
-
-    /**
-     * @param \GuzzleHttp\Exception\RequestException[]|Response[] $responses
-     *
-     * @return SchemaRegistry
-     */
-    private function getApiWithMockResponses(array $responses): SchemaRegistry
-    {
-        $mockHandler = new MockHandler($responses);
-        $stack = HandlerStack::create($mockHandler);
-        $stack->push(Middleware::history($this->requestContainer));
-
-        return new Api(
-            new AsyncGuzzleClient(
-                new Client(['handler' => $stack])
-            )
-        );
     }
 }
