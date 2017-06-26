@@ -14,7 +14,7 @@ class SchemaTest extends ApiTestCase
     /**
      * @test
      */
-    public function it_should_create_a_Schema_from_SchemaId()
+    public function it_should_create_a_Schema_from_SchemaId(): array
     {
         $responses = [
             new Response(
@@ -30,12 +30,20 @@ class SchemaTest extends ApiTestCase
 
         $this->assertTrue($schema->getId()->equals($id));
         $this->assertEquals('{"type": "string"}', $schema->rawSchema()->value());
-        $this->assertEquals('GET', $this->requestContainer[0]['request']->getMethod());
-        $this->assertEquals('/schemas/ids/1', $this->requestContainer[0]['request']->getUri());
-        $this->assertEquals(
-            ['application/vnd.schemaregistry.v1+json'],
-            $this->requestContainer[0]['request']->getHeader('Accept')
-        );
+
+        return $this->requestContainer;
+    }
+
+    /**
+     * @test
+     *
+     * @depends it_should_create_a_Schema_from_SchemaId
+     *
+     * @param \GuzzleHttp\Psr7\Request[][] $requestContainer
+     */
+    public function it_should_call_the_correct_endpoints_for_the_Schema_resource(array $requestContainer)
+    {
+        $this->assertMethodAndUri($requestContainer, 'GET', '/schemas/ids/1');
     }
 
     /**

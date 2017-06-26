@@ -38,4 +38,19 @@ abstract class ApiTestCase extends TestCase
             )
         );
     }
+
+    /**
+     * @param \GuzzleHttp\Psr7\Request[][]  $requestContainer
+     * @param string                        $method
+     * @param string                        $uri
+     */
+    protected function assertMethodAndUri(array $requestContainer, string $method, string $uri)
+    {
+        $this->assertEquals($method, $requestContainer[0]['request']->getMethod());
+        $this->assertEquals($uri, $requestContainer[0]['request']->getUri());
+        $this->assertEquals(
+            ['application/vnd.schemaregistry.v1+json'],
+            $requestContainer[0]['request']->getHeader('Accept')
+        );
+    }
 }

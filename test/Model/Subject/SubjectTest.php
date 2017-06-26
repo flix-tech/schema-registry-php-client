@@ -14,7 +14,7 @@ class SubjectTest extends ApiTestCase
     /**
      * @test
      */
-    public function it_should_return_all_SubjectNames()
+    public function it_should_return_all_SubjectNames(): array
     {
         $responses = [
             new Response(
@@ -35,6 +35,20 @@ class SubjectTest extends ApiTestCase
             $this->assertInstanceOf(Name::class, $subjectName);
             $this->assertEquals('subject' . $i, $subjectName->name());
         }
+
+        return $this->requestContainer;
+    }
+
+    /**
+     * @test
+     *
+     * @depends it_should_return_all_SubjectNames
+     *
+     * @param \GuzzleHttp\Psr7\Request[][] $requestContainer
+     */
+    public function it_should_call_the_correct_endpoints_for_SubjectNames_resource(array $requestContainer)
+    {
+        $this->assertMethodAndUri($requestContainer, 'GET', '/subjects');
     }
 
     /**
