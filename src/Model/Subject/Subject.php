@@ -6,8 +6,11 @@ namespace FlixTech\SchemaRegistryApi\Model\Subject;
 
 use FlixTech\SchemaRegistryApi\AsyncHttpClient;
 use FlixTech\SchemaRegistryApi\Exception\InternalSchemaRegistryException;
+use FlixTech\SchemaRegistryApi\Exception\SubjectNotFoundException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\UriTemplate;
 
 final class Subject
 {
@@ -49,6 +52,34 @@ final class Subject
     {
         $this->client = $client;
         $this->name = $name;
+    }
+
+    public function versions(): array
+    {
+        $request = new Request(
+            'GET',
+            (new UriTemplate())->expand('/subjects/{name}/versions', ['name' => (string) $this]),
+            ['Accept' => 'application/vnd.schemaregistry.v1+json']
+        );
+
+        return $this->client->send($request)
+            ->then(
+                function (Response $response) {
+                    return array_map(
+                        function (int $version) {
+                            return VersionId::create($version);
+                        },
+                        \GuzzleHttp\json_decode($response->getBody()->getContents(), true)
+                    );
+                },
+                function (RequestException $e) {
+                    if (404 === $e->getResponse()->getStatusCode()) {
+                        throw SubjectNotFoundException::create($this->name);
+                    }
+
+                    throw InternalSchemaRegistryException::create();
+                }
+            )->wait();
     }
 
     public function name(): Name
