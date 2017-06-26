@@ -24,7 +24,7 @@ final class RawSchema extends RawSchemaModel implements CanBePromised
         return $instance;
     }
 
-    protected function setPromise(PromiseInterface $promise)
+    private function setPromise(PromiseInterface $promise)
     {
         $this->promise = $promise->then(
             function (ResponseInterface $response) {

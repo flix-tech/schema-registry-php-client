@@ -78,4 +78,29 @@ class SubjectTest extends ApiTestCase
             $this->assertEquals($i + 1, $versionId->value());
         }
     }
+
+    /**
+     * @test
+     */
+    public function it_should_get_a_specific_Version()
+    {
+        $responses = [
+            new Response(
+                200,
+                ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
+                '{"name": "test","version": 1,"schema": "{\"type\": \"string\"}"}'
+            )
+        ];
+
+        $api = $this->getApiWithMockResponses($responses);
+        $name = Name::create('test');
+        $subject = $api->subject($name);
+
+        $versionId = VersionId::create(1);
+        $version = $subject->version($versionId);
+
+        $this->assertTrue($version->id()->equals($versionId));
+        $this->assertTrue($version->subjectName()->equals($name));
+        $this->assertEquals('{"type": "string"}', $version->schema()->value());
+    }
 }
