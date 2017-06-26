@@ -11,6 +11,16 @@ use GuzzleHttp\Psr7\Response;
 
 final class Subject
 {
+    /**
+     * @var AsyncHttpClient
+     */
+    private $client;
+
+    /**
+     * @var Name
+     */
+    private $name;
+
     public static function registeredSubjects(AsyncHttpClient $client): array
     {
         $request = new Request(
@@ -24,7 +34,7 @@ final class Subject
                 function (Response $response) {
                     return array_map(
                         function (string $subjectName) {
-                            return SubjectName::create($subjectName);
+                            return Name::create($subjectName);
                         },
                         \GuzzleHttp\json_decode($response->getBody()->getContents(), true)
                     );
@@ -33,5 +43,16 @@ final class Subject
                     throw InternalSchemaRegistryException::create();
                 }
             )->wait();
+    }
+
+    public function __construct(AsyncHttpClient $client, Name $name)
+    {
+        $this->client = $client;
+        $this->name = $name;
+    }
+
+    public function name(): Name
+    {
+        return $this->name;
     }
 }

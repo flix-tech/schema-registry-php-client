@@ -8,7 +8,7 @@ use FlixTech\SchemaRegistryApi\Model\Schema\RawSchema;
 use FlixTech\SchemaRegistryApi\Model\Schema\Schema;
 use FlixTech\SchemaRegistryApi\Model\Schema\SchemaId;
 use FlixTech\SchemaRegistryApi\Model\Subject\Subject;
-use FlixTech\SchemaRegistryApi\Model\Subject\SubjectName;
+use FlixTech\SchemaRegistryApi\Model\Subject\Name;
 
 class Api implements SchemaRegistry
 {
@@ -35,12 +35,12 @@ class Api implements SchemaRegistry
         return Subject::registeredSubjects($this->asyncClient);
     }
 
-    public function subject(SubjectName $name): Subject
+    public function subject(Name $name): Subject
     {
-        // TODO: Implement subject() method.
+        return new Subject($this->asyncClient, $name);
     }
 
-    public function registerSubject(SubjectName $name, RawSchema $initialSchema): Subject
+    public function registerSubject(Name $name, RawSchema $initialSchema): Subject
     {
         // TODO: Implement registerSubject() method.
     }

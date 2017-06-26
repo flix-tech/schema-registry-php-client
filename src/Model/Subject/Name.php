@@ -6,14 +6,14 @@ namespace FlixTech\SchemaRegistryApi\Model\Subject;
 
 use Assert\Assert;
 
-final class SubjectName
+final class Name
 {
     /**
      * @var string
      */
     private $name;
 
-    public static function create(string $name): SubjectName
+    public static function create(string $name): Name
     {
         Assert::that($name)->notBlank();
 
@@ -35,5 +35,10 @@ final class SubjectName
     public function __toString(): string
     {
         return $this->name();
+    }
+
+    public function equals(Name $other): bool
+    {
+        return $this->name === $other->name;
     }
 }
