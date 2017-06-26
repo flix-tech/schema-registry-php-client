@@ -55,4 +55,9 @@ final class Subject
     {
         return $this->name;
     }
+
+    public function __toString(): string
+    {
+        return $this->name->name();
+    }
 }
