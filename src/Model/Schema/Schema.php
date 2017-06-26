@@ -20,11 +20,11 @@ final class Schema
     private $rawSchema;
 
     /**
-     * @var SchemaId
+     * @var Id
      */
     private $id;
 
-    public function __construct(AsyncHttpClient $client, SchemaId $id)
+    public function __construct(AsyncHttpClient $client, Id $id)
     {
         $this->id = $id;
 
@@ -54,7 +54,7 @@ final class Schema
         return $this->rawSchema;
     }
 
-    public function getId(): SchemaId
+    public function getId(): Id
     {
         return $this->id;
     }

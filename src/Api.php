@@ -6,7 +6,7 @@ namespace FlixTech\SchemaRegistryApi;
 
 use FlixTech\SchemaRegistryApi\Model\Schema\RawSchema;
 use FlixTech\SchemaRegistryApi\Model\Schema\Schema;
-use FlixTech\SchemaRegistryApi\Model\Schema\SchemaId;
+use FlixTech\SchemaRegistryApi\Model\Schema\Id;
 use FlixTech\SchemaRegistryApi\Model\Subject\Subject;
 use FlixTech\SchemaRegistryApi\Model\Subject\Name;
 
@@ -25,7 +25,7 @@ class Api implements SchemaRegistry
         $this->asyncClient = $asyncClient;
     }
 
-    public function schema(SchemaId $id): Schema
+    public function schema(Id $id): Schema
     {
         return new Schema($this->asyncClient, $id);
     }

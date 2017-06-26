@@ -6,14 +6,14 @@ namespace FlixTech\SchemaRegistryApi\Model\Schema;
 
 use Assert\Assert;
 
-final class SchemaId
+final class Id
 {
     /**
      * @var int
      */
     private $id;
 
-    public static function create(int $id): SchemaId
+    public static function create(int $id): Id
     {
         Assert::that($id)->greaterThan(0);
 
@@ -35,7 +35,7 @@ final class SchemaId
         return (string) $this->id;
     }
 
-    public function equals(SchemaId $other): bool
+    public function equals(Id $other): bool
     {
         return $this->id === $other->id;
     }
