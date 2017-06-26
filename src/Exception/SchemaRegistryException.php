@@ -6,4 +6,5 @@ namespace FlixTech\SchemaRegistryApi\Exception;
 
 interface SchemaRegistryException
 {
+    public function errorCode(): int;
 }

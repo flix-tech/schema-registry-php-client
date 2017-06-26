@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Model\Schema;
 
 use FlixTech\SchemaRegistryApi\AsyncHttpClient;
+use FlixTech\SchemaRegistryApi\Exception\InternalSchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
 use FlixTech\SchemaRegistryApi\Model\Schema\Promised\RawSchema;
 use GuzzleHttp\Exception\RequestException;
@@ -41,7 +42,7 @@ final class Schema
                         throw SchemaNotFoundException::create($id);
                     }
 
-                    throw new \RuntimeException('Internal Server Error', 50001);
+                    throw InternalSchemaRegistryException::create();
                 }
             );
 

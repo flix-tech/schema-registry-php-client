@@ -7,6 +7,7 @@ namespace FlixTech\SchemaRegistryApi;
 use FlixTech\SchemaRegistryApi\Model\Schema\RawSchema;
 use FlixTech\SchemaRegistryApi\Model\Schema\Schema;
 use FlixTech\SchemaRegistryApi\Model\Schema\SchemaId;
+use FlixTech\SchemaRegistryApi\Model\Subject\Subject;
 use FlixTech\SchemaRegistryApi\Model\Subject\SubjectName;
 
 class Api implements SchemaRegistry
@@ -31,7 +32,7 @@ class Api implements SchemaRegistry
 
     public function subjects(): array
     {
-        // TODO: Implement subjects() method.
+        return Subject::registeredSubjects($this->asyncClient);
     }
 
     public function subject(SubjectName $name): Subject
