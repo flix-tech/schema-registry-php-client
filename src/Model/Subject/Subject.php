@@ -24,6 +24,11 @@ final class Subject
      */
     private $name;
 
+    /**
+     * @var array
+     */
+    private $versions = [];
+
     public static function registeredSubjects(AsyncHttpClient $client): array
     {
         $request = new Request(
@@ -56,13 +61,18 @@ final class Subject
 
     public function versions(): array
     {
+        if ($this->versions) {
+            return $this->versions;
+        }
+
         $request = new Request(
             'GET',
             (new UriTemplate())->expand('/subjects/{name}/versions', ['name' => (string) $this]),
             ['Accept' => 'application/vnd.schemaregistry.v1+json']
         );
 
-        return $this->client->send($request)
+        $this->versions = $this->client
+            ->send($request)
             ->then(
                 function (Response $response) {
                     return array_map(
@@ -80,6 +90,8 @@ final class Subject
                     throw InternalSchemaRegistryException::create();
                 }
             )->wait();
+
+        return $this->versions;
     }
 
     public function name(): Name
