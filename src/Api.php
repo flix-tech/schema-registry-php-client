@@ -30,7 +30,7 @@ class Api implements SchemaRegistry
         return new Schema($this->asyncClient, $id);
     }
 
-    public function subjects(): array
+    public function registeredSubjectNames(): array
     {
         return Subject::registeredSubjects($this->asyncClient);
     }

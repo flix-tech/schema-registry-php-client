@@ -13,7 +13,7 @@ use FlixTech\SchemaRegistryApi\Model\Subject\SubjectName;
 interface SchemaRegistry
 {
     public function schema(SchemaId $id): Schema;
-    public function subjects(): array;
+    public function registeredSubjectNames(): array;
     public function subject(SubjectName $name): Subject;
     public function registerSubject(SubjectName $name, RawSchema $initialSchema): Subject;
     public function defaultCompatibility(): Compatibility;

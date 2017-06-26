@@ -25,7 +25,7 @@ class SubjectTest extends ApiTestCase
 
         $api = $this->getApiWithMockResponses($responses);
 
-        $subjects = $api->subjects();
+        $subjects = $api->registeredSubjectNames();
 
         /** @var \FlixTech\SchemaRegistryApi\Model\Subject\SubjectName $subjectName */
         foreach ($subjects as $i => $subjectName) {
