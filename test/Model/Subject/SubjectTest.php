@@ -67,7 +67,7 @@ class SubjectTest extends ApiTestCase
     /**
      * @test
      */
-    public function it_should_find_all_VersionId()
+    public function it_should_find_all_VersionId(): array
     {
         $responses = [
             new Response(
@@ -91,12 +91,26 @@ class SubjectTest extends ApiTestCase
             $this->assertInstanceOf(VersionId::class, $versionId);
             $this->assertEquals($i + 1, $versionId->value());
         }
+
+        return $this->requestContainer;
+    }
+
+    /**
+     * @test
+     *
+     * @depends it_should_find_all_VersionId
+     *
+     * @param \GuzzleHttp\Psr7\Request[][] $requestContainer
+     */
+    public function it_should_call_the_correct_endpoints_for_Versions_resource(array $requestContainer)
+    {
+        $this->assertMethodAndUri($requestContainer, 'GET', '/subjects/subject/versions');
     }
 
     /**
      * @test
      */
-    public function it_should_get_a_specific_Version()
+    public function it_should_get_a_specific_Version(): array
     {
         $responses = [
             new Response(
@@ -116,5 +130,19 @@ class SubjectTest extends ApiTestCase
         $this->assertTrue($version->id()->equals($versionId));
         $this->assertTrue($version->subjectName()->equals($name));
         $this->assertEquals('{"type": "string"}', $version->schema()->value());
+
+        return $this->requestContainer;
+    }
+
+    /**
+     * @test
+     *
+     * @depends it_should_get_a_specific_Version
+     *
+     * @param \GuzzleHttp\Psr7\Request[][] $requestContainer
+     */
+    public function it_should_call_the_correct_endpoints_for_Version_resource(array $requestContainer)
+    {
+        $this->assertMethodAndUri($requestContainer, 'GET', '/subjects/test/versions/1');
     }
 }
