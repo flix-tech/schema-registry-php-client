@@ -15,6 +15,6 @@ interface SchemaRegistry
     public function schema(Id $id): Schema;
     public function registeredSubjectNames(): array;
     public function subject(Name $name): Subject;
-    public function registerSubject(Name $name, RawSchema $initialSchema): Subject;
+    public function registerNewSchema(Name $name, RawSchema $initialSchema): Schema;
     public function defaultCompatibility(): Compatibility;
 }

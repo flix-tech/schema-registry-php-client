@@ -27,7 +27,7 @@ class Api implements SchemaRegistry
 
     public function schema(Id $id): Schema
     {
-        return new Schema($this->asyncClient, $id);
+        return Schema::createAsync($this->asyncClient, $id);
     }
 
     public function registeredSubjectNames(): array
@@ -40,7 +40,7 @@ class Api implements SchemaRegistry
         return new Subject($this->asyncClient, $name);
     }
 
-    public function registerSubject(Name $name, RawSchema $initialSchema): Subject
+    public function registerNewSchema(Name $name, RawSchema $initialSchema): Schema
     {
         // TODO: Implement registerSubject() method.
     }

@@ -24,9 +24,21 @@ final class Schema
      */
     private $id;
 
-    public function __construct(AsyncHttpClient $client, Id $id)
+    public static function createWithSchema(RawSchema $schema, Id $id): Schema
     {
-        $this->id = $id;
+        $instance = new self();
+
+        $instance->id = $id;
+        $instance->rawSchema = $schema;
+
+        return $instance;
+    }
+
+    public static function createAsync(AsyncHttpClient $client, Id $id): Schema
+    {
+        $instance = new self();
+
+        $instance->id = $id;
 
         $schemaRequest = new Request(
             'GET',
@@ -46,7 +58,13 @@ final class Schema
                 }
             );
 
-        $this->rawSchema = RawSchema::withPromise($promise);
+        $instance->rawSchema = RawSchema::withPromise($promise);
+
+        return $instance;
+    }
+
+    protected function __construct()
+    {
     }
 
     public function rawSchema(): RawSchema
