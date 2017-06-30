@@ -209,4 +209,31 @@ class SubjectTest extends ApiTestCase
         $schemaId = $subject->registerSchema($rawSchema);
         $schemaId->value();
     }
+
+    /**
+     * @test
+     *
+     * @expectedException \FlixTech\SchemaRegistryApi\Exception\InvalidAvroSchemaException
+     */
+    public function it_should_throw_InvalidAvroSchemaException_on_409_response()
+    {
+        $responses = [
+            new RequestException(
+                '422 Unprocessable Entity',
+                new Request('GET', '/'),
+                new Response(
+                    422,
+                    ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
+                    '{"error_code":42201,"message": "Invalid Avro schema"}'
+                )
+            )
+        ];
+
+        $name = Name::create('test');
+        $subject = new Subject($this->getClientWithMockResponses($responses), $name);
+        $rawSchema = RawSchema::create('{"type": "test"}');
+
+        $schemaId = $subject->registerSchema($rawSchema);
+        $schemaId->value();
+    }
 }
