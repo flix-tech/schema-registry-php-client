@@ -6,7 +6,7 @@ namespace FlixTech\SchemaRegistryApi\Model\Schema;
 
 use Assert\Assert;
 
-class RawSchema
+class RawSchema implements \JsonSerializable
 {
     /**
      * @var string
@@ -35,5 +35,10 @@ class RawSchema
     public function __toString(): string
     {
         return $this->value();
+    }
+
+    public function jsonSerialize(): array
+    {
+        return ['schema' => $this->schema];
     }
 }

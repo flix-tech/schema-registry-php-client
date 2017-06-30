@@ -6,23 +6,25 @@ namespace FlixTech\SchemaRegistryApi\Model\Schema;
 
 use Assert\Assert;
 
-final class Id
+class Id
 {
     /**
      * @var int
      */
-    private $id;
+    protected $id;
 
-    public static function create(int $id): Id
+    final public static function create(int $id): Id
     {
         Assert::that($id)->greaterThan(0);
 
-        return new self($id);
+        $instance = new self();
+        $instance->id = $id;
+
+        return $instance;
     }
 
-    protected function __construct(int $id)
+    final protected function __construct()
     {
-        $this->id = $id;
     }
 
     public function value(): int
@@ -30,13 +32,13 @@ final class Id
         return $this->id;
     }
 
-    public function __toString(): string
+    final public function __toString(): string
     {
-        return (string) $this->id;
+        return (string) $this->value();
     }
 
-    public function equals(Id $other): bool
+    final public function equals(Id $other): bool
     {
-        return $this->id === $other->id;
+        return $this->value() === $other->value();
     }
 }

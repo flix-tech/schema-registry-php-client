@@ -22,7 +22,16 @@ final class Version extends BaseVersion implements CanBePromised
     public static function withPromise(PromiseInterface $promise): Version
     {
         $instance = new self();
-        $instance->setPromise($promise);
+        $instance->promise = $promise
+            ->then(
+                function (ResponseInterface $response) use ($instance) {
+                    $decodedResponse = \GuzzleHttp\json_decode($response->getBody()->getContents(), true);
+
+                    $instance->schema = RawSchema::create($decodedResponse['schema']);
+                    $instance->id = VersionId::create($decodedResponse['version']);
+                    $instance->subjectName = Name::create($decodedResponse['name']);
+                }
+            );
 
         return $instance;
     }
@@ -30,20 +39,6 @@ final class Version extends BaseVersion implements CanBePromised
     public function wait()
     {
         $this->promise->wait();
-    }
-
-    private function setPromise(PromiseInterface $promise)
-    {
-        $this->promise = $promise
-            ->then(
-                function (ResponseInterface $response) {
-                    $decodedResponse = \GuzzleHttp\json_decode($response->getBody()->getContents(), true);
-
-                    $this->schema = RawSchema::create($decodedResponse['schema']);
-                    $this->id = VersionId::create($decodedResponse['version']);
-                    $this->subjectName = Name::create($decodedResponse['name']);
-                }
-            );
     }
 
     public function id(): VersionId

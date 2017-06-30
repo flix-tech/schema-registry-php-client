@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Test\Model\Subject;
 
+use FlixTech\SchemaRegistryApi\Model\Schema\RawSchema;
 use FlixTech\SchemaRegistryApi\Model\Subject\Name;
 use FlixTech\SchemaRegistryApi\Model\Subject\Subject;
 use FlixTech\SchemaRegistryApi\Model\Subject\VersionId;
@@ -138,5 +139,26 @@ class SubjectTest extends ApiTestCase
     public function it_should_call_the_correct_endpoints_for_Version_resource(array $requestContainer)
     {
         $this->assertMethodAndUri($requestContainer, 'GET', '/subjects/test/versions/1');
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_register_new_RawSchema()
+    {
+        $responses = [
+            new Response(
+                200,
+                ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
+                '{"id": 1}'
+            )
+        ];
+
+        $name = Name::create('test');
+        $subject = new Subject($this->getClientWithMockResponses($responses), $name);
+        $rawSchema = RawSchema::create('{"type": "test"}');
+
+        $schemaId = $subject->registerSchema($rawSchema);
+        $this->assertEquals(1, $schemaId->value());
     }
 }

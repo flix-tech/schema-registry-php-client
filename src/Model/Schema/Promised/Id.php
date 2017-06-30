@@ -5,38 +5,38 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Model\Schema\Promised;
 
 use FlixTech\SchemaRegistryApi\CanBePromised;
-use FlixTech\SchemaRegistryApi\Model\Schema\RawSchema as RawSchemaModel;
+use FlixTech\SchemaRegistryApi\Model\Schema\Id as BaseId;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 
-final class RawSchema extends RawSchemaModel implements CanBePromised
+final class Id extends BaseId implements CanBePromised
 {
     /**
      * @var PromiseInterface
      */
     private $promise;
 
-    public static function withPromise(PromiseInterface $promise): RawSchemaModel
+    public static function withPromise(PromiseInterface $promise): BaseId
     {
         $instance = new self();
         $instance->promise = $promise->then(
             function (ResponseInterface $response) use ($instance) {
-                $instance->schema = \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['schema'];
+                $instance->id = \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['id'];
             }
         );
 
         return $instance;
     }
 
-    public function value(): string
+    public function value(): int
     {
-        if ($this->schema) {
-            return $this->schema;
+        if ($this->id) {
+            return $this->id;
         }
 
-        $this->promise->wait();
+        $this->wait();
 
-        return $this->schema;
+        return $this->id;
     }
 
     public function wait()

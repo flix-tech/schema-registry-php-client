@@ -9,6 +9,9 @@ use FlixTech\SchemaRegistryApi\Exception\InternalSchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Exception\InvalidVersionException;
 use FlixTech\SchemaRegistryApi\Exception\SubjectNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\VersionNotFoundException;
+use FlixTech\SchemaRegistryApi\Model\Schema\Id;
+use FlixTech\SchemaRegistryApi\Model\Schema\Promised\Id as PromisedId;
+use FlixTech\SchemaRegistryApi\Model\Schema\RawSchema;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\UriTemplate;
@@ -131,6 +134,18 @@ final class Subject
             );
 
         return Promised\Version::withPromise($promise);
+    }
+
+    public function registerSchema(RawSchema $schema): Id
+    {
+        $request = new Request(
+            'POST',
+            (new UriTemplate())->expand('/subjects/{name}/versions', ['name' => (string) $this]),
+            ['Accept' => 'application/vnd.schemaregistry.v1+json'],
+            \GuzzleHttp\json_encode($schema)
+        );
+
+        return PromisedId::withPromise($this->client->send($request));
     }
 
     public function __toString(): string
