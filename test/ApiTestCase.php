@@ -37,11 +37,12 @@ abstract class ApiTestCase extends TestCase
     }
 
     /**
-     * @param \GuzzleHttp\Psr7\Request[][]  $requestContainer
-     * @param string                        $method
-     * @param string                        $uri
+     * @param \GuzzleHttp\Psr7\Request[][] $requestContainer
+     * @param string                       $method
+     * @param string                       $uri
+     * @param string|null                  $body
      */
-    protected function assertMethodAndUri(array $requestContainer, string $method, string $uri)
+    protected function assertMethodAndUriAndBody(array $requestContainer, string $method, string $uri, string $body = null)
     {
         $this->assertEquals($method, $requestContainer[0]['request']->getMethod());
         $this->assertEquals($uri, $requestContainer[0]['request']->getUri());
@@ -49,5 +50,9 @@ abstract class ApiTestCase extends TestCase
             ['application/vnd.schemaregistry.v1+json'],
             $requestContainer[0]['request']->getHeader('Accept')
         );
+
+        if ($body) {
+            $this->assertEquals($body, $requestContainer[0]['request']->getBody()->getContents());
+        }
     }
 }

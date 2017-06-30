@@ -48,7 +48,7 @@ class SubjectTest extends ApiTestCase
      */
     public function it_should_call_the_correct_endpoints_for_SubjectNames_resource(array $requestContainer)
     {
-        $this->assertMethodAndUri($requestContainer, 'GET', '/subjects');
+        $this->assertMethodAndUriAndBody($requestContainer, 'GET', '/subjects');
     }
 
     /**
@@ -100,7 +100,7 @@ class SubjectTest extends ApiTestCase
      */
     public function it_should_call_the_correct_endpoints_for_Versions_resource(array $requestContainer)
     {
-        $this->assertMethodAndUri($requestContainer, 'GET', '/subjects/subject/versions');
+        $this->assertMethodAndUriAndBody($requestContainer, 'GET', '/subjects/subject/versions');
     }
 
     /**
@@ -138,7 +138,7 @@ class SubjectTest extends ApiTestCase
      */
     public function it_should_call_the_correct_endpoints_for_Version_resource(array $requestContainer)
     {
-        $this->assertMethodAndUri($requestContainer, 'GET', '/subjects/test/versions/1');
+        $this->assertMethodAndUriAndBody($requestContainer, 'GET', '/subjects/test/versions/1');
     }
 
     /**

@@ -43,7 +43,7 @@ class SchemaTest extends ApiTestCase
      */
     public function it_should_call_the_correct_endpoints_for_the_Schema_resource(array $requestContainer)
     {
-        $this->assertMethodAndUri($requestContainer, 'GET', '/schemas/ids/1');
+        $this->assertMethodAndUriAndBody($requestContainer, 'GET', '/schemas/ids/1');
     }
 
     /**
