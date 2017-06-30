@@ -144,7 +144,7 @@ class SubjectTest extends ApiTestCase
     /**
      * @test
      */
-    public function it_can_register_new_RawSchema()
+    public function it_can_register_new_RawSchema(): array
     {
         $responses = [
             new Response(
@@ -160,5 +160,24 @@ class SubjectTest extends ApiTestCase
 
         $schemaId = $subject->registerSchema($rawSchema);
         $this->assertEquals(1, $schemaId->value());
+
+        return $this->requestContainer;
+    }
+
+    /**
+     * @test
+     *
+     * @depends it_can_register_new_RawSchema
+     *
+     * @param \GuzzleHttp\Psr7\Request[][] $requestContainer
+     */
+    public function it_calls_correct_endpoints_for_registerSchema_endpoint(array $requestContainer)
+    {
+        $this->assertMethodAndUriAndBody(
+            $requestContainer,
+            'POST',
+            '/subjects/test/versions',
+            '{"schema":"{\"type\": \"test\"}"}'
+        );
     }
 }
