@@ -6,6 +6,7 @@ namespace FlixTech\SchemaRegistryApi\Model\Schema\Promised;
 
 use FlixTech\SchemaRegistryApi\CanBePromised;
 use FlixTech\SchemaRegistryApi\Exception\IncompatibleAvroSchemaException;
+use FlixTech\SchemaRegistryApi\Exception\InternalSchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Exception\InvalidAvroSchemaException;
 use FlixTech\SchemaRegistryApi\Model\Schema\Id as BaseId;
 use GuzzleHttp\Exception\RequestException;
@@ -34,6 +35,8 @@ final class Id extends BaseId implements CanBePromised
                 if (422 === $e->getResponse()->getStatusCode()) {
                     throw InvalidAvroSchemaException::create();
                 }
+
+                throw InternalSchemaRegistryException::create();
             }
         );
 
