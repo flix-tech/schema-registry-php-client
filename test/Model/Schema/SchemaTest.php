@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Test;
 
 use FlixTech\SchemaRegistryApi\Model\Schema\Id;
+use FlixTech\SchemaRegistryApi\Model\Schema\Schema;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -24,9 +25,8 @@ class SchemaTest extends ApiTestCase
             )
         ];
 
-        $api = $this->getApiWithMockResponses($responses);
         $id = Id::create(1);
-        $schema = $api->schema($id);
+        $schema = Schema::createAsync($this->getClientWithMockResponses($responses), $id);
 
         $this->assertTrue($schema->getId()->equals($id));
         $this->assertEquals('{"type": "string"}', $schema->rawSchema()->value());
@@ -65,9 +65,8 @@ class SchemaTest extends ApiTestCase
             )
         ];
 
-        $api = $this->getApiWithMockResponses($responses);
         $id = Id::create(1);
-        $schema = $api->schema($id);
+        $schema = Schema::createAsync($this->getClientWithMockResponses($responses), $id);
         $schema->rawSchema()->wait();
     }
 }

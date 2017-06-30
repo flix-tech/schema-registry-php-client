@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Test;
 
-use FlixTech\SchemaRegistryApi\Api;
+use FlixTech\SchemaRegistryApi\AsyncHttpClient;
 use FlixTech\SchemaRegistryApi\Client\AsyncGuzzleClient;
-use FlixTech\SchemaRegistryApi\SchemaRegistry;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -24,18 +23,16 @@ abstract class ApiTestCase extends TestCase
     /**
      * @param \GuzzleHttp\Exception\RequestException[]|Response[] $responses
      *
-     * @return SchemaRegistry
+     * @return AsyncHttpClient
      */
-    protected function getApiWithMockResponses(array $responses): SchemaRegistry
+    protected function getClientWithMockResponses(array $responses): AsyncHttpClient
     {
         $mockHandler = new MockHandler($responses);
         $stack = HandlerStack::create($mockHandler);
         $stack->push(Middleware::history($this->requestContainer));
 
-        return new Api(
-            new AsyncGuzzleClient(
-                new Client(['handler' => $stack])
-            )
+        return new AsyncGuzzleClient(
+            new Client(['handler' => $stack])
         );
     }
 

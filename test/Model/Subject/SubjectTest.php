@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Test\Model\Subject;
 
 use FlixTech\SchemaRegistryApi\Model\Subject\Name;
+use FlixTech\SchemaRegistryApi\Model\Subject\Subject;
 use FlixTech\SchemaRegistryApi\Model\Subject\VersionId;
 use FlixTech\SchemaRegistryApi\Test\ApiTestCase;
 use GuzzleHttp\Psr7\Response;
@@ -24,9 +25,7 @@ class SubjectTest extends ApiTestCase
             )
         ];
 
-        $api = $this->getApiWithMockResponses($responses);
-
-        $subjects = $api->registeredSubjectNames();
+        $subjects = Subject::registeredSubjects($this->getClientWithMockResponses($responses));
 
         $this->assertCount(2, $subjects);
 
@@ -56,10 +55,8 @@ class SubjectTest extends ApiTestCase
      */
     public function it_should_return_single_Subject()
     {
-        $api = $this->getApiWithMockResponses([]);
-
         $name = Name::create('subject');
-        $subject = $api->subject($name);
+        $subject = new Subject($this->getClientWithMockResponses([]), $name);
 
         $this->assertTrue($subject->name()->equals($name));
     }
@@ -77,10 +74,8 @@ class SubjectTest extends ApiTestCase
             )
         ];
 
-        $api = $this->getApiWithMockResponses($responses);
-
         $name = Name::create('subject');
-        $subject = $api->subject($name);
+        $subject = new Subject($this->getClientWithMockResponses($responses), $name);
 
         $versions = $subject->versions();
 
@@ -120,9 +115,8 @@ class SubjectTest extends ApiTestCase
             )
         ];
 
-        $api = $this->getApiWithMockResponses($responses);
         $name = Name::create('test');
-        $subject = $api->subject($name);
+        $subject = new Subject($this->getClientWithMockResponses($responses), $name);
 
         $versionId = VersionId::create(1);
         $version = $subject->version($versionId);
