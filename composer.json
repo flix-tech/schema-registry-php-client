@@ -23,7 +23,10 @@
   "autoload": {
     "psr-4": {
       "FlixTech\\SchemaRegistryApi\\": "src/"
-    }
+    },
+    "files": [
+      "src/Requests/Functions.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {

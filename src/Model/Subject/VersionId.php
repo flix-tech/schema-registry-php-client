@@ -46,4 +46,9 @@ final class VersionId
     {
         return $this->id === $other->id;
     }
+
+    public function __toString(): string
+    {
+        return (string) $this->value();
+    }
 }

@@ -7,9 +7,8 @@ namespace FlixTech\SchemaRegistryApi\Model\Schema;
 use FlixTech\SchemaRegistryApi\AsyncHttpClient;
 use FlixTech\SchemaRegistryApi\Exception\InternalSchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
+use function FlixTech\SchemaRegistryApi\Requests\getSchemaRequest;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\UriTemplate;
 
 final class Schema
 {
@@ -39,14 +38,8 @@ final class Schema
 
         $instance->id = $id;
 
-        $schemaRequest = new Request(
-            'GET',
-            (new UriTemplate())->expand('/schemas/ids/{id}', ['id' => $id->value()]),
-            ['Accept' => 'application/vnd.schemaregistry.v1+json']
-        );
-
         $promise = $client
-            ->send($schemaRequest)
+            ->send(getSchemaRequest((string) $id))
             ->otherwise(
                 function (RequestException $e) use ($id) {
                     if (404 === $e->getResponse()->getStatusCode()) {

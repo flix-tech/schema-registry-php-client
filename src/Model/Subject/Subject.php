@@ -13,9 +13,13 @@ use FlixTech\SchemaRegistryApi\Exception\VersionNotFoundException;
 use FlixTech\SchemaRegistryApi\Model\Schema\Id;
 use FlixTech\SchemaRegistryApi\Model\Schema\Promised\Id as PromisedId;
 use FlixTech\SchemaRegistryApi\Model\Schema\RawSchema;
+use function FlixTech\SchemaRegistryApi\Requests\checkSchemaCompatibilityRequest;
+use function FlixTech\SchemaRegistryApi\Requests\hasSchemaRequest;
+use function FlixTech\SchemaRegistryApi\Requests\registerSchemaWithSubjectRequest;
+use function FlixTech\SchemaRegistryApi\Requests\subjectVersionRequest;
+use function FlixTech\SchemaRegistryApi\Requests\subjectVersionsRequest;
+use function FlixTech\SchemaRegistryApi\Requests\subjectsRequest;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\UriTemplate;
 use Psr\Http\Message\ResponseInterface;
 
 final class Subject
@@ -37,13 +41,7 @@ final class Subject
 
     public static function registeredSubjects(AsyncHttpClient $client): array
     {
-        $request = new Request(
-            'GET',
-            '/subjects',
-            ['Accept' => 'application/vnd.schemaregistry.v1+json']
-        );
-
-        return $client->send($request)
+        return $client->send(subjectsRequest())
             ->then(
                 function (ResponseInterface $response) {
                     return array_map(
@@ -71,14 +69,8 @@ final class Subject
             return $this->versions;
         }
 
-        $request = new Request(
-            'GET',
-            (new UriTemplate())->expand('/subjects/{name}/versions', ['name' => (string) $this]),
-            ['Accept' => 'application/vnd.schemaregistry.v1+json']
-        );
-
         $this->versions = $this->client
-            ->send($request)
+            ->send(subjectVersionsRequest((string) $this->name))
             ->then(
                 function (ResponseInterface $response) {
                     return array_map(
@@ -107,13 +99,8 @@ final class Subject
 
     public function version(VersionId $id): Version
     {
-        $request = new Request(
-            'GET',
-            (new UriTemplate())->expand('/subjects/{name}/versions/{id}', ['name' => (string) $this, 'id' => $id->value()]),
-            ['Accept' => 'application/vnd.schemaregistry.v1+json']
-        );
-
-        $promise = $this->client->send($request)
+        $promise = $this->client
+            ->send(subjectVersionRequest((string) $this->name, (string) $id))
             ->otherwise(
                 function (RequestException $e) use ($id) {
                     $decodedResponse = \GuzzleHttp\json_decode($e->getResponse()->getBody()->getContents(), true);
@@ -139,27 +126,15 @@ final class Subject
 
     public function registerSchema(RawSchema $schema): Id
     {
-        $request = new Request(
-            'POST',
-            (new UriTemplate())->expand('/subjects/{name}/versions', ['name' => (string) $this]),
-            ['Accept' => 'application/vnd.schemaregistry.v1+json'],
-            \GuzzleHttp\json_encode($schema)
+        return PromisedId::withPromise(
+            $this->client->send(registerSchemaWithSubjectRequest((string) $this->name, \GuzzleHttp\json_encode($schema)))
         );
-
-        return PromisedId::withPromise($this->client->send($request));
     }
 
     public function checkCompatibilityWithVersion(RawSchema $schema, VersionId $id): bool
     {
-        $request = new Request(
-            'POST',
-            (new UriTemplate())->expand('/compatibility/subjects/{name}/versions/{version}', ['name' => (string) $this, 'version' => $id->value()]),
-            ['Accept' => 'application/vnd.schemaregistry.v1+json'],
-            \GuzzleHttp\json_encode($schema)
-        );
-
         return $this->client
-            ->send($request)
+            ->send(checkSchemaCompatibilityRequest((string) $this, (string) $id, \GuzzleHttp\json_encode($schema)))
             ->then(
                 function (ResponseInterface $response) {
                     return \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['is_compatible'];
@@ -180,14 +155,8 @@ final class Subject
 
     public function hasSchema(RawSchema $rawSchema): VersionedSchema
     {
-        $request = new Request(
-            'POST',
-            (new UriTemplate())->expand('/subjects/{name}', ['name' => (string) $this]),
-            ['Accept' => 'application/vnd.schemaregistry.v1+json'],
-            \GuzzleHttp\json_encode($rawSchema)
-        );
-
-        $promise = $this->client->send($request)
+        $promise = $this->client
+            ->send(hasSchemaRequest((string) $this, \GuzzleHttp\json_encode($rawSchema)))
             ->otherwise(
                 function (RequestException $e) {
                     $errorCode = \GuzzleHttp\json_decode($e->getResponse()->getBody()->getContents(), true)['error_code'];
