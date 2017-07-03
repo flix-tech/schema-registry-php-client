@@ -91,4 +91,24 @@ class ExceptionMapTest extends TestCase
             )
         );
     }
+
+    /**
+     * @test
+     *
+     * @expectedException \FlixTech\SchemaRegistryApi\Exception\InvalidVersionException
+     */
+    public function it_should_handle_InvalidVersion_code()
+    {
+        (new ExceptionMap())(
+            new RequestException(
+                '422 Unprocessable Entity',
+                new Request('GET', '/'),
+                new Response(
+                    422,
+                    ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
+                    '{"error_code":42202,"message": "Invalid version"}'
+                )
+            )
+        );
+    }
 }
