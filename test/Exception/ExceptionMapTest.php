@@ -111,4 +111,44 @@ class ExceptionMapTest extends TestCase
             )
         );
     }
+
+    /**
+     * @test
+     *
+     * @expectedException \FlixTech\SchemaRegistryApi\Exception\MasterProxyException
+     */
+    public function it_should_handle_MasterProxy_code()
+    {
+        (new ExceptionMap())(
+            new RequestException(
+                '500 Internal server Error',
+                new Request('GET', '/'),
+                new Response(
+                    500,
+                    ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
+                    '{"error_code":50003,"message": "Error while forwarding the request to the master"}'
+                )
+            )
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException \FlixTech\SchemaRegistryApi\Exception\OperationTimedOutException
+     */
+    public function it_should_handle_OperationTimedOut_code()
+    {
+        (new ExceptionMap())(
+            new RequestException(
+                '500 Internal server Error',
+                new Request('GET', '/'),
+                new Response(
+                    500,
+                    ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
+                    '{"error_code":50002,"message": "Operation timed out"}'
+                )
+            )
+        );
+    }
 }
