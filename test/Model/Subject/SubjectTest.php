@@ -10,8 +10,6 @@ use FlixTech\SchemaRegistryApi\Model\Subject\Subject;
 use FlixTech\SchemaRegistryApi\Model\Subject\VersionedSchema;
 use FlixTech\SchemaRegistryApi\Model\Subject\VersionId;
 use FlixTech\SchemaRegistryApi\Test\ApiTestCase;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 
 class SubjectTest extends ApiTestCase
@@ -182,60 +180,6 @@ class SubjectTest extends ApiTestCase
             '/subjects/test/versions',
             '{"schema":"{\"type\": \"test\"}"}'
         );
-    }
-
-    /**
-     * @test
-     *
-     * @expectedException \FlixTech\SchemaRegistryApi\Exception\IncompatibleAvroSchemaException
-     */
-    public function it_should_throw_IncompatibleAvroSchemaException_on_409_response()
-    {
-        $responses = [
-            new RequestException(
-                '409 Conflict',
-                new Request('GET', '/'),
-                new Response(
-                    409,
-                    ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
-                    '{"error_code":409,"message": "Incompatible Avro schema"}'
-                )
-            )
-        ];
-
-        $name = Name::create('test');
-        $subject = new Subject($this->getClientWithMockResponses($responses), $name);
-        $rawSchema = RawSchema::create('{"type": "test"}');
-
-        $schemaId = $subject->registerSchema($rawSchema);
-        $schemaId->value();
-    }
-
-    /**
-     * @test
-     *
-     * @expectedException \FlixTech\SchemaRegistryApi\Exception\InvalidAvroSchemaException
-     */
-    public function it_should_throw_InvalidAvroSchemaException_on_422_response()
-    {
-        $responses = [
-            new RequestException(
-                '422 Unprocessable Entity',
-                new Request('GET', '/'),
-                new Response(
-                    422,
-                    ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
-                    '{"error_code":42201,"message": "Invalid Avro schema"}'
-                )
-            )
-        ];
-
-        $name = Name::create('test');
-        $subject = new Subject($this->getClientWithMockResponses($responses), $name);
-        $rawSchema = RawSchema::create('{"type": "test"}');
-
-        $schemaId = $subject->registerSchema($rawSchema);
-        $schemaId->value();
     }
 
     /**
