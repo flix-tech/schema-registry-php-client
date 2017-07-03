@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Model\Subject\Promised;
 
 use FlixTech\SchemaRegistryApi\CanBePromised;
+use FlixTech\SchemaRegistryApi\HasPromisedProperties;
 use FlixTech\SchemaRegistryApi\Model\Schema\RawSchema;
 use FlixTech\SchemaRegistryApi\Model\Subject\Name;
 use FlixTech\SchemaRegistryApi\Model\Subject\Version as BaseVersion;
@@ -14,10 +15,7 @@ use Psr\Http\Message\ResponseInterface;
 
 final class Version extends BaseVersion implements CanBePromised
 {
-    /**
-     * @var PromiseInterface
-     */
-    private $promise;
+    use HasPromisedProperties;
 
     public static function withPromise(PromiseInterface $promise): Version
     {
@@ -36,41 +34,18 @@ final class Version extends BaseVersion implements CanBePromised
         return $instance;
     }
 
-    public function wait()
-    {
-        return $this->promise->wait();
-    }
-
     public function id(): VersionId
     {
-        if ($this->id) {
-            return $this->id;
-        }
-
-        $this->wait();
-
-        return $this->id;
+        return $this->getPromisedProperty('id');
     }
 
     public function subjectName(): Name
     {
-        if ($this->subjectName) {
-            return $this->subjectName;
-        }
-
-        $this->wait();
-
-        return $this->subjectName;
+        return $this->getPromisedProperty('subjectName');
     }
 
     public function schema(): RawSchema
     {
-        if ($this->schema) {
-            return $this->schema;
-        }
-
-        $this->wait();
-
-        return $this->schema;
+        return $this->getPromisedProperty('schema');
     }
 }

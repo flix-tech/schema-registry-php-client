@@ -8,6 +8,7 @@ use FlixTech\SchemaRegistryApi\CanBePromised;
 use FlixTech\SchemaRegistryApi\Exception\IncompatibleAvroSchemaException;
 use FlixTech\SchemaRegistryApi\Exception\InternalSchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Exception\InvalidAvroSchemaException;
+use FlixTech\SchemaRegistryApi\HasPromisedProperties;
 use FlixTech\SchemaRegistryApi\Model\Schema\Id as BaseId;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\PromiseInterface;
@@ -15,10 +16,7 @@ use Psr\Http\Message\ResponseInterface;
 
 final class Id extends BaseId implements CanBePromised
 {
-    /**
-     * @var PromiseInterface
-     */
-    private $promise;
+    use HasPromisedProperties;
 
     public static function withPromise(PromiseInterface $promise): BaseId
     {
@@ -45,17 +43,6 @@ final class Id extends BaseId implements CanBePromised
 
     public function value(): int
     {
-        if ($this->id) {
-            return $this->id;
-        }
-
-        $this->wait();
-
-        return $this->id;
-    }
-
-    public function wait()
-    {
-        return $this->promise->wait();
+        return $this->getPromisedProperty('id');
     }
 }

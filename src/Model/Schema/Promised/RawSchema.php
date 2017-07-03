@@ -5,16 +5,14 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Model\Schema\Promised;
 
 use FlixTech\SchemaRegistryApi\CanBePromised;
+use FlixTech\SchemaRegistryApi\HasPromisedProperties;
 use FlixTech\SchemaRegistryApi\Model\Schema\RawSchema as RawSchemaModel;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 
 final class RawSchema extends RawSchemaModel implements CanBePromised
 {
-    /**
-     * @var PromiseInterface
-     */
-    private $promise;
+    use HasPromisedProperties;
 
     public static function withPromise(PromiseInterface $promise): RawSchemaModel
     {
@@ -30,17 +28,6 @@ final class RawSchema extends RawSchemaModel implements CanBePromised
 
     public function value(): string
     {
-        if ($this->schema) {
-            return $this->schema;
-        }
-
-        $this->promise->wait();
-
-        return $this->schema;
-    }
-
-    public function wait()
-    {
-        return $this->promise->wait();
+        return $this->getPromisedProperty('schema');
     }
 }
