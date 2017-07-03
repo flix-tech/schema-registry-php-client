@@ -265,4 +265,21 @@ class SubjectTest extends ApiTestCase
 
         return $this->requestContainer;
     }
+
+    /**
+     * @test
+     *
+     * @depends it_can_check_compatibility_of_a_given_RawSchema
+     *
+     * @param \GuzzleHttp\Psr7\Request[][] $requestContainer
+     */
+    public function it_calls_correct_endpoints_for_RawSchema_compatibility_check(array $requestContainer)
+    {
+        $this->assertMethodAndUriAndBody(
+            $requestContainer,
+            'POST',
+            '/compatibility/subjects/test/versions/1',
+            '{"schema":"{\"type\": \"test\"}"}'
+        );
+    }
 }
