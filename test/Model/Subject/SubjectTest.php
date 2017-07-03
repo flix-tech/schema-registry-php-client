@@ -9,10 +9,10 @@ use FlixTech\SchemaRegistryApi\Model\Subject\Name;
 use FlixTech\SchemaRegistryApi\Model\Subject\Subject;
 use FlixTech\SchemaRegistryApi\Model\Subject\VersionedSchema;
 use FlixTech\SchemaRegistryApi\Model\Subject\VersionId;
-use FlixTech\SchemaRegistryApi\Test\ApiTestCase;
+use FlixTech\SchemaRegistryApi\Test\AsyncMockClientTestCase;
 use GuzzleHttp\Psr7\Response;
 
-class SubjectTest extends ApiTestCase
+class SubjectTest extends AsyncMockClientTestCase
 {
     /**
      * @test
