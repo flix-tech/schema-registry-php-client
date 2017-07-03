@@ -6,6 +6,7 @@ namespace FlixTech\SchemaRegistryApi\Model\Subject;
 
 use FlixTech\SchemaRegistryApi\AsyncHttpClient;
 use FlixTech\SchemaRegistryApi\Exception\InternalSchemaRegistryException;
+use FlixTech\SchemaRegistryApi\Exception\InvalidAvroSchemaException;
 use FlixTech\SchemaRegistryApi\Exception\InvalidVersionException;
 use FlixTech\SchemaRegistryApi\Exception\SubjectNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\VersionNotFoundException;
@@ -146,6 +147,35 @@ final class Subject
         );
 
         return PromisedId::withPromise($this->client->send($request));
+    }
+
+    public function checkCompatibilityWithVersion(RawSchema $schema, VersionId $id): bool
+    {
+        $request = new Request(
+            'POST',
+            (new UriTemplate())->expand('/compatibility/subjects/{name}/versions/{version}', ['name' => (string) $this, 'version' => $id->value()]),
+            ['Accept' => 'application/vnd.schemaregistry.v1+json'],
+            \GuzzleHttp\json_encode($schema)
+        );
+
+        return $this->client
+            ->send($request)
+            ->then(
+                function (ResponseInterface $response) {
+                    return \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['is_compatible'];
+                },
+                function (RequestException $e) use ($id) {
+                    $errorCode = \GuzzleHttp\json_decode($e->getResponse()->getBody()->getContents(), true)['error_code'];
+
+                    switch ($errorCode) {
+                        case 40401: throw SubjectNotFoundException::create($this->name);
+                        case 40402: throw VersionNotFoundException::create($id);
+                        case 42201: throw InvalidAvroSchemaException::create();
+                        case 42202: throw InvalidVersionException::create($id);
+                        default: throw InternalSchemaRegistryException::create();
+                    }
+                }
+            )->wait();
     }
 
     public function __toString(): string

@@ -215,7 +215,7 @@ class SubjectTest extends ApiTestCase
      *
      * @expectedException \FlixTech\SchemaRegistryApi\Exception\InvalidAvroSchemaException
      */
-    public function it_should_throw_InvalidAvroSchemaException_on_409_response()
+    public function it_should_throw_InvalidAvroSchemaException_on_422_response()
     {
         $responses = [
             new RequestException(
@@ -235,5 +235,34 @@ class SubjectTest extends ApiTestCase
 
         $schemaId = $subject->registerSchema($rawSchema);
         $schemaId->value();
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_check_compatibility_of_a_given_RawSchema(): array
+    {
+        $responses = [
+            new Response(
+                200,
+                ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
+                '{"is_compatible": true}'
+            ),
+            new Response(
+                200,
+                ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
+                '{"is_compatible": false}'
+            )
+        ];
+
+        $name = Name::create('test');
+        $versionId = VersionId::create(1);
+        $subject = new Subject($this->getClientWithMockResponses($responses), $name);
+        $rawSchema = RawSchema::create('{"type": "test"}');
+
+        $this->assertTrue($subject->checkCompatibilityWithVersion($rawSchema, $versionId));
+        $this->assertFalse($subject->checkCompatibilityWithVersion($rawSchema, $versionId));
+
+        return $this->requestContainer;
     }
 }
