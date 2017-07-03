@@ -38,7 +38,7 @@ final class Version extends BaseVersion implements CanBePromised
 
     public function wait()
     {
-        $this->promise->wait();
+        return $this->promise->wait();
     }
 
     public function id(): VersionId

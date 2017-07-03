@@ -7,7 +7,6 @@ namespace FlixTech\SchemaRegistryApi\Model\Schema;
 use FlixTech\SchemaRegistryApi\AsyncHttpClient;
 use FlixTech\SchemaRegistryApi\Exception\InternalSchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
-use FlixTech\SchemaRegistryApi\Model\Schema\Promised\RawSchema;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\UriTemplate;
@@ -58,7 +57,7 @@ final class Schema
                 }
             );
 
-        $instance->rawSchema = RawSchema::withPromise($promise);
+        $instance->rawSchema = Promised\RawSchema::withPromise($promise);
 
         return $instance;
     }
@@ -72,7 +71,7 @@ final class Schema
         return $this->rawSchema;
     }
 
-    public function getId(): Id
+    public function id(): Id
     {
         return $this->id;
     }

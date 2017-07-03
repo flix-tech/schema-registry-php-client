@@ -7,6 +7,7 @@ namespace FlixTech\SchemaRegistryApi\Test\Model\Subject;
 use FlixTech\SchemaRegistryApi\Model\Schema\RawSchema;
 use FlixTech\SchemaRegistryApi\Model\Subject\Name;
 use FlixTech\SchemaRegistryApi\Model\Subject\Subject;
+use FlixTech\SchemaRegistryApi\Model\Subject\VersionedSchema;
 use FlixTech\SchemaRegistryApi\Model\Subject\VersionId;
 use FlixTech\SchemaRegistryApi\Test\ApiTestCase;
 use GuzzleHttp\Exception\RequestException;
@@ -281,5 +282,34 @@ class SubjectTest extends ApiTestCase
             '/compatibility/subjects/test/versions/1',
             '{"schema":"{\"type\": \"test\"}"}'
         );
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_check_if_Subject_already_has_a_RawSchema()
+    {
+        $rawSchema = '{"type":"record","name":"test","fields":[{"type":"string","name":"field1"},{"type":"int","name":"field2"}]}';
+
+        $responseBody = '{"subject": "test","id": 1, "version": 3,"schema":"{\"type\":\"record\",\"name\":\"test\",\"fields\":[{\"type\":\"string\",\"name\":\"field1\"},{\"type\":\"int\",\"name\":\"field2\"}]}"}';
+        $responses = [
+            new Response(
+                200,
+                ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
+                $responseBody
+            )
+        ];
+
+        $name = Name::create('test');
+        $rawSchema = RawSchema::create($rawSchema);
+        $subject = new Subject($this->getClientWithMockResponses($responses), $name);
+
+        $versionedSchema = $subject->hasSchema($rawSchema);
+
+        $this->assertInstanceOf(VersionedSchema::class, $versionedSchema);
+        $this->assertEquals(1, $versionedSchema->schema()->id()->value());
+        $this->assertEquals(3, $versionedSchema->versionId()->value());
+        $this->assertEquals($name->name(), $versionedSchema->subjectName()->name());
+        $this->assertEquals($rawSchema->jsonSerialize(), $versionedSchema->schema()->rawSchema()->jsonSerialize());
     }
 }

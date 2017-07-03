@@ -56,6 +56,6 @@ final class Id extends BaseId implements CanBePromised
 
     public function wait()
     {
-        $this->promise->wait();
+        return $this->promise->wait();
     }
 }

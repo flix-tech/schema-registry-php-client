@@ -28,7 +28,7 @@ class SchemaTest extends ApiTestCase
         $id = Id::create(1);
         $schema = Schema::createAsync($this->getClientWithMockResponses($responses), $id);
 
-        $this->assertTrue($schema->getId()->equals($id));
+        $this->assertTrue($schema->id()->equals($id));
         $this->assertEquals('{"type": "string"}', $schema->rawSchema()->value());
 
         return $this->requestContainer;

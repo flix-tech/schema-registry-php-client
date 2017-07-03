@@ -41,6 +41,6 @@ final class RawSchema extends RawSchemaModel implements CanBePromised
 
     public function wait()
     {
-        $this->promise->wait();
+        return $this->promise->wait();
     }
 }

@@ -178,6 +178,31 @@ final class Subject
             )->wait();
     }
 
+    public function hasSchema(RawSchema $rawSchema): VersionedSchema
+    {
+        $request = new Request(
+            'POST',
+            (new UriTemplate())->expand('/subjects/{name}', ['name' => (string) $this]),
+            ['Accept' => 'application/vnd.schemaregistry.v1+json'],
+            \GuzzleHttp\json_encode($rawSchema)
+        );
+
+        $promise = $this->client->send($request)
+            ->otherwise(
+                function (RequestException $e) {
+                    $errorCode = \GuzzleHttp\json_decode($e->getResponse()->getBody()->getContents(), true)['error_code'];
+
+                    if (40401 === $errorCode) {
+                        throw SubjectNotFoundException::create($this->name);
+                    }
+
+                    throw InternalSchemaRegistryException::create();
+                }
+            );
+
+        return Promised\VersionedSchema::withPromise($promise);
+    }
+
     public function __toString(): string
     {
         return $this->name->name();
