@@ -46,8 +46,8 @@ final class ExceptionMap
             case VersionNotFoundException::ERROR_CODE:
                 throw new VersionNotFoundException($exception);
 
-            case InvalidCompatibilityException::ERROR_CODE:
-                throw new InvalidCompatibilityException($exception);
+            case InvalidCompatibilityLevelException::ERROR_CODE:
+                throw new InvalidCompatibilityLevelException($exception);
 
             default:
                 throw new \RuntimeException('Unknown Error');

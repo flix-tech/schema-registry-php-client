@@ -71,4 +71,24 @@ class ExceptionMapTest extends TestCase
             )
         );
     }
+
+    /**
+     * @test
+     *
+     * @expectedException \FlixTech\SchemaRegistryApi\Exception\InvalidCompatibilityLevelException
+     */
+    public function it_should_handle_InvalidCompatibilityLevel_code()
+    {
+        (new ExceptionMap())(
+            new RequestException(
+                '422 Unprocessable Entity',
+                new Request('GET', '/'),
+                new Response(
+                    422,
+                    ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
+                    '{"error_code":42203,"message": "Invalid compatibility level"}'
+                )
+            )
+        );
+    }
 }
