@@ -96,7 +96,9 @@ final class Subject
     public function registerSchema(RawSchema $schema): Id
     {
         return PromisedId::withPromise(
-            $this->client->send(registerSchemaWithSubjectRequest((string) $this->name, \GuzzleHttp\json_encode($schema)))
+            $this->client
+                ->send(registerSchemaWithSubjectRequest((string) $this->name, \GuzzleHttp\json_encode($schema)))
+                ->otherwise(new ExceptionMap())
         );
     }
 
