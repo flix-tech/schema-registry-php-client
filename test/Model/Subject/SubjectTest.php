@@ -287,7 +287,7 @@ class SubjectTest extends ApiTestCase
     /**
      * @test
      */
-    public function it_can_check_if_Subject_already_has_a_RawSchema()
+    public function it_can_check_if_Subject_already_has_a_RawSchema(): array
     {
         $rawSchema = '{"type":"record","name":"test","fields":[{"type":"string","name":"field1"},{"type":"int","name":"field2"}]}';
 
@@ -311,5 +311,24 @@ class SubjectTest extends ApiTestCase
         $this->assertEquals(3, $versionedSchema->versionId()->value());
         $this->assertEquals($name->name(), $versionedSchema->subjectName()->name());
         $this->assertEquals($rawSchema->jsonSerialize(), $versionedSchema->schema()->rawSchema()->jsonSerialize());
+
+        return $this->requestContainer;
+    }
+
+    /**
+     * @test
+     *
+     * @depends it_can_check_if_Subject_already_has_a_RawSchema
+     *
+     * @param \GuzzleHttp\Psr7\Request[][] $requestContainer
+     */
+    public function it_calls_correct_endpoints_for_checking_for_RawSchema_existence(array $requestContainer)
+    {
+        $this->assertMethodAndUriAndBody(
+            $requestContainer,
+            'POST',
+            '/subjects/test',
+            '{"schema":"{\"type\":\"record\",\"name\":\"test\",\"fields\":[{\"type\":\"string\",\"name\":\"field1\"},{\"type\":\"int\",\"name\":\"field2\"}]}"}'
+        );
     }
 }
