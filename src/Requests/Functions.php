@@ -66,11 +66,49 @@ function hasSchemaRequest(string $subjectName, string $schema): RequestInterface
     );
 }
 
-function getSchemaRequest(string $id): RequestInterface
+function schemaRequest(string $id): RequestInterface
 {
     return new Request(
         'GET',
         (new UriTemplate())->expand('/schemas/ids/{id}', ['id' => $id]),
         ['Accept' => 'application/vnd.schemaregistry.v1+json']
+    );
+}
+
+function defaultCompatibilityLevelRequest(): RequestInterface
+{
+    return new Request(
+        'GET',
+        '/config',
+        ['Accept' => 'application/vnd.schemaregistry.v1+json']
+    );
+}
+
+function changeDefaultCompatibilityLevelRequest(string $level): RequestInterface
+{
+    return new Request(
+        'PUT',
+        '/config',
+        ['Accept' => 'application/vnd.schemaregistry.v1+json'],
+        $level
+    );
+}
+
+function subjectCompatibilityLevelRequest(string $subjectName): RequestInterface
+{
+    return new Request(
+        'GET',
+        (new UriTemplate())->expand('/config/{subject}', ['subject' => $subjectName]),
+        ['Accept' => 'application/vnd.schemaregistry.v1+json']
+    );
+}
+
+function changeSubjectCompatibilityLevelRequest(string $subjectName, string $level): RequestInterface
+{
+    return new Request(
+        'PUT',
+        (new UriTemplate())->expand('/config/{subject}', ['subject' => $subjectName]),
+        ['Accept' => 'application/vnd.schemaregistry.v1+json'],
+        $level
     );
 }

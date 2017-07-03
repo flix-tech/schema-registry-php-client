@@ -6,7 +6,7 @@ namespace FlixTech\SchemaRegistryApi\Model\Schema;
 
 use FlixTech\SchemaRegistryApi\AsyncHttpClient;
 use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
-use function FlixTech\SchemaRegistryApi\Requests\getSchemaRequest;
+use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 
 final class Schema
 {
@@ -37,7 +37,7 @@ final class Schema
         $instance->id = $id;
 
         $promise = $client
-            ->send(getSchemaRequest((string) $id))
+            ->send(schemaRequest((string) $id))
             ->otherwise(new ExceptionMap());
 
         $instance->rawSchema = Promised\RawSchema::withPromise($promise);
