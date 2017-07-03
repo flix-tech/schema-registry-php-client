@@ -191,4 +191,24 @@ class ExceptionMapTest extends TestCase
             )
         );
     }
+
+    /**
+     * @test
+     *
+     * @expectedException \FlixTech\SchemaRegistryApi\Exception\VersionNotFoundException
+     */
+    public function it_should_handle_VersionNotFound_code()
+    {
+        (new ExceptionMap())(
+            new RequestException(
+                '404 Not Found',
+                new Request('GET', '/'),
+                new Response(
+                    404,
+                    ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
+                    '{"error_code":40402,"message": "Version not found"}'
+                )
+            )
+        );
+    }
 }
