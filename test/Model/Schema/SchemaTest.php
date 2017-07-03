@@ -8,7 +8,7 @@ use FlixTech\SchemaRegistryApi\Model\Schema\Id;
 use FlixTech\SchemaRegistryApi\Model\Schema\Schema;
 use GuzzleHttp\Psr7\Response;
 
-class SchemaTest extends AsyncMockClientTestCase
+class SchemaTest extends AsyncClientTestCase
 {
     /**
      * @test

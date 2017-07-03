@@ -5,10 +5,10 @@ namespace FlixTech\SchemaRegistryApi\Test\Model\Compatibility;
 use FlixTech\SchemaRegistryApi\Model\Compatibility\Compatibility;
 use FlixTech\SchemaRegistryApi\Model\Compatibility\Level;
 use FlixTech\SchemaRegistryApi\Model\Subject\Name;
-use FlixTech\SchemaRegistryApi\Test\AsyncMockClientTestCase;
+use FlixTech\SchemaRegistryApi\Test\AsyncClientTestCase;
 use GuzzleHttp\Psr7\Response;
 
-class CompatibilityTest extends AsyncMockClientTestCase
+class CompatibilityTest extends AsyncClientTestCase
 {
     /**
      * @test

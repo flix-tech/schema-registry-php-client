@@ -13,7 +13,7 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
-abstract class AsyncMockClientTestCase extends TestCase
+abstract class AsyncClientTestCase extends TestCase
 {
     /**
      * @var \GuzzleHttp\Psr7\Request[][]
