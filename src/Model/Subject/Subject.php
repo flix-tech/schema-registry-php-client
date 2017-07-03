@@ -86,11 +86,11 @@ final class Subject
 
     public function version(VersionId $id): Version
     {
-        $promise = $this->client
-            ->send(subjectVersionRequest((string) $this->name, (string) $id))
-            ->otherwise(new ExceptionMap());
-
-        return Promised\Version::withPromise($promise);
+        return Promised\Version::withPromise(
+            $this->client
+                ->send(subjectVersionRequest((string) $this->name, (string) $id))
+                ->otherwise(new ExceptionMap())
+        );
     }
 
     public function registerSchema(RawSchema $schema): Id
@@ -116,11 +116,11 @@ final class Subject
 
     public function hasSchema(RawSchema $rawSchema): VersionedSchema
     {
-        $promise = $this->client
-            ->send(hasSchemaRequest((string) $this, \GuzzleHttp\json_encode($rawSchema)))
-            ->otherwise(new ExceptionMap());
-
-        return Promised\VersionedSchema::withPromise($promise);
+        return Promised\VersionedSchema::withPromise(
+            $this->client
+                ->send(hasSchemaRequest((string) $this, \GuzzleHttp\json_encode($rawSchema)))
+                ->otherwise(new ExceptionMap())
+        );
     }
 
     public function __toString(): string
