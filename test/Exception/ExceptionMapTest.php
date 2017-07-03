@@ -51,4 +51,24 @@ class ExceptionMapTest extends TestCase
             )
         );
     }
+
+    /**
+     * @test
+     *
+     * @expectedException \FlixTech\SchemaRegistryApi\Exception\BackendDataStoreException
+     */
+    public function it_should_handle_BackendDataStore_code()
+    {
+        (new ExceptionMap())(
+            new RequestException(
+                '500 Internal Server Error',
+                new Request('GET', '/'),
+                new Response(
+                    500,
+                    ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
+                    '{"error_code":50001,"message": "Error in the backend datastore"}'
+                )
+            )
+        );
+    }
 }
