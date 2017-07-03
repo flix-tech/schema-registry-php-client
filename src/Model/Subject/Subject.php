@@ -5,22 +5,17 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Model\Subject;
 
 use FlixTech\SchemaRegistryApi\AsyncHttpClient;
-use FlixTech\SchemaRegistryApi\Exception\InternalSchemaRegistryException;
-use FlixTech\SchemaRegistryApi\Exception\InvalidAvroSchemaException;
-use FlixTech\SchemaRegistryApi\Exception\InvalidVersionException;
-use FlixTech\SchemaRegistryApi\Exception\SubjectNotFoundException;
-use FlixTech\SchemaRegistryApi\Exception\VersionNotFoundException;
+use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
 use FlixTech\SchemaRegistryApi\Model\Schema\Id;
 use FlixTech\SchemaRegistryApi\Model\Schema\Promised\Id as PromisedId;
 use FlixTech\SchemaRegistryApi\Model\Schema\RawSchema;
+use Psr\Http\Message\ResponseInterface;
 use function FlixTech\SchemaRegistryApi\Requests\checkSchemaCompatibilityRequest;
 use function FlixTech\SchemaRegistryApi\Requests\hasSchemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\registerSchemaWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectVersionsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectsRequest;
-use GuzzleHttp\Exception\RequestException;
-use Psr\Http\Message\ResponseInterface;
 
 final class Subject
 {
@@ -51,9 +46,7 @@ final class Subject
                         \GuzzleHttp\json_decode($response->getBody()->getContents(), true)
                     );
                 },
-                function () {
-                    throw InternalSchemaRegistryException::create();
-                }
+                new ExceptionMap()
             )->wait();
     }
 
@@ -80,13 +73,7 @@ final class Subject
                         \GuzzleHttp\json_decode($response->getBody()->getContents(), true)
                     );
                 },
-                function (RequestException $e) {
-                    if (404 === $e->getResponse()->getStatusCode()) {
-                        throw SubjectNotFoundException::create($this->name);
-                    }
-
-                    throw InternalSchemaRegistryException::create();
-                }
+                new ExceptionMap()
             )->wait();
 
         return $this->versions;
@@ -101,25 +88,7 @@ final class Subject
     {
         $promise = $this->client
             ->send(subjectVersionRequest((string) $this->name, (string) $id))
-            ->otherwise(
-                function (RequestException $e) use ($id) {
-                    $decodedResponse = \GuzzleHttp\json_decode($e->getResponse()->getBody()->getContents(), true);
-
-                    if (!array_key_exists('error_code', $decodedResponse) || 50001 === $decodedResponse['error_code']) {
-                        throw InternalSchemaRegistryException::create();
-                    }
-
-                    if (422 === $e->getResponse()->getStatusCode()) {
-                        throw InvalidVersionException::create($id);
-                    }
-
-                    if (40402 === $decodedResponse['error_code']) {
-                        throw VersionNotFoundException::create($id);
-                    }
-
-                    throw SubjectNotFoundException::create($this->name);
-                }
-            );
+            ->otherwise(new ExceptionMap());
 
         return Promised\Version::withPromise($promise);
     }
@@ -139,17 +108,7 @@ final class Subject
                 function (ResponseInterface $response) {
                     return \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['is_compatible'];
                 },
-                function (RequestException $e) use ($id) {
-                    $errorCode = \GuzzleHttp\json_decode($e->getResponse()->getBody()->getContents(), true)['error_code'];
-
-                    switch ($errorCode) {
-                        case 40401: throw SubjectNotFoundException::create($this->name);
-                        case 40402: throw VersionNotFoundException::create($id);
-                        case 42201: throw InvalidAvroSchemaException::create();
-                        case 42202: throw InvalidVersionException::create($id);
-                        default: throw InternalSchemaRegistryException::create();
-                    }
-                }
+                new ExceptionMap()
             )->wait();
     }
 
@@ -157,17 +116,7 @@ final class Subject
     {
         $promise = $this->client
             ->send(hasSchemaRequest((string) $this, \GuzzleHttp\json_encode($rawSchema)))
-            ->otherwise(
-                function (RequestException $e) {
-                    $errorCode = \GuzzleHttp\json_decode($e->getResponse()->getBody()->getContents(), true)['error_code'];
-
-                    if (40401 === $errorCode) {
-                        throw SubjectNotFoundException::create($this->name);
-                    }
-
-                    throw InternalSchemaRegistryException::create();
-                }
-            );
+            ->otherwise(new ExceptionMap());
 
         return Promised\VersionedSchema::withPromise($promise);
     }

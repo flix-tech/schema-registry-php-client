@@ -4,22 +4,8 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Exception;
 
-use FlixTech\SchemaRegistryApi\Model\Schema\Id;
-
-class SchemaNotFoundException extends \RuntimeException implements SchemaRegistryException
+class SchemaNotFoundException extends AbstractSchemaRegistryException
 {
     const ERROR_CODE = 40403;
-
-    public static function create(Id $id): SchemaNotFoundException
-    {
-        return new self(
-            sprintf('Error 40403 - Schema with ID "%s" could not be found', $id->value()),
-            self::ERROR_CODE
-        );
-    }
-
-    public function errorCode(): int
-    {
-        return self::ERROR_CODE;
-    }
+    const ERROR_MESSAGE = 'Error 40403 - Schema could not be found';
 }

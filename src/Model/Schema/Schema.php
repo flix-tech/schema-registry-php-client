@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Model\Schema;
 
 use FlixTech\SchemaRegistryApi\AsyncHttpClient;
-use FlixTech\SchemaRegistryApi\Exception\InternalSchemaRegistryException;
-use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
+use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
 use function FlixTech\SchemaRegistryApi\Requests\getSchemaRequest;
-use GuzzleHttp\Exception\RequestException;
 
 final class Schema
 {
@@ -40,15 +38,7 @@ final class Schema
 
         $promise = $client
             ->send(getSchemaRequest((string) $id))
-            ->otherwise(
-                function (RequestException $e) use ($id) {
-                    if (404 === $e->getResponse()->getStatusCode()) {
-                        throw SchemaNotFoundException::create($id);
-                    }
-
-                    throw InternalSchemaRegistryException::create();
-                }
-            );
+            ->otherwise(new ExceptionMap());
 
         $instance->rawSchema = Promised\RawSchema::withPromise($promise);
 
