@@ -171,4 +171,24 @@ class ExceptionMapTest extends TestCase
             )
         );
     }
+
+    /**
+     * @test
+     *
+     * @expectedException \FlixTech\SchemaRegistryApi\Exception\SubjectNotFoundException
+     */
+    public function it_should_handle_SubjectNotFound_code()
+    {
+        (new ExceptionMap())(
+            new RequestException(
+                '404 Not Found',
+                new Request('GET', '/'),
+                new Response(
+                    404,
+                    ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
+                    '{"error_code":40401,"message": "Subject not found"}'
+                )
+            )
+        );
+    }
 }
