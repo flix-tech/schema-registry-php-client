@@ -58,7 +58,7 @@ class SubjectTest extends AsyncClientTestCase
     public function it_should_return_single_Subject()
     {
         $name = Name::create('subject');
-        $subject = new Subject($this->getClientWithMockResponses([]), $name);
+        $subject = Subject::create($this->getClientWithMockResponses([]), $name);
 
         $this->assertTrue($subject->name()->equals($name));
     }
@@ -77,7 +77,7 @@ class SubjectTest extends AsyncClientTestCase
         ];
 
         $name = Name::create('subject');
-        $subject = new Subject($this->getClientWithMockResponses($responses), $name);
+        $subject = Subject::create($this->getClientWithMockResponses($responses), $name);
 
         $versions = $subject->versions();
 
@@ -118,7 +118,7 @@ class SubjectTest extends AsyncClientTestCase
         ];
 
         $name = Name::create('test');
-        $subject = new Subject($this->getClientWithMockResponses($responses), $name);
+        $subject = Subject::create($this->getClientWithMockResponses($responses), $name);
 
         $versionId = VersionId::create(1);
         $version = $subject->version($versionId);
@@ -156,7 +156,7 @@ class SubjectTest extends AsyncClientTestCase
         ];
 
         $name = Name::create('test');
-        $subject = new Subject($this->getClientWithMockResponses($responses), $name);
+        $subject = Subject::create($this->getClientWithMockResponses($responses), $name);
         $rawSchema = RawSchema::create('{"type": "test"}');
 
         $schemaId = $subject->registerSchema($rawSchema);
@@ -202,7 +202,7 @@ class SubjectTest extends AsyncClientTestCase
 
         $name = Name::create('test');
         $versionId = VersionId::create(1);
-        $subject = new Subject($this->getClientWithMockResponses($responses), $name);
+        $subject = Subject::create($this->getClientWithMockResponses($responses), $name);
         $rawSchema = RawSchema::create('{"type": "test"}');
 
         $this->assertTrue($subject->checkCompatibilityWithVersion($rawSchema, $versionId));
@@ -246,7 +246,7 @@ class SubjectTest extends AsyncClientTestCase
 
         $name = Name::create('test');
         $rawSchema = RawSchema::create($rawSchema);
-        $subject = new Subject($this->getClientWithMockResponses($responses), $name);
+        $subject = Subject::create($this->getClientWithMockResponses($responses), $name);
 
         $versionedSchema = $subject->hasSchema($rawSchema);
 

@@ -39,6 +39,6 @@ class RawSchema implements \JsonSerializable
 
     public function jsonSerialize(): array
     {
-        return ['schema' => $this->schema];
+        return ['schema' => $this->value()];
     }
 }

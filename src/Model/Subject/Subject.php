@@ -29,11 +29,6 @@ final class Subject
      */
     private $name;
 
-    /**
-     * @var array
-     */
-    private $versions = [];
-
     public static function registeredSubjects(AsyncHttpClient $client): array
     {
         return $client->send(subjectsRequest())
@@ -50,19 +45,22 @@ final class Subject
             )->wait();
     }
 
-    public function __construct(AsyncHttpClient $client, Name $name)
+    public static function create(AsyncHttpClient $client, Name $name): Subject
     {
-        $this->client = $client;
-        $this->name = $name;
+        $instance = new self();
+        $instance->client = $client;
+        $instance->name = $name;
+
+        return $instance;
+    }
+
+    protected function __construct()
+    {
     }
 
     public function versions(): array
     {
-        if ($this->versions) {
-            return $this->versions;
-        }
-
-        $this->versions = $this->client
+        return $this->client
             ->send(subjectVersionsRequest((string) $this->name))
             ->then(
                 function (ResponseInterface $response) {
@@ -75,8 +73,6 @@ final class Subject
                 },
                 new ExceptionMap()
             )->wait();
-
-        return $this->versions;
     }
 
     public function name(): Name

@@ -11,6 +11,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\UriTemplate;
 use PHPUnit\Framework\TestCase;
 
 abstract class AsyncClientTestCase extends TestCase
@@ -33,6 +34,31 @@ abstract class AsyncClientTestCase extends TestCase
 
         return new AsyncGuzzleClient(
             new Client(['handler' => $stack])
+        );
+    }
+
+    protected function getIntegrationTestClient(): AsyncHttpClient
+    {
+        if (false === (bool) getenv('ENABLE_INTEGRATION_TEST')) {
+            self::markTestSkipped('Integration tests are not enabled - set ENV var `ENABLE_INTEGRATION_TEST`');
+        }
+
+        $host = getenv('TEST_SCHEMA_REGISTRY_HOST');
+        $port = getenv('TEST_SCHEMA_REGISTRY_PORT');
+        $uriTemplate = (new UriTemplate())
+            ->expand(
+                'http://{host}:{port}',
+                ['host' => $host, 'port' => $port]
+            );
+
+        if (!@file_get_contents($uriTemplate)) {
+            self::markTestSkipped(sprintf('Could not connect to Schema registry at host "%s"', $uriTemplate));
+        }
+
+        return new AsyncGuzzleClient(
+            new Client([
+                'base_uri' => $uriTemplate
+            ])
         );
     }
 

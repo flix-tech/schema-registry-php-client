@@ -24,4 +24,10 @@
             <directory suffix=".php">src/</directory>
         </whitelist>
     </filter>
+
+    <php>
+        <env name="ENABLE_INTEGRATION_TEST" value="1" />
+        <env name="TEST_SCHEMA_REGISTRY_HOST" value="172.25.0.103" />
+        <env name="TEST_SCHEMA_REGISTRY_PORT" value="8081" />
+    </php>
 </phpunit>
