@@ -3,6 +3,10 @@
 namespace FlixTech\SchemaRegistryApi\Requests;
 
 use Assert\Assert;
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\UriTemplate;
@@ -145,4 +149,14 @@ function prepareJsonSchemaForTransfer(string $schema): string
     }
 
     return \GuzzleHttp\json_encode(['schema' => \GuzzleHttp\json_encode($decoded)]);
+}
+
+function validateCompatibilityLevel(string $compatibilityVersion): string
+{
+    Assert::that($compatibilityVersion)->inArray(
+        [COMPATIBILITY_NONE, COMPATIBILITY_BACKWARD, COMPATIBILITY_FORWARD, COMPATIBILITY_FULL],
+        '$level must be one of "NONE", "BACKWARD", "FORWARD" or "FULL"'
+    );
+
+    return $compatibilityVersion;
 }

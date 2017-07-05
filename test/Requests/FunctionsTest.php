@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Test\Requests;
 
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\prepareJsonSchemaForTransfer;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
+use function FlixTech\SchemaRegistryApi\Requests\validateCompatibilityLevel;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaStringAsJson;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 use PHPUnit\Framework\TestCase;
@@ -142,5 +147,21 @@ class FunctionsTest extends TestCase
         $this->assertEquals('/subjects/test/versions', $request->getUri());
         $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
         $this->assertEquals('{"schema":"{\"type\": \"string\"}"}', $request->getBody()->getContents());
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $level must be one of "NONE", "BACKWARD", "FORWARD" or "FULL"
+     */
+    public function it_should_validate_a_compatibility_level_string()
+    {
+        $this->assertEquals(COMPATIBILITY_NONE, validateCompatibilityLevel(COMPATIBILITY_NONE));
+        $this->assertEquals(COMPATIBILITY_FULL, validateCompatibilityLevel(COMPATIBILITY_FULL));
+        $this->assertEquals(COMPATIBILITY_BACKWARD, validateCompatibilityLevel(COMPATIBILITY_BACKWARD));
+        $this->assertEquals(COMPATIBILITY_FORWARD, validateCompatibilityLevel(COMPATIBILITY_FORWARD));
+
+        validateCompatibilityLevel('INVALID');
     }
 }
