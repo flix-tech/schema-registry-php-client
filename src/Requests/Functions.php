@@ -99,7 +99,7 @@ function changeDefaultCompatibilityLevelRequest(string $level): RequestInterface
         'PUT',
         '/config',
         ['Accept' => 'application/vnd.schemaregistry.v1+json'],
-        $level
+        prepareCompatibilityLevelForTransport(validateCompatibilityLevel($level))
     );
 }
 
@@ -118,7 +118,7 @@ function changeSubjectCompatibilityLevelRequest(string $subjectName, string $lev
         'PUT',
         (new UriTemplate())->expand('/config/{subject}', ['subject' => $subjectName]),
         ['Accept' => 'application/vnd.schemaregistry.v1+json'],
-        $level
+        prepareCompatibilityLevelForTransport(validateCompatibilityLevel($level))
     );
 }
 

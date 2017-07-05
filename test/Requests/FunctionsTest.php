@@ -11,13 +11,17 @@ use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
+use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
+use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\checkSchemaCompatibilityAgainstVersionRequest;
+use function FlixTech\SchemaRegistryApi\Requests\defaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\prepareCompatibilityLevelForTransport;
 use function FlixTech\SchemaRegistryApi\Requests\prepareJsonSchemaForTransfer;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
+use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateCompatibilityLevel;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaStringAsJson;
@@ -121,6 +125,56 @@ class FunctionsTest extends TestCase
 
         $this->assertEquals('GET', $request->getMethod());
         $this->assertEquals('/schemas/ids/3', $request->getUri());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_produce_a_request_to_get_the_global_compatibility_level()
+    {
+        $request = defaultCompatibilityLevelRequest();
+
+        $this->assertEquals('GET', $request->getMethod());
+        $this->assertEquals('/config', $request->getUri());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_produce_a_request_to_change_the_global_compatibility_level()
+    {
+        $request = changeDefaultCompatibilityLevelRequest(COMPATIBILITY_FULL);
+
+        $this->assertEquals('PUT', $request->getMethod());
+        $this->assertEquals('/config', $request->getUri());
+        $this->assertEquals('{"compatibility":"FULL"}', $request->getBody()->getContents());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_produce_a_request_to_get_the_subject_compatibility_level()
+    {
+        $request = subjectCompatibilityLevelRequest('test');
+
+        $this->assertEquals('GET', $request->getMethod());
+        $this->assertEquals('/config/test', $request->getUri());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_produce_a_request_to_change_the_subject_compatibility_level()
+    {
+        $request = changeSubjectCompatibilityLevelRequest('test', COMPATIBILITY_FORWARD);
+
+        $this->assertEquals('PUT', $request->getMethod());
+        $this->assertEquals('/config/test', $request->getUri());
+        $this->assertEquals('{"compatibility":"FORWARD"}', $request->getBody()->getContents());
         $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
     }
 
