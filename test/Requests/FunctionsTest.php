@@ -11,6 +11,7 @@ use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
+use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\checkSchemaCompatibilityAgainstVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\prepareCompatibilityLevelForTransport;
 use function FlixTech\SchemaRegistryApi\Requests\prepareJsonSchemaForTransfer;
@@ -92,6 +93,18 @@ class FunctionsTest extends TestCase
 
         $this->assertEquals('POST', $request->getMethod());
         $this->assertEquals('/compatibility/subjects/test/versions/latest', $request->getUri());
+        $this->assertEquals('{"schema":"{\"type\":\"test\"}"}', $request->getBody()->getContents());
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_produce_a_request_to_check_if_a_subject_already_has_a_schema()
+    {
+        $request = checkIfSubjectHasSchemaRegisteredRequest('test', '{"type":"test"}');
+
+        $this->assertEquals('POST', $request->getMethod());
+        $this->assertEquals('/subjects/test', $request->getUri());
         $this->assertEquals('{"schema":"{\"type\":\"test\"}"}', $request->getBody()->getContents());
     }
 
