@@ -1,6 +1,9 @@
 dist: trusty
-sudo: false
+sudo: required
 language: php
+
+services:
+  - docker
 
 php:
   - '7.0'
@@ -8,17 +11,34 @@ php:
   - nightly
 
 env:
-  - DEPENDENCIES="low"
-  - DEPENDENCIES="stable"
+  global:
+    - DOCKER_COMPOSE_VERSION=1.13.0
+  matrix:
+    - DEPENDENCIES="low" INTEGRATION_TEST="enabled"
+    - DEPENDENCIES="low" INTEGRATION_TEST="disabled"
+    - DEPENDENCIES="stable" INTEGRATION_TEST="enabled"
+    - DEPENDENCIES="stable" INTEGRATION_TEST="disabled"
+
+matrix:
+  allow_failures:
+    - php: nightly
 
 before_script:
+  - if [ "$INTEGRATION_TEST" == "enabled" ]; then sudo rm /usr/local/bin/docker-compose; fi;
+  - if [ "$INTEGRATION_TEST" == "enabled" ]; then curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose; fi;
+  - if [ "$INTEGRATION_TEST" == "enabled" ]; then chmod +x docker-compose; fi;
+  - if [ "$INTEGRATION_TEST" == "enabled" ]; then sudo mv docker-compose /usr/local/bin; fi;
   - composer self-update
   - composer install --prefer-source
   - if [ "$DEPENDENCIES" == "stable" ]; then composer update --prefer-stable; fi;
   - if [ "$DEPENDENCIES" == "low" ]; then composer update --prefer-lowest; fi;
 
 script:
-  - ./vendor/bin/phpunit -v --coverage-text
+  - if [ "$INTEGRATION_TEST" == "disabled" ]; then make quick-test; fi;
+  - if [ "$INTEGRATION_TEST" == "enabled" ]; then make integration-test; fi;
+
+after_script:
+  - make clean
 
 cache:
   directories:
