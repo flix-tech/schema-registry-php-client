@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Exception;
 
-interface SchemaRegistryException
+interface SchemaRegistryException extends \Throwable
 {
-    public function errorCode(): int;
+    public static function errorCode(): int;
 }

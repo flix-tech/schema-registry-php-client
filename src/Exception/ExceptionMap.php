@@ -8,49 +8,82 @@ use GuzzleHttp\Exception\RequestException;
 
 final class ExceptionMap
 {
-    public function __invoke(RequestException $exception)
+    const UNKNOWN_ERROR_MESSAGE = 'Unknown Error';
+    const ERROR_CODE_FIELD_NAME = 'error_code';
+    const ERROR_MESSAGE_FIELD_NAME = 'message';
+
+    /**
+     * @param \GuzzleHttp\Exception\RequestException $exception
+     *
+     * @return \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     *
+     * @throws \RuntimeException
+     */
+    public function __invoke(RequestException $exception): SchemaRegistryException
     {
-        $decodedBody = \GuzzleHttp\json_decode($exception->getResponse()->getBody()->getContents(), true);
+        $response = $exception->getResponse();
 
-        if (!array_key_exists('error_code', $decodedBody)) {
-            throw new \RuntimeException('Unknown Error');
+        $this->guardAgainstMissingResponse($response);
+
+        $decodedBody = \GuzzleHttp\json_decode($response->getBody()->getContents(), true);
+
+        $this->guardAgainstMissingErrorCode($decodedBody);
+
+        $errorCode = $decodedBody[self::ERROR_CODE_FIELD_NAME];
+        $errorMessage = $decodedBody[self::ERROR_MESSAGE_FIELD_NAME];
+
+        return $this->mapErrorCodeToException($errorCode, $errorMessage);
+    }
+
+    private function guardAgainstMissingResponse($response)
+    {
+        if (!$response) {
+            throw new \RuntimeException(self::UNKNOWN_ERROR_MESSAGE);
         }
+    }
 
-        $errorCode = $decodedBody['error_code'];
+    private function guardAgainstMissingErrorCode(array $decodedBody)
+    {
+        if (!array_key_exists(self::ERROR_CODE_FIELD_NAME, $decodedBody)) {
+            throw new \RuntimeException(self::UNKNOWN_ERROR_MESSAGE);
+        }
+    }
 
+    private function mapErrorCodeToException($errorCode, $errorMessage)
+    {
         switch ($errorCode) {
-            case IncompatibleAvroSchemaException::ERROR_CODE:
-                throw new IncompatibleAvroSchemaException($exception);
+            case IncompatibleAvroSchemaException::errorCode():
+                return new IncompatibleAvroSchemaException($errorMessage, $errorCode);
 
-            case BackendDataStoreException::ERROR_CODE:
-                throw new BackendDataStoreException($exception);
+            case BackendDataStoreException::errorCode():
+                return new BackendDataStoreException($errorMessage, $errorCode);
 
-            case OperationTimedOutException::ERROR_CODE:
-                throw new OperationTimedOutException($exception);
+            case OperationTimedOutException::errorCode():
+                return new OperationTimedOutException($errorMessage, $errorCode);
 
-            case MasterProxyException::ERROR_CODE:
-                throw new MasterProxyException($exception);
+            case MasterProxyException::errorCode():
+                return new MasterProxyException($errorMessage, $errorCode);
 
-            case InvalidVersionException::ERROR_CODE:
-                throw new InvalidVersionException($exception);
+            case InvalidVersionException::errorCode():
+                return new InvalidVersionException($errorMessage, $errorCode);
 
-            case InvalidAvroSchemaException::ERROR_CODE:
-                throw new InvalidAvroSchemaException($exception);
+            case InvalidAvroSchemaException::errorCode():
+                return new InvalidAvroSchemaException($errorMessage, $errorCode);
 
-            case SchemaNotFoundException::ERROR_CODE:
-                throw new SchemaNotFoundException($exception);
+            case SchemaNotFoundException::errorCode():
+                return new SchemaNotFoundException($errorMessage, $errorCode);
 
-            case SubjectNotFoundException::ERROR_CODE:
-                throw new SubjectNotFoundException($exception);
+            case SubjectNotFoundException::errorCode():
+                return new SubjectNotFoundException($errorMessage, $errorCode);
 
-            case VersionNotFoundException::ERROR_CODE:
-                throw new VersionNotFoundException($exception);
+            case VersionNotFoundException::errorCode():
+                return new VersionNotFoundException($errorMessage, $errorCode);
 
-            case InvalidCompatibilityLevelException::ERROR_CODE:
-                throw new InvalidCompatibilityLevelException($exception);
+            case InvalidCompatibilityLevelException::errorCode():
+                return new InvalidCompatibilityLevelException($errorMessage, $errorCode);
 
             default:
-                throw new \RuntimeException('Unknown Error');
+                return new \RuntimeException(self::UNKNOWN_ERROR_MESSAGE);
         }
     }
 }

@@ -1,0 +1,146 @@
+<?php
+
+declare(strict_types=1);
+
+namespace FlixTech\SchemaRegistryApi\Test\Requests;
+
+use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
+use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
+use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
+use function FlixTech\SchemaRegistryApi\Requests\prepareJsonSchemaForTransfer;
+use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
+use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
+use function FlixTech\SchemaRegistryApi\Requests\validateSchemaStringAsJson;
+use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
+use PHPUnit\Framework\TestCase;
+
+class FunctionsTest extends TestCase
+{
+    /**
+     * @test
+     */
+    public function it_should_produce_a_Request_to_get_all_subjects()
+    {
+        $request = allSubjectsRequest();
+
+        $this->assertEquals('GET', $request->getMethod());
+        $this->assertEquals('/subjects', $request->getUri());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_produce_a_Request_to_get_all_subject_versions()
+    {
+        $request = allSubjectVersionsRequest('test');
+
+        $this->assertEquals('GET', $request->getMethod());
+        $this->assertEquals('/subjects/test/versions', $request->getUri());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $versionId must be an integer of type int or string
+     */
+    public function it_should_validate_version_id_type()
+    {
+        validateVersionId([3]);
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $versionId must be between 1 and 2^31 - 1
+     */
+    public function it_should_validate_version_id_overflow()
+    {
+        validateVersionId(2 ** 31);
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $versionId must be between 1 and 2^31 - 1
+     */
+    public function it_should_validate_version_id_less_than_one()
+    {
+        validateVersionId(0);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_validate_valid_version_id()
+    {
+        $this->assertSame(VERSION_LATEST, validateVersionId(VERSION_LATEST));
+        $this->assertSame('3', validateVersionId(3));
+        $this->assertSame('3', validateVersionId('3'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_produce_a_Request_to_get_a_specific_subject_version()
+    {
+        $request = singleSubjectVersionRequest('test', '3');
+
+        $this->assertEquals('GET', $request->getMethod());
+        $this->assertEquals('/subjects/test/versions/3', $request->getUri());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $schema must be a valid JSON string
+     */
+    public function it_should_validate_a_JSON_schema_string()
+    {
+        $this->assertJsonStringEqualsJsonString('{"type":"test"}', validateSchemaStringAsJson('{"type":"test"}'));
+
+        validateSchemaStringAsJson('INVALID');
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_prepare_a_JSON_schema_for_transfer()
+    {
+        $this->assertJsonStringEqualsJsonString(
+            '{"schema":"{\"type\":\"string\"}"}',
+            prepareJsonSchemaForTransfer('{"type": "string"}')
+        );
+
+        $this->assertJsonStringEqualsJsonString(
+            '{"schema":"{\"type\": \"string\"}"}',
+            prepareJsonSchemaForTransfer('{"schema":"{\"type\": \"string\"}"}')
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_produce_a_request_to_register_a_new_schema_version()
+    {
+        $request = registerNewSchemaVersionWithSubjectRequest('{"type": "string"}', 'test');
+
+        $this->assertEquals('POST', $request->getMethod());
+        $this->assertEquals('/subjects/test/versions', $request->getUri());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals('{"schema":"{\"type\":\"string\"}"}', $request->getBody()->getContents());
+
+        $request = registerNewSchemaVersionWithSubjectRequest('{"schema": "{\"type\": \"string\"}"}', 'test');
+
+        $this->assertEquals('POST', $request->getMethod());
+        $this->assertEquals('/subjects/test/versions', $request->getUri());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals('{"schema":"{\"type\": \"string\"}"}', $request->getBody()->getContents());
+    }
+}
