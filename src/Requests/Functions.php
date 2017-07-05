@@ -30,13 +30,13 @@ function allSubjectVersionsRequest(string $subjectName): RequestInterface
     );
 }
 
-function singleSubjectVersionRequest(string $subjectName, $versionId): RequestInterface
+function singleSubjectVersionRequest(string $subjectName, string $versionId): RequestInterface
 {
     return new Request(
         'GET',
         (new UriTemplate())->expand(
             '/subjects/{name}/versions/{id}',
-            ['name' => $subjectName, 'id' => validateVersionId($versionId)]
+            ['name' => $subjectName, 'id' => $versionId]
         ),
         ['Accept' => 'application/vnd.schemaregistry.v1+json']
     );
@@ -58,7 +58,7 @@ function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $s
         'POST',
         (new UriTemplate())->expand(
             '/compatibility/subjects/{name}/versions/{version}',
-            ['name' => $subjectName, 'version' => validateVersionId($versionId)]
+            ['name' => $subjectName, 'version' => $versionId]
         ),
         ['Accept' => 'application/vnd.schemaregistry.v1+json'],
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
@@ -164,4 +164,13 @@ function validateCompatibilityLevel(string $compatibilityVersion): string
 function prepareCompatibilityLevelForTransport(string $compatibilityLevel)
 {
     return \GuzzleHttp\json_encode(['compatibility' => $compatibilityLevel]);
+}
+
+function validateSchemaId($schemaId): string
+{
+    Assert::that($schemaId)
+        ->integerish('$schemaId must be an integer value of type int or string')
+        ->greaterThan(0);
+
+    return (string) $schemaId;
 }

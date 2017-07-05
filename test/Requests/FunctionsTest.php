@@ -16,8 +16,10 @@ use function FlixTech\SchemaRegistryApi\Requests\checkSchemaCompatibilityAgainst
 use function FlixTech\SchemaRegistryApi\Requests\prepareCompatibilityLevelForTransport;
 use function FlixTech\SchemaRegistryApi\Requests\prepareJsonSchemaForTransfer;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
+use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateCompatibilityLevel;
+use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaStringAsJson;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 use PHPUnit\Framework\TestCase;
@@ -94,6 +96,7 @@ class FunctionsTest extends TestCase
         $this->assertEquals('POST', $request->getMethod());
         $this->assertEquals('/compatibility/subjects/test/versions/latest', $request->getUri());
         $this->assertEquals('{"schema":"{\"type\":\"test\"}"}', $request->getBody()->getContents());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
     }
 
     /**
@@ -106,6 +109,19 @@ class FunctionsTest extends TestCase
         $this->assertEquals('POST', $request->getMethod());
         $this->assertEquals('/subjects/test', $request->getUri());
         $this->assertEquals('{"schema":"{\"type\":\"test\"}"}', $request->getBody()->getContents());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_produce_a_request_to_get_a_specific_schema_by_id()
+    {
+        $request = schemaRequest('3');
+
+        $this->assertEquals('GET', $request->getMethod());
+        $this->assertEquals('/schemas/ids/3', $request->getUri());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
     }
 
     /**
@@ -206,5 +222,14 @@ class FunctionsTest extends TestCase
         $this->assertSame(VERSION_LATEST, validateVersionId(VERSION_LATEST));
         $this->assertSame('3', validateVersionId(3));
         $this->assertSame('3', validateVersionId('3'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_validate_valid_schema_ids()
+    {
+        $this->assertSame('3', validateSchemaId(3));
+        $this->assertSame('3', validateSchemaId('3'));
     }
 }
