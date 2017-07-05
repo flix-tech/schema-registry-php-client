@@ -2,6 +2,7 @@
 
 namespace FlixTech\SchemaRegistryApi\Requests;
 
+use Assert\Assert;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
@@ -124,7 +125,7 @@ function changeSubjectCompatibilityLevelRequest(string $subjectName, string $lev
 function validateVersionId($versionId): string
 {
     if (VERSION_LATEST !== $versionId) {
-        \Assert\that($versionId)
+        Assert::that($versionId)
             ->integerish('$versionId must be an integer of type int or string')
             ->between(1, 2 ** 31 - 1, '$versionId must be between 1 and 2^31 - 1');
     }
@@ -134,7 +135,7 @@ function validateVersionId($versionId): string
 
 function validateSchemaStringAsJson(string $schema): string
 {
-    \Assert\that($schema)->isJsonString('$schema must be a valid JSON string');
+    Assert::that($schema)->isJsonString('$schema must be a valid JSON string');
 
     return $schema;
 }
@@ -152,7 +153,7 @@ function prepareJsonSchemaForTransfer(string $schema): string
 
 function validateCompatibilityLevel(string $compatibilityVersion): string
 {
-    \Assert\that($compatibilityVersion)->inArray(
+    Assert::that($compatibilityVersion)->inArray(
         [COMPATIBILITY_NONE, COMPATIBILITY_BACKWARD, COMPATIBILITY_FORWARD, COMPATIBILITY_FULL],
         '$level must be one of "NONE", "BACKWARD", "FORWARD" or "FULL"'
     );
@@ -167,7 +168,7 @@ function prepareCompatibilityLevelForTransport(string $compatibilityLevel)
 
 function validateSchemaId($schemaId): string
 {
-    \Assert\that($schemaId)
+    Assert::that($schemaId)
         ->integerish('$schemaId must be an integer value of type int or string')
         ->greaterThan(0);
 
