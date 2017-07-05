@@ -138,6 +138,16 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
+            ->sendAsync(schemaRequest('1'))
+            ->then(
+                function (ResponseInterface $request) {
+                    $decodedBody = \GuzzleHttp\json_decode($request->getBody()->getContents(), true);
+
+                    $this->assertJsonStringEqualsJsonString($this->baseSchema, $decodedBody['schema']);
+                }
+            )->wait();
+
+        $this->client
             ->sendAsync(checkIfSubjectHasSchemaRegisteredRequest(self::SUBJECT_NAME, $this->baseSchema))
             ->then(
                 function (ResponseInterface $request) {
