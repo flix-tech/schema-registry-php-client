@@ -14,10 +14,13 @@ env:
   global:
     - DOCKER_COMPOSE_VERSION=1.13.0
   matrix:
-    - DEPENDENCIES="low" INTEGRATION_TEST="enabled"
-    - DEPENDENCIES="low" INTEGRATION_TEST="disabled"
-    - DEPENDENCIES="stable" INTEGRATION_TEST="enabled"
-    - DEPENDENCIES="stable" INTEGRATION_TEST="disabled"
+    include:
+      - DEPENDENCIES="low" INTEGRATION_TEST="enabled"
+      - DEPENDENCIES="low" INTEGRATION_TEST="disabled"
+      - DEPENDENCIES="stable" INTEGRATION_TEST="enabled"
+      - DEPENDENCIES="stable" INTEGRATION_TEST="disabled"
+    allow_failures:
+      - php: nightly
 
 before_script:
   - if [ "$INTEGRATION_TEST" == "enabled" ]; then sudo rm /usr/local/bin/docker-compose; fi;
