@@ -8,8 +8,10 @@ php:
   - nightly
 
 env:
-  - DEPENDENCIES="low"
-  - DEPENDENCIES="stable"
+  - DEPENDENCIES="low" INTEGRATION_TEST="enabled"
+  - DEPENDENCIES="low" INTEGRATION_TEST="disabled"
+  - DEPENDENCIES="stable" INTEGRATION_TEST="enabled"
+  - DEPENDENCIES="stable" INTEGRATION_TEST="disabled"
 
 before_script:
   - composer self-update
@@ -18,7 +20,11 @@ before_script:
   - if [ "$DEPENDENCIES" == "low" ]; then composer update --prefer-lowest; fi;
 
 script:
-  - ./vendor/bin/phpunit -v --coverage-text
+  - if [ "$INTEGRATION_TEST" == "disabled" ]; then make quick-test; fi;
+  - if [ "$INTEGRATION_TEST" == "enabled" ]; then make integration-test; fi;
+
+after_script:
+  - make clean
 
 cache:
   directories:
