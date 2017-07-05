@@ -19,8 +19,9 @@ env:
     - DEPENDENCIES="stable" INTEGRATION_TEST="enabled"
     - DEPENDENCIES="stable" INTEGRATION_TEST="disabled"
 
-allow_failure:
-  - php: nightly
+matrix:
+  allow_failures:
+    - php: nightly
 
 before_script:
   - if [ "$INTEGRATION_TEST" == "enabled" ]; then sudo rm /usr/local/bin/docker-compose; fi;
