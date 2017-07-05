@@ -170,7 +170,7 @@ function validateSchemaId($schemaId): string
 {
     Assert::that($schemaId)
         ->integerish('$schemaId must be an integer value of type int or string')
-        ->greaterThan(0);
+        ->greaterThan(0, '$schemaId must be greater than 0');
 
     return (string) $schemaId;
 }
