@@ -23,7 +23,6 @@ use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\UriTemplate;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
@@ -116,25 +115,24 @@ INCOMPATIBLE;
      */
     public function managing_subjects_and_versions()
     {
-        $promises = [];
 
-        $promises[] = $this->client
+        $this->client
             ->sendAsync(allSubjectsRequest())
             ->then(
                 function (ResponseInterface $request) {
                     $this->assertEmpty(\GuzzleHttp\json_decode($request->getBody()->getContents(), true));
                 }
-            );
+            )->wait();
 
-        $promises[] = $this->client
+        $this->client
             ->sendAsync(registerNewSchemaVersionWithSubjectRequest($this->baseSchema, self::SUBJECT_NAME))
             ->then(
                 function (ResponseInterface $request) {
                     $this->assertEquals(1, \GuzzleHttp\json_decode($request->getBody()->getContents(), true)['id']);
                 }
-            );
+            )->wait();
 
-        $promises[] = $this->client
+        $this->client
             ->sendAsync(checkIfSubjectHasSchemaRegisteredRequest(self::SUBJECT_NAME, $this->baseSchema))
             ->then(
                 function (ResponseInterface $request) {
@@ -145,9 +143,9 @@ INCOMPATIBLE;
                     $this->assertEquals(self::SUBJECT_NAME, $decodedBody['subject']);
                     $this->assertJsonStringEqualsJsonString($this->baseSchema, $decodedBody['schema']);
                 }
-            );
+            )->wait();
 
-        $promises[] = $this->client
+        $this->client
             ->sendAsync(singleSubjectVersionRequest(self::SUBJECT_NAME, VERSION_LATEST))
             ->then(
                 function (ResponseInterface $request) {
@@ -158,9 +156,9 @@ INCOMPATIBLE;
                     $this->assertJsonStringEqualsJsonString($this->baseSchema, $decodedBody['schema']);
                     $this->assertEquals(1, $decodedBody['id']);
                 }
-            );
+            )->wait();
 
-        $promises[] = $this->client
+        $this->client
             ->sendAsync(checkSchemaCompatibilityAgainstVersionRequest(
                 $this->compatibleSchemaEvolution,
                 self::SUBJECT_NAME,
@@ -171,9 +169,9 @@ INCOMPATIBLE;
 
                     $this->assertTrue($decodedBody['is_compatible']);
                 }
-            );
+            )->wait();
 
-        $promises[] = $this->client
+        $this->client
             ->sendAsync(checkSchemaCompatibilityAgainstVersionRequest(
                 $this->incompatibleSchemaEvolution,
                 self::SUBJECT_NAME,
@@ -185,9 +183,9 @@ INCOMPATIBLE;
                         (new ExceptionMap())($exception)
                     );
                 }
-            );
+            )->wait();
 
-        $promises[] = $this->client
+        $this->client
             ->sendAsync(registerNewSchemaVersionWithSubjectRequest($this->invalidSchema, self::SUBJECT_NAME))
             ->otherwise(
                 function (RequestException $exception) {
@@ -196,27 +194,23 @@ INCOMPATIBLE;
                         (new ExceptionMap())($exception)
                     );
                 }
-            );
+            )->wait();
 
-        $promises[] = $this->client
+        $this->client
             ->sendAsync(registerNewSchemaVersionWithSubjectRequest($this->compatibleSchemaEvolution, self::SUBJECT_NAME))
             ->then(
                 function (ResponseInterface $request) {
                     $this->assertEquals(2, \GuzzleHttp\json_decode($request->getBody()->getContents(), true)['id']);
                 }
-            );
+            )->wait();
 
-        $promises[] = $this->client
+        $this->client
             ->sendAsync(allSubjectVersionsRequest(self::SUBJECT_NAME))
             ->then(
                 function (ResponseInterface $request) {
                     $this->assertEquals([1, 2], \GuzzleHttp\json_decode($request->getBody()->getContents(), true));
                 }
-            );
-
-        array_walk($promises, function (PromiseInterface $promise) {
-            $promise->wait();
-        });
+            )->wait();
     }
 
     /**
@@ -224,9 +218,7 @@ INCOMPATIBLE;
      */
     public function managing_compatibility_levels()
     {
-        $promises = [];
-
-        $promises[] = $this->client
+        $this->client
             ->sendAsync(defaultCompatibilityLevelRequest())
             ->then(
                 function (ResponseInterface $request) {
@@ -237,9 +229,9 @@ INCOMPATIBLE;
                         $decodedBody['compatibilityLevel']
                     );
                 }
-            );
+            )->wait();
 
-        $promises[] = $this->client
+        $this->client
             ->sendAsync(changeDefaultCompatibilityLevelRequest(COMPATIBILITY_FULL))
             ->then(
                 function (ResponseInterface $request) {
@@ -250,9 +242,9 @@ INCOMPATIBLE;
                         $decodedBody['compatibility']
                     );
                 }
-            );
+            )->wait();
 
-        $promises[] = $this->client
+        $this->client
             ->sendAsync(changeSubjectCompatibilityLevelRequest(self::SUBJECT_NAME, COMPATIBILITY_FORWARD))
             ->then(
                 function (ResponseInterface $request) {
@@ -263,9 +255,9 @@ INCOMPATIBLE;
                         $decodedBody['compatibility']
                     );
                 }
-            );
+            )->wait();
 
-        $promises[] = $this->client
+        $this->client
             ->sendAsync(subjectCompatibilityLevelRequest(self::SUBJECT_NAME))
             ->then(
                 function (ResponseInterface $request) {
@@ -276,10 +268,6 @@ INCOMPATIBLE;
                         $decodedBody['compatibilityLevel']
                     );
                 }
-            );
-
-        array_walk($promises, function (PromiseInterface $promise) {
-            $promise->wait();
-        });
+            )->wait();
     }
 }
