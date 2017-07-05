@@ -11,6 +11,10 @@ use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
 use FlixTech\SchemaRegistryApi\Exception\IncompatibleAvroSchemaException;
 use FlixTech\SchemaRegistryApi\Exception\InvalidAvroSchemaException;
+use FlixTech\SchemaRegistryApi\Exception\InvalidVersionException;
+use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
+use FlixTech\SchemaRegistryApi\Exception\SubjectNotFoundException;
+use FlixTech\SchemaRegistryApi\Exception\VersionNotFoundException;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
@@ -19,6 +23,7 @@ use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegister
 use function FlixTech\SchemaRegistryApi\Requests\checkSchemaCompatibilityAgainstVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\defaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
+use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
 use GuzzleHttp\Client;
@@ -191,6 +196,50 @@ INCOMPATIBLE;
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
                         InvalidAvroSchemaException::class,
+                        (new ExceptionMap())($exception)
+                    );
+                }
+            )->wait();
+
+        $this->client
+            ->sendAsync(singleSubjectVersionRequest('INVALID', VERSION_LATEST))
+            ->otherwise(
+                function (RequestException $exception) {
+                    $this->assertInstanceOf(
+                        SubjectNotFoundException::class,
+                        (new ExceptionMap())($exception)
+                    );
+                }
+            )->wait();
+
+        $this->client
+            ->sendAsync(singleSubjectVersionRequest(self::SUBJECT_NAME, 'INVALID'))
+            ->otherwise(
+                function (RequestException $exception) {
+                    $this->assertInstanceOf(
+                        InvalidVersionException::class,
+                        (new ExceptionMap())($exception)
+                    );
+                }
+            )->wait();
+
+        $this->client
+            ->sendAsync(singleSubjectVersionRequest(self::SUBJECT_NAME, '5'))
+            ->otherwise(
+                function (RequestException $exception) {
+                    $this->assertInstanceOf(
+                        VersionNotFoundException::class,
+                        (new ExceptionMap())($exception)
+                    );
+                }
+            )->wait();
+
+        $this->client
+            ->sendAsync(schemaRequest('6'))
+            ->otherwise(
+                function (RequestException $exception) {
+                    $this->assertInstanceOf(
+                        SchemaNotFoundException::class,
                         (new ExceptionMap())($exception)
                     );
                 }
