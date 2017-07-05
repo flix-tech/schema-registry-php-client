@@ -11,6 +11,7 @@ use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
+use function FlixTech\SchemaRegistryApi\Requests\checkSchemaCompatibilityAgainstVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\prepareCompatibilityLevelForTransport;
 use function FlixTech\SchemaRegistryApi\Requests\prepareJsonSchemaForTransfer;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
@@ -76,6 +77,22 @@ class FunctionsTest extends TestCase
         $this->assertEquals('/subjects/test/versions', $request->getUri());
         $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
         $this->assertEquals('{"schema":"{\"type\": \"string\"}"}', $request->getBody()->getContents());
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_produce_a_request_to_check_schema_compatibility_against_a_subject_version()
+    {
+        $request = checkSchemaCompatibilityAgainstVersionRequest(
+            '{"type":"test"}',
+            'test',
+            VERSION_LATEST
+        );
+
+        $this->assertEquals('POST', $request->getMethod());
+        $this->assertEquals('/compatibility/subjects/test/versions/latest', $request->getUri());
+        $this->assertEquals('{"schema":"{\"type\":\"test\"}"}', $request->getBody()->getContents());
     }
 
     /**

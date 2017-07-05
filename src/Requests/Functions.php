@@ -61,11 +61,11 @@ function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $s
             ['name' => $subjectName, 'version' => validateVersionId($versionId)]
         ),
         ['Accept' => 'application/vnd.schemaregistry.v1+json'],
-        $schema
+        prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
 
-function hasSchemaRequest(string $subjectName, string $schema): RequestInterface
+function checkIfSubjectHasSchemaRegisteredRequest(string $subjectName, string $schema): RequestInterface
 {
     return new Request(
         'POST',
