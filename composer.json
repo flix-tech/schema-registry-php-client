@@ -1,7 +1,8 @@
 {
-  "name": "flix-tech/schema-registry-php-client",
-  "description": "A PHP 7.0+ API client for the Confluent Schema Registry",
+  "name": "flix-tech/confluent-schema-registry-api",
+  "description": "A PHP 7.0+ library to consume the Confluent Schema Registry REST API.",
   "minimum-stability": "stable",
+  "type": "library",
   "license": "MIT",
   "authors": [
     {
@@ -13,7 +14,7 @@
     "php": "~7.0",
     "guzzlehttp/guzzle": "~6.0",
     "roave/security-advisories": "dev-master",
-    "beberlei/assert": "~2.7"
+    "beberlei/assert": "~2.0"
   },
   "require-dev": {
     "phpunit/phpunit": "~6.0"
