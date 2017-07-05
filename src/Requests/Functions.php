@@ -161,7 +161,7 @@ function validateCompatibilityLevel(string $compatibilityVersion): string
     return $compatibilityVersion;
 }
 
-function prepareCompatibilityLevelForTransport(string $compatibilityLevel)
+function prepareCompatibilityLevelForTransport(string $compatibilityLevel): string
 {
     return \GuzzleHttp\json_encode(['compatibility' => $compatibilityLevel]);
 }
