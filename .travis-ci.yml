@@ -1,0 +1,27 @@
+dist: trusty
+sudo: false
+language: php
+
+php:
+  - '7.0'
+  - '7.1'
+  - nightly
+  - hhvm
+
+env:
+  - DEPENDENCIES="low"
+  - DEPENDENCIES="stable"
+
+before_script:
+  - phpenv config-rm xdebug.ini
+  - composer self-update
+  - composer install --prefer-source
+  - if [ "$DEPENDENCIES" == "stable" ]; then composer update; fi;
+  - if [ "$DEPENDENCIES" == "low" ]; then composer update --prefer-lowest; fi;
+
+script:
+  - ./vendor/bin/phpunit -v
+
+cache:
+  directories:
+    - $HOME/.composer/cache
