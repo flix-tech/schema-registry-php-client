@@ -195,7 +195,7 @@ INCOMPATIBLE;
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
                         IncompatibleAvroSchemaException::class,
-                        (new ExceptionMap())($exception)
+                        (ExceptionMap::instance())($exception)
                     );
                 }
             )->wait();
@@ -206,7 +206,7 @@ INCOMPATIBLE;
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
                         InvalidAvroSchemaException::class,
-                        (new ExceptionMap())($exception)
+                        (ExceptionMap::instance())($exception)
                     );
                 }
             )->wait();
