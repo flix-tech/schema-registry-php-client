@@ -52,13 +52,13 @@ function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subj
     );
 }
 
-function checkSchemaCompatibilityRequest(string $schema, string $subjectName, string $versionId): RequestInterface
+function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $subjectName, string $versionId): RequestInterface
 {
     return new Request(
         'POST',
         (new UriTemplate())->expand(
             '/compatibility/subjects/{name}/versions/{version}',
-            ['name' => $subjectName, 'version' => $versionId]
+            ['name' => $subjectName, 'version' => validateVersionId($versionId)]
         ),
         ['Accept' => 'application/vnd.schemaregistry.v1+json'],
         $schema
@@ -71,7 +71,7 @@ function hasSchemaRequest(string $subjectName, string $schema): RequestInterface
         'POST',
         (new UriTemplate())->expand('/subjects/{name}', ['name' => $subjectName]),
         ['Accept' => 'application/vnd.schemaregistry.v1+json'],
-        $schema
+        prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
 
@@ -159,4 +159,9 @@ function validateCompatibilityLevel(string $compatibilityVersion): string
     );
 
     return $compatibilityVersion;
+}
+
+function prepareCompatibilityLevelForTransport(string $compatibilityLevel)
+{
+    return \GuzzleHttp\json_encode(['compatibility' => $compatibilityLevel]);
 }
