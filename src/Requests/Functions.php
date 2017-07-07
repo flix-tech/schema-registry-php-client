@@ -144,7 +144,7 @@ function prepareJsonSchemaForTransfer(string $schema): string
 {
     $decoded = \GuzzleHttp\json_decode($schema, true);
 
-    if (array_key_exists('schema', $decoded)) {
+    if (is_array($decoded) && array_key_exists('schema', $decoded)) {
         return \GuzzleHttp\json_encode($decoded);
     }
 
