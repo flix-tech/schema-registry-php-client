@@ -7,8 +7,7 @@ namespace FlixTech\SchemaRegistryApi\Registry;
 use AvroSchema;
 use FlixTech\SchemaRegistryApi\AsynchronousRegistry;
 use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
@@ -27,11 +26,11 @@ use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 class PromisingRegistry implements AsynchronousRegistry
 {
     /**
-     * @var \GuzzleHttp\Client
+     * @var ClientInterface
      */
     private $client;
 
-    public function __construct(Client $client)
+    public function __construct(ClientInterface $client)
     {
         $this->client = $client;
     }
@@ -49,7 +48,7 @@ class PromisingRegistry implements AsynchronousRegistry
 
                     return $schemaId;
                 },
-                function (RequestException $exception) {
+                function (\Exception $exception) {
                     return (new ExceptionMap())($exception);
                 }
             );
@@ -68,7 +67,7 @@ class PromisingRegistry implements AsynchronousRegistry
 
                     return $decodedResponse['id'];
                 },
-                function (RequestException $exception) {
+                function (\Exception $exception) {
                     return (new ExceptionMap())($exception);
                 }
             );
@@ -89,7 +88,7 @@ class PromisingRegistry implements AsynchronousRegistry
 
                     return $schema;
                 },
-                function (RequestException $exception) {
+                function (\Exception $exception) {
                     return (new ExceptionMap())($exception);
                 }
             );
@@ -109,7 +108,7 @@ class PromisingRegistry implements AsynchronousRegistry
 
                     return $schema;
                 },
-                function (RequestException $exception) {
+                function (\Exception $exception) {
                     return (new ExceptionMap())($exception);
                 }
             );
@@ -125,7 +124,7 @@ class PromisingRegistry implements AsynchronousRegistry
                 function (ResponseInterface $response) {
                     return \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['version'];
                 },
-                function (RequestException $exception) {
+                function (\Exception $exception) {
                     return (new ExceptionMap())($exception);
                 }
             );

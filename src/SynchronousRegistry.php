@@ -14,13 +14,13 @@ use AvroSchema;
  */
 interface SynchronousRegistry extends Registry
 {
-    public function register(string $subject, AvroSchema $schema): int;
+    public function register(string $subject, AvroSchema $schema, callable $requestCallback = null): int;
 
-    public function schemaVersion(string $subject, AvroSchema $schema): int;
+    public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null): int;
 
-    public function schemaId(string $subject, AvroSchema $schema): int;
+    public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null): int;
 
-    public function schemaForId(int $schemaId): AvroSchema;
+    public function schemaForId(int $schemaId, callable $requestCallback = null): AvroSchema;
 
-    public function schemaForSubjectAndVersion(string $subject, int $version): AvroSchema;
+    public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null): AvroSchema;
 }

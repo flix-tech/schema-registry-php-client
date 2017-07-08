@@ -15,13 +15,13 @@ use GuzzleHttp\Promise\PromiseInterface;
  */
 interface AsynchronousRegistry extends Registry
 {
-    public function register(string $subject, AvroSchema $schema): PromiseInterface;
+    public function register(string $subject, AvroSchema $schema, callable $requestCallback = null): PromiseInterface;
 
-    public function schemaVersion(string $subject, AvroSchema $schema): PromiseInterface;
+    public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null): PromiseInterface;
 
-    public function schemaId(string $subject, AvroSchema $schema): PromiseInterface;
+    public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null): PromiseInterface;
 
-    public function schemaForId(int $schemaId): PromiseInterface;
+    public function schemaForId(int $schemaId, callable $requestCallback = null): PromiseInterface;
 
-    public function schemaForSubjectAndVersion(string $subject, int $version): PromiseInterface;
+    public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null): PromiseInterface;
 }

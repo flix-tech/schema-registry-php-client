@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Exception;
 
 use GuzzleHttp\Exception\RequestException;
+use Psr\Http\Message\ResponseInterface;
 
 final class ExceptionMap
 {
@@ -21,32 +22,38 @@ final class ExceptionMap
      */
     public function __invoke(RequestException $exception): SchemaRegistryException
     {
-        $response = $exception->getResponse();
-
-        $this->guardAgainstMissingResponse($response);
-
-        $decodedBody = \GuzzleHttp\json_decode($response->getBody()->getContents(), true);
-
-        $this->guardAgainstMissingErrorCode($decodedBody);
-
+        $response = $this->guardAgainstMissingResponse($exception);
+        $decodedBody = $this->guardAgainstMissingErrorCode($response);
         $errorCode = $decodedBody[self::ERROR_CODE_FIELD_NAME];
         $errorMessage = $decodedBody[self::ERROR_MESSAGE_FIELD_NAME];
 
         return $this->mapErrorCodeToException($errorCode, $errorMessage);
     }
 
-    private function guardAgainstMissingResponse($response)
+    private function guardAgainstMissingResponse(\Exception $exception): ResponseInterface
     {
-        if (!$response) {
-            throw new \RuntimeException(self::UNKNOWN_ERROR_MESSAGE);
+        if (!$exception instanceof RequestException) {
+            throw $exception;
         }
+
+        $response = $exception->getResponse();
+
+        if (!$response) {
+            throw new \RuntimeException(self::UNKNOWN_ERROR_MESSAGE, 0, $exception);
+        }
+
+        return $response;
     }
 
-    private function guardAgainstMissingErrorCode(array $decodedBody)
+    private function guardAgainstMissingErrorCode(ResponseInterface $response): array
     {
+        $decodedBody = \GuzzleHttp\json_decode($response->getBody()->getContents(), true);
+
         if (!array_key_exists(self::ERROR_CODE_FIELD_NAME, $decodedBody)) {
-            throw new \RuntimeException(self::UNKNOWN_ERROR_MESSAGE);
+            throw new \RuntimeException('Invalid message body received');
         }
+
+        return $decodedBody;
     }
 
     private function mapErrorCodeToException($errorCode, $errorMessage)
