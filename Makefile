@@ -1,6 +1,6 @@
 
 quick-test:
-	./vendor/bin/phpunit -v --exclude-group integration --coverage-text
+	./bin/ci
 
 integration-test:
 	docker-compose up -d
