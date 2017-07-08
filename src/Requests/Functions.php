@@ -3,14 +3,14 @@
 namespace FlixTech\SchemaRegistryApi\Requests;
 
 use Assert\Assert;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\UriTemplate;
+use Psr\Http\Message\RequestInterface;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\UriTemplate;
-use Psr\Http\Message\RequestInterface;
 
 function allSubjectsRequest(): RequestInterface
 {

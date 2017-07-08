@@ -6,6 +6,8 @@ namespace FlixTech\SchemaRegistryApi\Exception;
 
 abstract class AbstractSchemaRegistryException extends \RuntimeException implements SchemaRegistryException
 {
+    const ERROR_CODE = 0;
+
     final public static function errorCode(): int
     {
         if (!defined('static::ERROR_CODE')) {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Test\Requests;
 
+use PHPUnit\Framework\TestCase;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
@@ -26,7 +27,6 @@ use function FlixTech\SchemaRegistryApi\Requests\validateCompatibilityLevel;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaStringAsJson;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
-use PHPUnit\Framework\TestCase;
 
 class FunctionsTest extends TestCase
 {

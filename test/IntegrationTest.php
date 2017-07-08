@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Test;
 
-use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
-use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
-use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
-use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
 use FlixTech\SchemaRegistryApi\Exception\IncompatibleAvroSchemaException;
 use FlixTech\SchemaRegistryApi\Exception\InvalidAvroSchemaException;
@@ -15,6 +11,15 @@ use FlixTech\SchemaRegistryApi\Exception\InvalidVersionException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\SubjectNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\VersionNotFoundException;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\UriTemplate;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
+use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
@@ -26,11 +31,6 @@ use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSub
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\UriTemplate;
-use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class IntegrationTest
@@ -109,7 +109,7 @@ INCOMPATIBLE;
                 'http://{host}:{port}',
                 [
                     'host' => getenv('TEST_SCHEMA_REGISTRY_HOST'),
-                    'port' => getenv('TEST_SCHEMA_REGISTRY_PORT')
+                    'port' => getenv('TEST_SCHEMA_REGISTRY_PORT'),
                 ]
             )
         ]);
@@ -120,7 +120,6 @@ INCOMPATIBLE;
      */
     public function managing_subjects_and_versions()
     {
-
         $this->client
             ->sendAsync(allSubjectsRequest())
             ->then(
