@@ -25,7 +25,38 @@ composer require "flix-tech/confluent-schema-registry-api=~1.0"
 
 ## Usage
 
-The documentation is currently being written, but until then you can have a look into the unit and integration tests.
+This library is best explained with a few examples. Since this library provides low level requests for PSR-7 compatible
+clients, we first need a client that can send the requests.
+
+#### Registering an initial Avro Schema with a Subject
+
+```php
+<?php
+
+use FlixTech\SchemaRegistryApi\Requests as RequestFunctions;
+
+// Create a PSR-7 compatible client
+$client = new \GuzzleHttp\Client(['base_uri' => 'registry.example.com']);
+
+$schema = '{"type":"test"}';
+$subjectName = 'test-subject';
+
+$promise = $client->sendAsync(
+    // Use the request 
+    RequestFunctions\registerNewSchemaVersionWithSubjectRequest($schema, $subjectName)
+)->then(
+    function (\Psr\Http\Message\ResponseInterface $response) {
+        // Response mapping to an object model will come in the 2.0 release
+        return \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['id'];
+    },
+    // This will map API error codes to internal exceptions.
+    // They won't be thrown, but returned from the promise which leaves you the freedom to handle it the way you want
+    new \FlixTech\SchemaRegistryApi\Exception\ExceptionMap()
+);
+
+// This is either the globally unique id for the schema or the mapped exception instance
+$result = $promise->wait();
+```
 
 ## Testing
 
