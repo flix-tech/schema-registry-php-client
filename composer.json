@@ -14,13 +14,18 @@
     "php": "~7.0",
     "guzzlehttp/guzzle": "~6.0",
     "roave/security-advisories": "dev-master",
-    "beberlei/assert": "~2.7",
-    "rg/avro-php": "~1.8"
+    "beberlei/assert": "~2.7"
   },
   "require-dev": {
     "phpunit/phpunit": "~6.0",
     "friendsofphp/php-cs-fixer": "~2.0",
-    "phpstan/phpstan": "~0.7"
+    "phpstan/phpstan": "~0.7",
+    "raphhh/trex-reflection": "~1.0",
+    "rg/avro-php": "~1.8"
+  },
+  "suggest": {
+    "rg/avro-php": "Needed if you want to use the high level registry abstractions",
+    "raphhh/trex-reflection": "Needed if you want to use the high level registry abstractions"
   },
   "autoload": {
     "psr-4": {
