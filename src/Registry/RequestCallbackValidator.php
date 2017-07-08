@@ -40,9 +40,36 @@ class RequestCallbackValidator
 
         $reflection = (new CallableReflection($requestCallback))->getReflector();
 
-        Assert::that($reflection->getNumberOfParameters())->greaterOrEqualThan(1);
-        Assert::that($reflection->getParameters()[0]->getType())->eq(RequestInterface::class);
-        Assert::that($reflection->getReturnType())->eq(RequestInterface::class);
+        Assert::that($reflection->getNumberOfParameters())
+            ->greaterOrEqualThan(
+                1,
+                sprintf('There must be at least one callback parameter that implements "%s".', RequestInterface::class)
+            );
+
+        $reflectionParameter = $reflection->getParameters()[0];
+
+        if (!$reflectionParameter->hasType()) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'First parameter of callback must be type hinted against "%s" or classes that implement it.',
+                    RequestInterface::class
+                )
+            );
+        }
+
+        Assert::that((string) $reflectionParameter->getType())
+            ->implementsInterface(
+                RequestInterface::class,
+                'First parameter of type "%s" does not implement "%s".'
+            );
+
+        if ($reflection->hasReturnType()) {
+            Assert::that((string) $reflection->getReturnType())
+                ->implementsInterface(
+                    RequestInterface::class,
+                    'Return type "%s" of request callback does not implement interface "%s".'
+                );
+        }
 
         return $requestCallback;
     }
