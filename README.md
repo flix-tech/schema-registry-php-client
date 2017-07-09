@@ -3,7 +3,22 @@
 [![Build Status](https://travis-ci.org/flix-tech/schema-registry-php-client.svg?branch=master)](https://travis-ci.org/flix-tech/schema-registry-php-client)
 
 A PHP 7.0+ library to consume the Confluent Schema Registry REST API. It provides low level functions to create PSR-7
-compliant requests that can be used as well as high level abstractions to ease developer experience
+compliant requests that can be used as well as high level abstractions to ease developer experience.
+
+#### Contents
+
+- [Requirements](#requirements)
+  - [Hard Dependencies](#hard-dependencies)
+  - [Optional Dependencies](#optional-dependencies)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Asynchronous API](#asynchronous-api)
+  - [Synchronous API](#synchronous-api)
+  - [Caching](#caching)
+- [Testing](#testing)
+  - [Unit tests, Coding standards and static analysis](#unit-tests-coding-standards-and-static-analysis)
+  - [Integration tests](#integration-tests)
+- [Contributing](#contributing)
 
 ## Requirements
 
@@ -142,11 +157,11 @@ use FlixTech\SchemaRegistryApi\Registry\Cache\DoctrineCacheAdapter;
 use Doctrine\Common\Cache\ArrayCache;
 use GuzzleHttp\Client;
 
-$syncApi = new PromisingRegistry(
+$asyncApi = new PromisingRegistry(
     new Client(['base_uri' => 'registry.example.com'])
 );
 
-$asyncApi = new BlockingRegistry($syncApi);
+$syncApi = new BlockingRegistry($asyncApi);
 
 $doctrineCachedSyncApi = new CachedRegistry(
     $syncApi,
