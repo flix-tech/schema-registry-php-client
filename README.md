@@ -33,7 +33,134 @@ composer require "flix-tech/confluent-schema-registry-api=~2.0"
 
 ## Usage
 
-**TBD** (I need to create examples, the test suites are a pretty good place to see how this works)
+### Asynchronous API (`PromisingRegistry`)
+
+[Interface declaration](src/AsynchronousRegistry.php)
+
+#### Example
+
+```php
+<?php
+
+use GuzzleHttp\Client;
+use FlixTech\SchemaRegistryApi\Registry\PromisingRegistry;
+use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
+use Psr\Http\Message\RequestInterface;
+
+$registry = new PromisingRegistry(
+    new Client(['base_uri' => 'registry.example.com'])
+);
+
+// Register a schema with a subject
+$schema = AvroSchema::parse('{"type": "string"}');
+
+// The promise will either contain a schema id as int when fulfilled,
+// or a SchemaRegistryException instance when rejected.
+// If the subject does not exist, it will be created implicitly
+$promise = $registry->register('test-subject', $schema);
+
+// The promises have some default rejection/fulfillment callbacks, those are added here as an example
+$promise = $promise->then(
+    function (int $schemaId) {
+        return $schemaId;
+    },
+    function (SchemaRegistryException $exception) {
+        // maybe do some logging instead of throwing
+        throw $exception;
+    }
+);
+
+// Resolve the promise
+$schemaId = $promise->wait();
+
+
+// Get a schema by schema id
+$promise = $registry->schemaForId($schemaId);
+// As above you could add additional callbacks to the promise
+$schema = $promise->wait();
+
+// Get the version of a schema for a given subject.
+// All methods also have a request callback third parameter.
+// It takes a `Psr\Http\Message\RequestInterface` and should return a `Psr\Http\Message\RequestInterface`
+$version = $registry->schemaVersion(
+    'test-subject',
+    $schema,
+    function (RequestInterface $request) {
+        return $request->withAddedHeader('Cache-Control', 'no-cache');
+    }
+)->wait();
+
+// You can also get a schema by subject and version
+$schema = $registry->schemaForSubjectAndVersion('test-subject', $version)->wait();
+
+// Sometimes you want to find out the global schema id for a given schema
+$schemaId = $registry->schemaId('test-subject', $schema)->wait();
+```
+
+### Synchronous API (`BlockingRegistry`)
+
+[Interface declaration](src/SynchronousRegistry.php)
+
+#### Example
+
+```php
+<?php
+
+use FlixTech\SchemaRegistryApi\Registry\BlockingRegistry;
+use FlixTech\SchemaRegistryApi\Registry\PromisingRegistry;
+use GuzzleHttp\Client;
+
+$registry = new BlockingRegistry(
+    new PromisingRegistry(
+        new Client(['base_uri' => 'registry.example.com'])
+    )
+);
+
+// What the blocking registry does is actually resolving the promises
+// with `wait` and adding a throwing rejection callback.
+$schema = AvroSchema::parse('{"type": "string"}');
+
+// This will be an int, and not a promise
+$schemaId = $registry->register('test-subject', $schema);
+```
+
+### Caching
+
+There is a `CachedRegistry` that accepts a `CacheAdapter` together with a `Registry`.
+It supports both async and sync APIs.
+
+#### Example
+
+```php
+<?php
+
+use FlixTech\SchemaRegistryApi\Registry\BlockingRegistry;
+use FlixTech\SchemaRegistryApi\Registry\PromisingRegistry;
+use FlixTech\SchemaRegistryApi\Registry\CachedRegistry;
+use FlixTech\SchemaRegistryApi\Registry\Cache\AvroObjectCacheAdapter;
+use FlixTech\SchemaRegistryApi\Registry\Cache\DoctrineCacheAdapter;
+use Doctrine\Common\Cache\ArrayCache;
+use GuzzleHttp\Client;
+
+$syncApi = new PromisingRegistry(
+    new Client(['base_uri' => 'registry.example.com'])
+);
+
+$asyncApi = new BlockingRegistry($syncApi);
+
+$doctrineCachedSyncApi = new CachedRegistry(
+    $syncApi,
+    new DoctrineCacheAdapter(
+        new ArrayCache()
+    )
+);
+
+// All adapters support both APIs, for async APIs additional fulfillment callbacks will be registered.
+$avroObjectCachedAsyncApi = new CachedRegistry(
+    $syncApi,
+    new AvroObjectCacheAdapter()
+);
+```
 
 ## Testing
 
