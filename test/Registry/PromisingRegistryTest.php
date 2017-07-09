@@ -7,6 +7,9 @@ namespace FlixTech\SchemaRegistryApi\Test\Registry;
 use AvroSchema;
 use FlixTech\SchemaRegistryApi\Registry\PromisingRegistry;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
+use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
+use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
+use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -88,12 +91,36 @@ class PromisingRegistryTest extends TestCase
             new Response(200, [], '{"schema": "\"string\""}')
         ];
         $schema = AvroSchema::parse('"string"');
-        $expectedRequest = schemaRequest('1');
+        $expectedRequest = schemaRequest(validateSchemaId(1));
 
         $this->registry = new PromisingRegistry($this->clientWithMockResponses($responses));
 
         $promise = $this->registry->schemaForId(
             1,
+            $this->assertRequestCallable($expectedRequest)
+        );
+
+        $this->assertEquals($schema, $promise->wait());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_get_a_schema_for_subject_and_version()
+    {
+        $responses = [
+            new Response(200, [], '{"schema": "\"string\""}')
+        ];
+        $subject = 'test';
+        $version = 2;
+        $schema = AvroSchema::parse('{"type": "string"}');
+        $expectedRequest = singleSubjectVersionRequest($subject, validateVersionId($version));
+
+        $this->registry = new PromisingRegistry($this->clientWithMockResponses($responses));
+
+        $promise = $this->registry->schemaForSubjectAndVersion(
+            $subject,
+            $version,
             $this->assertRequestCallable($expectedRequest)
         );
 
