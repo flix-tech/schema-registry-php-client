@@ -1,6 +1,7 @@
 # Confluent Schema Registry PHP API
 
 [![Build Status](https://travis-ci.org/flix-tech/schema-registry-php-client.svg?branch=master)](https://travis-ci.org/flix-tech/schema-registry-php-client)
+[![Build Status](https://travis-ci.org/flix-tech/schema-registry-php-client.svg?branch=2.0.1)](https://travis-ci.org/flix-tech/schema-registry-php-client)
 
 A PHP 7.0+ library to consume the Confluent Schema Registry REST API. It provides low level functions to create PSR-7
 compliant requests that can be used as well as high level abstractions to ease developer experience.
@@ -27,7 +28,7 @@ compliant requests that can be used as well as high level abstractions to ease d
 | Dependency | Version | Reason |
 |:--- |:---:|:--- |
 | **`php`** | ~7.0 | Anything lower has reached EOL |
-| **`guzzlephp/guzzle`** | ~6.0 | Using `Request` to build PSR-7 `RequestInterface` |
+| **`guzzlephp/guzzle`** | ~6.2 | Using `Request` to build PSR-7 `RequestInterface` |
 | **`beberlei/assert`** | ~2.7 | The de-facto standard assertions library for PHP |
 | **`rg/avro-php`** | ~1.8 | The only Avro PHP implementation I have found so far. |
 
