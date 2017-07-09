@@ -48,14 +48,7 @@ class PromisingRegistryTest extends TestCase
         $promise = $this->registry->register(
             $subject,
             $schema,
-            function (RequestInterface $request) use ($expectedRequest) {
-                $this->assertEquals($expectedRequest->getUri(), $request->getUri());
-                $this->assertEquals($expectedRequest->getHeaders(), $request->getHeaders());
-                $this->assertEquals($expectedRequest->getMethod(), $request->getMethod());
-                $this->assertEquals($expectedRequest->getBody()->getContents(), $request->getBody()->getContents());
-
-                return $request;
-            }
+            $this->assertRequestCallable($expectedRequest)
         );
 
         $this->assertEquals(3, $promise->wait());
@@ -74,5 +67,17 @@ class PromisingRegistryTest extends TestCase
         $this->clientMock = new Client(['handler' => $stack]);
 
         return $this->clientMock;
+    }
+
+    private function assertRequestCallable(RequestInterface $expectedRequest): callable
+    {
+        return function (RequestInterface $actual) use ($expectedRequest) {
+            $this->assertEquals($expectedRequest->getUri(), $actual->getUri());
+            $this->assertEquals($expectedRequest->getHeaders(), $actual->getHeaders());
+            $this->assertEquals($expectedRequest->getMethod(), $actual->getMethod());
+            $this->assertEquals($expectedRequest->getBody()->getContents(), $actual->getBody()->getContents());
+
+            return $actual;
+        };
     }
 }
