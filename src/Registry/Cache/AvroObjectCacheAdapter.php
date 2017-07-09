@@ -9,8 +9,14 @@ use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
 
 class AvroObjectCacheAdapter implements CacheAdapter
 {
+    /**
+     * @var AvroSchema[]
+     */
     private $idToSchema = [];
 
+    /**
+     * @var AvroSchema[]
+     */
     private $subjectVersionToSchema = [];
 
     public function cacheSchemaWithId(AvroSchema $schema, int $schemaId)
