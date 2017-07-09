@@ -48,11 +48,11 @@ composer require "flix-tech/confluent-schema-registry-api=~2.0"
 
 ## Usage
 
-### Asynchronous API (`PromisingRegistry`)
+### Asynchronous API
 
 [Interface declaration](src/AsynchronousRegistry.php)
 
-#### Example
+#### Example `PromisingRegistry`
 
 ```php
 <?php
@@ -112,11 +112,11 @@ $schema = $registry->schemaForSubjectAndVersion('test-subject', $version)->wait(
 $schemaId = $registry->schemaId('test-subject', $schema)->wait();
 ```
 
-### Synchronous API (`BlockingRegistry`)
+### Synchronous API
 
 [Interface declaration](src/SynchronousRegistry.php)
 
-#### Example
+#### Example `BlockingRegistry`
 
 ```php
 <?php
