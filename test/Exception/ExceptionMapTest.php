@@ -253,6 +253,64 @@ class ExceptionMapTest extends TestCase
         );
     }
 
+    /**
+     * @test
+     *
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage RequestException has no response to inspect
+     */
+    public function it_should_not_process_exceptions_with_missing_response()
+    {
+        (ExceptionMap::instance())(
+            new RequestException(
+                '404 Not Found',
+                new Request('GET', '/')
+            )
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Invalid message body received - cannot find "error_code" field in response body
+     */
+    public function it_should_not_process_exceptions_with_missing_error_codes()
+    {
+        (ExceptionMap::instance())(
+            new RequestException(
+                '404 Not Found',
+                new Request('GET', '/'),
+                new Response(
+                    404,
+                    ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
+                    '{"message": "This JSON has no \'error_code\' field."}'
+                )
+            )
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Unknown error code "99999"
+     */
+    public function it_should_not_process_unknown_error_codes()
+    {
+        (ExceptionMap::instance())(
+            new RequestException(
+                '404 Not Found',
+                new Request('GET', '/'),
+                new Response(
+                    404,
+                    ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
+                    '{"error_code":99999,"message": "Subject not found"}'
+                )
+            )
+        );
+    }
+
     private function assertSchemaRegistryException(
         string $exceptionClass,
         string $expectedMessage,

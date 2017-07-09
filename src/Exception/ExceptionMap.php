@@ -48,16 +48,12 @@ final class ExceptionMap
         return $this->mapErrorCodeToException($errorCode, $errorMessage);
     }
 
-    private function guardAgainstMissingResponse(\Exception $exception): ResponseInterface
+    private function guardAgainstMissingResponse(RequestException $exception): ResponseInterface
     {
-        if (!$exception instanceof RequestException) {
-            throw $exception;
-        }
-
         $response = $exception->getResponse();
 
         if (!$response) {
-            throw new \RuntimeException(self::UNKNOWN_ERROR_MESSAGE, 0, $exception);
+            throw new \RuntimeException('RequestException has no response to inspect', 0, $exception);
         }
 
         return $response;
@@ -68,7 +64,12 @@ final class ExceptionMap
         $decodedBody = \GuzzleHttp\json_decode($response->getBody()->getContents(), true);
 
         if (!array_key_exists(self::ERROR_CODE_FIELD_NAME, $decodedBody)) {
-            throw new \RuntimeException('Invalid message body received');
+            throw new \RuntimeException(
+                sprintf(
+                    'Invalid message body received - cannot find "error_code" field in response body "%s"',
+                    $response->getBody()->getContents()
+                )
+            );
         }
 
         return $decodedBody;
@@ -108,7 +109,7 @@ final class ExceptionMap
                 return new InvalidCompatibilityLevelException($errorMessage, $errorCode);
 
             default:
-                return new \RuntimeException(self::UNKNOWN_ERROR_MESSAGE);
+                throw new \RuntimeException(sprintf('Unknown error code "%d"', $errorCode));
         }
     }
 }
