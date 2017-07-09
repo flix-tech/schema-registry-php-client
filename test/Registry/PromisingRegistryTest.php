@@ -63,7 +63,7 @@ class PromisingRegistryTest extends TestCase
     /**
      * @test
      */
-    public function it_can_get_the_schema_id_for_a_schema()
+    public function it_can_get_the_schema_id_for_a_schema_and_subject()
     {
         $responses = [
             new Response(200, [], '{"id": 2}')
