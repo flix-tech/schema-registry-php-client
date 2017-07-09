@@ -91,6 +91,14 @@ class BlockingRegistry implements SynchronousRegistry
      */
     private function addExceptionThrowCallableToPromise(PromiseInterface $promise): PromiseInterface
     {
-        return $promise->otherwise(function (\Exception $e) { throw $e; });
+        return $promise->then(
+            function ($value) {
+                if ($value instanceof \Exception) {
+                    throw $value;
+                }
+
+                return $value;
+            }
+        );
     }
 }
