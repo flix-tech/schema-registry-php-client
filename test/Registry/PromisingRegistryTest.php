@@ -12,6 +12,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
+use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 
 class PromisingRegistryTest extends TestCase
@@ -52,6 +53,30 @@ class PromisingRegistryTest extends TestCase
         );
 
         $this->assertEquals(3, $promise->wait());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_get_the_schema_id_for_a_schema()
+    {
+        $responses = [
+            new Response(200, [], '{"id": 2}')
+        ];
+        $subject = 'test';
+        $schema = AvroSchema::parse('{"type": "string"}');
+        $expectedRequest = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
+
+        $this->registry = new PromisingRegistry($this->clientWithMockResponses($responses));
+
+        $promise = $this->registry->schemaId(
+            $subject,
+            $schema,
+            $this->assertRequestCallable($expectedRequest)
+        );
+
+        $this->assertEquals(2, $promise->wait());
+
     }
 
     /**
