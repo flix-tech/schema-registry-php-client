@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Test\Exception;
 
+use FlixTech\SchemaRegistryApi\Exception\AbstractSchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Exception\BackendDataStoreException;
 use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
 use FlixTech\SchemaRegistryApi\Exception\IncompatibleAvroSchemaException;
@@ -272,6 +273,16 @@ class ExceptionMapTest extends TestCase
     /**
      * @test
      *
+     * @expectedException \LogicException
+     */
+    public function it_will_check_for_invalid_schema_registry_exceptions_not_defining_a_code()
+    {
+        InvalidNewSchemaRegistryException::errorCode();
+    }
+
+    /**
+     * @test
+     *
      * @expectedException \RuntimeException
      * @expectedExceptionMessage Invalid message body received - cannot find "error_code" field in response body
      */
@@ -321,4 +332,8 @@ class ExceptionMapTest extends TestCase
         $this->assertEquals($errorCode, $exception->getCode());
         $this->assertEquals($expectedMessage, $exception->getMessage());
     }
+}
+
+class InvalidNewSchemaRegistryException extends AbstractSchemaRegistryException
+{
 }

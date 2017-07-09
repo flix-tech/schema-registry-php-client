@@ -10,7 +10,7 @@ abstract class AbstractSchemaRegistryException extends \RuntimeException impleme
 
     final public static function errorCode(): int
     {
-        if (!defined('static::ERROR_CODE')) {
+        if (!defined('static::ERROR_CODE') || 0 === static::ERROR_CODE) {
             throw new \LogicException(sprintf('Class "%s" must define constant `ERROR_CODE`', static::class));
         }
 
