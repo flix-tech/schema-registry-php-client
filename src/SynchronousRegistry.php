@@ -7,20 +7,42 @@ namespace FlixTech\SchemaRegistryApi;
 use AvroSchema;
 
 /**
- * Client that talk to a schema registry over http
- *
- * See http://confluent.io/docs/current/schema-registry/docs/intro.html
- * See https://github.com/confluentinc/confluent-kafka-python
+ * {@inheritdoc}
  */
 interface SynchronousRegistry extends Registry
 {
+    /**
+     * {@inheritdoc}
+     *
+     * @return int The schema id of the registered AvroSchema
+     */
     public function register(string $subject, AvroSchema $schema, callable $requestCallback = null): int;
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return int The schema version of this AvroSchema for the given subject
+     */
     public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null): int;
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return int The schema id of the registered AvroSchema
+     */
     public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null): int;
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return AvroSchema The schema for the given schema id
+     */
     public function schemaForId(int $schemaId, callable $requestCallback = null): AvroSchema;
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return AvroSchema The schema for the given subject and version
+     */
     public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null): AvroSchema;
 }

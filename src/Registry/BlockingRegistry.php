@@ -10,10 +10,7 @@ use FlixTech\SchemaRegistryApi\SynchronousRegistry;
 use GuzzleHttp\Promise\PromiseInterface;
 
 /**
- * Client that talk to a schema registry over http
- *
- * See http://confluent.io/docs/current/schema-registry/docs/intro.html
- * See https://github.com/confluentinc/confluent-kafka-python
+ * {@inheritdoc}
  */
 class BlockingRegistry implements SynchronousRegistry
 {
@@ -27,6 +24,11 @@ class BlockingRegistry implements SynchronousRegistry
         $this->asyncRegistry = $registry;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \LogicException
+     */
     public function register(string $subject, AvroSchema $schema, callable $requestCallback = null): int
     {
         return $this->addExceptionThrowCallableToPromise(
@@ -34,6 +36,11 @@ class BlockingRegistry implements SynchronousRegistry
         )->wait();
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \LogicException
+     */
     public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null): int
     {
         return $this->addExceptionThrowCallableToPromise(
@@ -41,6 +48,11 @@ class BlockingRegistry implements SynchronousRegistry
         )->wait();
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \LogicException
+     */
     public function schemaForId(int $schemaId, callable $requestCallback = null): AvroSchema
     {
         return $this->addExceptionThrowCallableToPromise(
@@ -48,6 +60,11 @@ class BlockingRegistry implements SynchronousRegistry
         )->wait();
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \LogicException
+     */
     public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null): AvroSchema
     {
         return $this->addExceptionThrowCallableToPromise(
@@ -55,6 +72,11 @@ class BlockingRegistry implements SynchronousRegistry
         )->wait();
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \LogicException
+     */
     public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null): int
     {
         return $this->addExceptionThrowCallableToPromise(
@@ -62,6 +84,11 @@ class BlockingRegistry implements SynchronousRegistry
         )->wait();
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \LogicException
+     */
     private function addExceptionThrowCallableToPromise(PromiseInterface $promise): PromiseInterface
     {
         return $promise->otherwise(function (\Exception $e) { throw $e; });

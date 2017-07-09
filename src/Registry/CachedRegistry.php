@@ -8,6 +8,9 @@ use AvroSchema;
 use FlixTech\SchemaRegistryApi\Registry;
 use GuzzleHttp\Promise\PromiseInterface;
 
+/**
+ * {@inheritdoc}
+ */
 class CachedRegistry implements Registry
 {
     /**
@@ -20,16 +23,15 @@ class CachedRegistry implements Registry
      */
     private $cacheAdapter;
 
-    /**
-     * @param Registry     $registry
-     * @param CacheAdapter $cacheAdapter
-     */
     public function __construct(Registry $registry, CacheAdapter $cacheAdapter)
     {
         $this->registry = $registry;
         $this->cacheAdapter = $cacheAdapter;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function register(string $subject, AvroSchema $schema, callable $requestCallback = null)
     {
         $closure = function (int $schemaId) use ($schema) {
@@ -47,6 +49,9 @@ class CachedRegistry implements Registry
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null)
     {
         $closure = function (int $version) use ($schema, $subject) {
@@ -64,6 +69,9 @@ class CachedRegistry implements Registry
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null)
     {
         $closure = function (int $schemaId) use ($schema) {
@@ -81,6 +89,9 @@ class CachedRegistry implements Registry
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function schemaForId(int $schemaId, callable $requestCallback = null)
     {
         if ($this->cacheAdapter->hasSchemaForId($schemaId)) {
@@ -102,6 +113,9 @@ class CachedRegistry implements Registry
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null)
     {
         if ($this->cacheAdapter->hasSchemaForSubjectAndVersion($subject, $version)) {
@@ -123,6 +137,9 @@ class CachedRegistry implements Registry
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     private function applyValueHandlers($value, callable $promiseHandler, callable $valueHandler)
     {
         if ($value instanceof PromiseInterface) {

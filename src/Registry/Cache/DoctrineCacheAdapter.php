@@ -8,6 +8,9 @@ use AvroSchema;
 use Doctrine\Common\Cache\Cache;
 use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
 
+/**
+ * {@inheritdoc}
+ */
 class DoctrineCacheAdapter implements CacheAdapter
 {
     /**
@@ -15,19 +18,22 @@ class DoctrineCacheAdapter implements CacheAdapter
      */
     private $doctrineCache;
 
-    /**
-     * @param \Doctrine\Common\Cache\Cache $doctrineCache
-     */
     public function __construct(Cache $doctrineCache)
     {
         $this->doctrineCache = $doctrineCache;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function cacheSchemaWithId(AvroSchema $schema, int $schemaId)
     {
         $this->doctrineCache->save($schemaId, (string) $schema);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function cacheSchemaWithSubjectAndVersion(AvroSchema $schema, string $subject, int $version)
     {
         $this->doctrineCache->save(
@@ -36,6 +42,9 @@ class DoctrineCacheAdapter implements CacheAdapter
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getWithId(int $schemaId)
     {
         $rawSchema = $this->doctrineCache->fetch($schemaId);
@@ -47,6 +56,9 @@ class DoctrineCacheAdapter implements CacheAdapter
         return AvroSchema::parse($rawSchema);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getWithSubjectAndVersion(string $subject, int $version)
     {
         $rawSchema = $this->doctrineCache->fetch(
@@ -62,11 +74,17 @@ class DoctrineCacheAdapter implements CacheAdapter
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function hasSchemaForId(int $schemaId): bool
     {
         return $this->doctrineCache->contains($schemaId);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function hasSchemaForSubjectAndVersion(string $subject, int $version): bool
     {
         return $this->doctrineCache->contains(
@@ -74,6 +92,9 @@ class DoctrineCacheAdapter implements CacheAdapter
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     private function makeKeyFromSubjectAndVersion(string $subject, int $version): string
     {
         return sprintf('%s_%d', $subject, $version);

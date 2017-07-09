@@ -18,10 +18,7 @@ use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 
 /**
- * Client that talk to a schema registry over http
- *
- * See http://confluent.io/docs/current/schema-registry/docs/intro.html
- * See https://github.com/confluentinc/confluent-kafka-python
+ * {@inheritdoc}
  */
 class PromisingRegistry implements AsynchronousRegistry
 {
@@ -35,6 +32,11 @@ class PromisingRegistry implements AsynchronousRegistry
         $this->client = $client;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \RuntimeException
+     */
     public function register(string $subject, AvroSchema $schema, callable $requestCallback = null): PromiseInterface
     {
         $request = registerNewSchemaVersionWithSubjectRequest((string) $schema, $subject);
@@ -54,6 +56,11 @@ class PromisingRegistry implements AsynchronousRegistry
             );
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \RuntimeException
+     */
     public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null): PromiseInterface
     {
         $request = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
@@ -73,6 +80,11 @@ class PromisingRegistry implements AsynchronousRegistry
             );
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \RuntimeException
+     */
     public function schemaForId(int $schemaId, callable $requestCallback = null): PromiseInterface
     {
         $request = schemaRequest(validateSchemaId($schemaId));
@@ -94,6 +106,11 @@ class PromisingRegistry implements AsynchronousRegistry
             );
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \RuntimeException
+     */
     public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null): PromiseInterface
     {
         $request = singleSubjectVersionRequest($subject, validateVersionId($version));
@@ -114,6 +131,11 @@ class PromisingRegistry implements AsynchronousRegistry
             );
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \RuntimeException
+     */
     public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null): PromiseInterface
     {
         $request = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);

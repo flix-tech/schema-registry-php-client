@@ -8,20 +8,42 @@ use AvroSchema;
 use GuzzleHttp\Promise\PromiseInterface;
 
 /**
- * Client that talk to a schema registry over http
- *
- * See http://confluent.io/docs/current/schema-registry/docs/intro.html
- * See https://github.com/confluentinc/confluent-kafka-python
+ * {@inheritdoc}
  */
 interface AsynchronousRegistry extends Registry
 {
+    /**
+     * {@inheritdoc}
+     *
+     * @return PromiseInterface Either the schema id as int when fulfilled, or a SchemaRegistryException object when rejected
+     */
     public function register(string $subject, AvroSchema $schema, callable $requestCallback = null): PromiseInterface;
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return PromiseInterface Either the version as int when fulfilled, or a SchemaRegistryException object when rejected
+     */
     public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null): PromiseInterface;
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return PromiseInterface Either the schema id as int when fulfilled, or a SchemaRegistryException object when rejected
+     */
     public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null): PromiseInterface;
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return PromiseInterface Either the schema as AvroSchema when fulfilled, or a SchemaRegistryException object when rejected
+     */
     public function schemaForId(int $schemaId, callable $requestCallback = null): PromiseInterface;
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return PromiseInterface Either the schema as AvroSchema when fulfilled, or a SchemaRegistryException object when rejected
+     */
     public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null): PromiseInterface;
 }

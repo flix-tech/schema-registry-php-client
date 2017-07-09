@@ -8,6 +8,10 @@ use Assert\Assert;
 use Psr\Http\Message\RequestInterface;
 use TRex\Reflection\CallableReflection;
 
+/**
+ * Validates if a given request callback matches the specs needed for it to work.
+ * It uses reflection to inspect the parameters and return types of callables passed in.
+ */
 class RequestCallbackValidator
 {
     /**

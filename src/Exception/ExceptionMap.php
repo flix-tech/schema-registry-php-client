@@ -32,9 +32,11 @@ final class ExceptionMap
     }
 
     /**
-     * @param \GuzzleHttp\Exception\RequestException $exception
+     * Maps a RequestException to the internal SchemaRegistryException types.
      *
-     * @return \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @param RequestException $exception
+     *
+     * @return SchemaRegistryException
      *
      * @throws \RuntimeException
      */

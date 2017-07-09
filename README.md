@@ -2,67 +2,44 @@
 
 [![Build Status](https://travis-ci.org/flix-tech/schema-registry-php-client.svg?branch=master)](https://travis-ci.org/flix-tech/schema-registry-php-client)
 
-A PHP 7.0+ library to consume the Confluent Schema Registry REST API. It only provides PSR-7 compatible requests via
-functions that can be used in conjunction with any client that is able to handle any requests that implement the PSR-7
-`RequestInterface`.
+A PHP 7.0+ library to consume the Confluent Schema Registry REST API. It provides low level functions to create PSR-7
+compliant requests that can be used as well as high level abstractions to ease developer experience
 
 ## Requirements
+
+### Hard dependencies
 
 | Dependency | Version | Reason |
 |:--- |:---:|:--- |
 | **`php`** | ~7.0 | Anything lower has reached EOL |
 | **`guzzlephp/guzzle`** | ~6.0 | Using `Request` to build PSR-7 `RequestInterface` |
 | **`beberlei/assert`** | ~2.7 | The de-facto standard assertions library for PHP |
-| **`roave/security-advisories`** | dev-master | Because security, right? |
+| **`rg/avro-php`** | ~1.8 | The only Avro PHP implementation I have found so far. |
+
+### Optional dependencies
+
+| Dependency | Version | Reason |
+|:--- |:---:|:--- |
+| **`doctrine/cache`** | ~1.3 | If you want to use the `DoctrineCacheAdapter` |
+| **`raphhh/trex-reflection`** | ~1.0 | If you want to use the `RequestCallbackValidator`s |
 
 ## Installation
 
 This library is installed via [`composer`](http://getcomposer.org).
 
 ```bash
-composer require "flix-tech/confluent-schema-registry-api=~1.0"
+composer require "flix-tech/confluent-schema-registry-api=~2.0"
 ```
 
 ## Usage
 
-This library is best explained with a few examples. Since this library provides low level requests for PSR-7 compatible
-clients, we first need a client that can send the requests.
-
-#### Registering an initial Avro Schema with a Subject
-
-```php
-<?php
-
-use FlixTech\SchemaRegistryApi\Requests as RequestFunctions;
-
-// Create a PSR-7 compatible client
-$client = new \GuzzleHttp\Client(['base_uri' => 'registry.example.com']);
-
-$schema = '{"type":"test"}';
-$subjectName = 'test-subject';
-
-$promise = $client->sendAsync(
-    // Use the request 
-    RequestFunctions\registerNewSchemaVersionWithSubjectRequest($schema, $subjectName)
-)->then(
-    function (\Psr\Http\Message\ResponseInterface $response) {
-        // Response mapping to an object model will come in the 2.0 release
-        return \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['id'];
-    },
-    // This will map API error codes to internal exceptions.
-    // They won't be thrown, but returned from the promise which leaves you the freedom to handle it the way you want
-    new \FlixTech\SchemaRegistryApi\Exception\ExceptionMap()
-);
-
-// This is either the globally unique id for the schema or the mapped exception instance
-$result = $promise->wait();
-```
+**TBD** (I need to create examples, the test suites are a pretty good place to see how this works)
 
 ## Testing
 
 This library uses a `Makefile` to run the test suite.
 
-#### Unit tests
+#### Unit tests, Coding standards and static analysis
 
 ```bash
 make quick-test

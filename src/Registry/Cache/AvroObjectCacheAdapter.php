@@ -7,6 +7,9 @@ namespace FlixTech\SchemaRegistryApi\Registry\Cache;
 use AvroSchema;
 use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
 
+/**
+ * {@inheritdoc}
+ */
 class AvroObjectCacheAdapter implements CacheAdapter
 {
     /**
@@ -19,16 +22,25 @@ class AvroObjectCacheAdapter implements CacheAdapter
      */
     private $subjectVersionToSchema = [];
 
+    /**
+     * {@inheritdoc}
+     */
     public function cacheSchemaWithId(AvroSchema $schema, int $schemaId)
     {
         $this->idToSchema[$schemaId] = $schema;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function cacheSchemaWithSubjectAndVersion(AvroSchema $schema, string $subject, int $version)
     {
         $this->subjectVersionToSchema[$this->makeKeyFromSubjectAndVersion($subject, $version)] = $schema;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getWithId(int $schemaId)
     {
         if (!$this->hasSchemaForId($schemaId)) {
@@ -38,6 +50,9 @@ class AvroObjectCacheAdapter implements CacheAdapter
         return $this->idToSchema[$schemaId];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getWithSubjectAndVersion(string $subject, int $version)
     {
         $key = $this->makeKeyFromSubjectAndVersion($subject, $version);
@@ -49,16 +64,25 @@ class AvroObjectCacheAdapter implements CacheAdapter
         return $this->subjectVersionToSchema[$key];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function hasSchemaForId(int $schemaId): bool
     {
         return array_key_exists($schemaId, $this->idToSchema);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function hasSchemaForSubjectAndVersion(string $subject, int $version): bool
     {
         return array_key_exists($this->makeKeyFromSubjectAndVersion($subject, $version), $this->subjectVersionToSchema);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     private function makeKeyFromSubjectAndVersion(string $subject, int $version): string
     {
         return sprintf('%s_%d', $subject, $version);
