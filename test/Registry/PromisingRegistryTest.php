@@ -6,6 +6,7 @@ namespace FlixTech\SchemaRegistryApi\Test\Registry;
 
 use AvroSchema;
 use FlixTech\SchemaRegistryApi\Registry\PromisingRegistry;
+use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -76,7 +77,27 @@ class PromisingRegistryTest extends TestCase
         );
 
         $this->assertEquals(2, $promise->wait());
+    }
 
+    /**
+     * @test
+     */
+    public function it_can_get_a_schema_for_id()
+    {
+        $responses = [
+            new Response(200, [], '{"schema": "\"string\""}')
+        ];
+        $schema = AvroSchema::parse('"string"');
+        $expectedRequest = schemaRequest('1');
+
+        $this->registry = new PromisingRegistry($this->clientWithMockResponses($responses));
+
+        $promise = $this->registry->schemaForId(
+            1,
+            $this->assertRequestCallable($expectedRequest)
+        );
+
+        $this->assertEquals($schema, $promise->wait());
     }
 
     /**
