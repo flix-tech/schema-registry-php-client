@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Test\Registry;
 
 use AvroSchema;
+use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
 use FlixTech\SchemaRegistryApi\Registry\PromisingRegistry;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
@@ -148,6 +149,27 @@ class PromisingRegistryTest extends TestCase
         );
 
         $this->assertEquals(3, $promise->wait());
+    }
+
+    /**
+     * @test
+     */
+    public function it_will_not_throw_but_pass_exceptions()
+    {
+        $responses = [
+            new Response(
+                404,
+                [],
+                sprintf('{"error_code": %d, "message": "test"}', SchemaNotFoundException::ERROR_CODE)
+            )
+        ];
+        $this->registry = new PromisingRegistry($this->clientWithMockResponses($responses));
+
+        /** @var \Exception $exception */
+        $exception = $this->registry->schemaForId(1)->wait();
+
+        $this->assertInstanceOf(SchemaNotFoundException::class, $exception);
+        $this->assertEquals('test', $exception->getMessage());
     }
 
     /**
