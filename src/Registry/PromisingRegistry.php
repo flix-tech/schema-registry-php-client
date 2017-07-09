@@ -49,7 +49,7 @@ class PromisingRegistry implements AsynchronousRegistry
                     return $schemaId;
                 },
                 function (\Exception $exception) {
-                    return (new ExceptionMap())($exception);
+                    return (ExceptionMap::instance())($exception);
                 }
             );
     }
@@ -68,7 +68,7 @@ class PromisingRegistry implements AsynchronousRegistry
                     return $decodedResponse['id'];
                 },
                 function (\Exception $exception) {
-                    return (new ExceptionMap())($exception);
+                    return (ExceptionMap::instance())($exception);
                 }
             );
     }
@@ -89,7 +89,7 @@ class PromisingRegistry implements AsynchronousRegistry
                     return $schema;
                 },
                 function (\Exception $exception) {
-                    return (new ExceptionMap())($exception);
+                    return (ExceptionMap::instance())($exception);
                 }
             );
     }
@@ -109,7 +109,7 @@ class PromisingRegistry implements AsynchronousRegistry
                     return $schema;
                 },
                 function (\Exception $exception) {
-                    return (new ExceptionMap())($exception);
+                    return (ExceptionMap::instance())($exception);
                 }
             );
     }
@@ -125,7 +125,7 @@ class PromisingRegistry implements AsynchronousRegistry
                     return \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['version'];
                 },
                 function (\Exception $exception) {
-                    return (new ExceptionMap())($exception);
+                    return (ExceptionMap::instance())($exception);
                 }
             );
     }

@@ -32,7 +32,7 @@ class ExceptionMapTest extends TestCase
             InvalidAvroSchemaException::class,
             'Invalid Avro schema',
             42201,
-            (new ExceptionMap())(
+            (ExceptionMap::instance())(
                 new RequestException(
                 '422 Unprocessable Entity',
                     new Request('GET', '/'),
@@ -55,7 +55,7 @@ class ExceptionMapTest extends TestCase
             IncompatibleAvroSchemaException::class,
             'Incompatible Avro schema',
             409,
-            (new ExceptionMap())(
+            (ExceptionMap::instance())(
                 new RequestException(
                     '409 Conflict',
                     new Request('GET', '/'),
@@ -78,7 +78,7 @@ class ExceptionMapTest extends TestCase
             BackendDataStoreException::class,
             'Error in the backend datastore',
             50001,
-            (new ExceptionMap())(
+            (ExceptionMap::instance())(
                 new RequestException(
                     '500 Internal Server Error',
                     new Request('GET', '/'),
@@ -101,7 +101,7 @@ class ExceptionMapTest extends TestCase
             InvalidCompatibilityLevelException::class,
             'Invalid compatibility level',
             42203,
-            (new ExceptionMap())(
+            (ExceptionMap::instance())(
                 new RequestException(
                     '422 Unprocessable Entity',
                     new Request('GET', '/'),
@@ -124,7 +124,7 @@ class ExceptionMapTest extends TestCase
             InvalidVersionException::class,
             'Invalid version',
             42202,
-            (new ExceptionMap())(
+            (ExceptionMap::instance())(
                 new RequestException(
                     '422 Unprocessable Entity',
                     new Request('GET', '/'),
@@ -147,7 +147,7 @@ class ExceptionMapTest extends TestCase
             MasterProxyException::class,
             'Error while forwarding the request to the master',
             50003,
-            (new ExceptionMap())(
+            (ExceptionMap::instance())(
                 new RequestException(
                     '500 Internal server Error',
                     new Request('GET', '/'),
@@ -170,7 +170,7 @@ class ExceptionMapTest extends TestCase
             OperationTimedOutException::class,
             'Operation timed out',
             50002,
-            (new ExceptionMap())(
+            (ExceptionMap::instance())(
                 new RequestException(
                     '500 Internal server Error',
                     new Request('GET', '/'),
@@ -193,7 +193,7 @@ class ExceptionMapTest extends TestCase
             SchemaNotFoundException::class,
             'Schema not found',
             40403,
-            (new ExceptionMap())(
+            (ExceptionMap::instance())(
                 new RequestException(
                     '404 Not Found',
                     new Request('GET', '/'),
@@ -216,7 +216,7 @@ class ExceptionMapTest extends TestCase
             SubjectNotFoundException::class,
             'Subject not found',
             40401,
-            (new ExceptionMap())(
+            (ExceptionMap::instance())(
                 new RequestException(
                     '404 Not Found',
                     new Request('GET', '/'),
@@ -239,7 +239,7 @@ class ExceptionMapTest extends TestCase
             VersionNotFoundException::class,
             'Version not found',
             40402,
-            (new ExceptionMap())(
+            (ExceptionMap::instance())(
                 new RequestException(
                     '404 Not Found',
                     new Request('GET', '/'),

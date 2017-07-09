@@ -14,6 +14,24 @@ final class ExceptionMap
     const ERROR_MESSAGE_FIELD_NAME = 'message';
 
     /**
+     * @var \FlixTech\SchemaRegistryApi\Exception\ExceptionMap
+     */
+    private static $instance;
+
+    public static function instance(): ExceptionMap
+    {
+        if (!self::$instance) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    private function __construct()
+    {
+    }
+
+    /**
      * @param \GuzzleHttp\Exception\RequestException $exception
      *
      * @return \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException

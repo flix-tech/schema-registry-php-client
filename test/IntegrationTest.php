@@ -194,7 +194,7 @@ INCOMPATIBLE;
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
                         IncompatibleAvroSchemaException::class,
-                        (new ExceptionMap())($exception)
+                        (ExceptionMap::instance())($exception)
                     );
                 }
             )->wait();
@@ -205,7 +205,7 @@ INCOMPATIBLE;
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
                         InvalidAvroSchemaException::class,
-                        (new ExceptionMap())($exception)
+                        (ExceptionMap::instance())($exception)
                     );
                 }
             )->wait();
@@ -216,7 +216,7 @@ INCOMPATIBLE;
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
                         SubjectNotFoundException::class,
-                        (new ExceptionMap())($exception)
+                        (ExceptionMap::instance())($exception)
                     );
                 }
             )->wait();
@@ -227,7 +227,7 @@ INCOMPATIBLE;
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
                         InvalidVersionException::class,
-                        (new ExceptionMap())($exception)
+                        (ExceptionMap::instance())($exception)
                     );
                 }
             )->wait();
@@ -238,7 +238,7 @@ INCOMPATIBLE;
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
                         VersionNotFoundException::class,
-                        (new ExceptionMap())($exception)
+                        (ExceptionMap::instance())($exception)
                     );
                 }
             )->wait();
@@ -249,7 +249,7 @@ INCOMPATIBLE;
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
                         SchemaNotFoundException::class,
-                        (new ExceptionMap())($exception)
+                        (ExceptionMap::instance())($exception)
                     );
                 }
             )->wait();
