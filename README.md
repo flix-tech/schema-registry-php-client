@@ -1,7 +1,6 @@
 # Confluent Schema Registry PHP API
 
-[![Build Status](https://travis-ci.org/flix-tech/schema-registry-php-client.svg?branch=master)](https://travis-ci.org/flix-tech/schema-registry-php-client)
-[![Build Status](https://travis-ci.org/flix-tech/schema-registry-php-client.svg?branch=2.0.1)](https://travis-ci.org/flix-tech/schema-registry-php-client)
+[![Build Status](https://travis-ci.org/flix-tech/schema-registry-php-client.svg?branch=2.0.2)](https://travis-ci.org/flix-tech/schema-registry-php-client)
 
 A PHP 7.0+ library to consume the Confluent Schema Registry REST API. It provides low level functions to create PSR-7
 compliant requests that can be used as well as high level abstractions to ease developer experience.
