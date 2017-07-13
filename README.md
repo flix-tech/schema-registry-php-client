@@ -43,7 +43,7 @@ compliant requests that can be used as well as high level abstractions to ease d
 This library is installed via [`composer`](http://getcomposer.org).
 
 ```bash
-composer require "flix-tech/confluent-schema-registry-api=~2.0"
+composer require "flix-tech/confluent-schema-registry-api=~3.0"
 ```
 
 ## Usage
