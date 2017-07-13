@@ -28,6 +28,7 @@ class BlockingRegistry implements SynchronousRegistry
      * {@inheritdoc}
      *
      * @throws \LogicException
+     * @throws \Exception
      */
     public function register(string $subject, AvroSchema $schema, callable $requestCallback = null): int
     {
@@ -40,6 +41,7 @@ class BlockingRegistry implements SynchronousRegistry
      * {@inheritdoc}
      *
      * @throws \LogicException
+     * @throws \Exception
      */
     public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null): int
     {
@@ -52,6 +54,7 @@ class BlockingRegistry implements SynchronousRegistry
      * {@inheritdoc}
      *
      * @throws \LogicException
+     * @throws \Exception
      */
     public function schemaForId(int $schemaId, callable $requestCallback = null): AvroSchema
     {
@@ -64,6 +67,7 @@ class BlockingRegistry implements SynchronousRegistry
      * {@inheritdoc}
      *
      * @throws \LogicException
+     * @throws \Exception
      */
     public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null): AvroSchema
     {
@@ -76,6 +80,7 @@ class BlockingRegistry implements SynchronousRegistry
      * {@inheritdoc}
      *
      * @throws \LogicException
+     * @throws \Exception
      */
     public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null): int
     {
@@ -88,6 +93,19 @@ class BlockingRegistry implements SynchronousRegistry
      * {@inheritdoc}
      *
      * @throws \LogicException
+     * @throws \Exception
+     */
+    public function latestVersion(string $subject, callable $requestCallback = null): AvroSchema
+    {
+        return $this->addExceptionThrowCallableToPromise(
+            $this->asyncRegistry->latestVersion($subject, $requestCallback)
+        )->wait();
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     private function addExceptionThrowCallableToPromise(PromiseInterface $promise): PromiseInterface
     {

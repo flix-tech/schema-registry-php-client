@@ -245,4 +245,34 @@ class CachedRegistryTest extends TestCase
         $schema = $this->cachedRegistry->schemaForSubjectAndVersion($this->subject, 4);
         $this->assertEquals($this->schema, $schema);
     }
+
+    /**
+     * @test
+     */
+    public function it_should_not_cache_latest_version_calls()
+    {
+        $promise = new FulfilledPromise($this->schema);
+
+        $this->registryMock
+            ->expects($this->exactly(2))
+            ->method('latestVersion')
+            ->with($this->subject)
+            ->willReturnOnConsecutiveCalls($promise, $this->schema);
+
+        $this->cacheAdapter
+            ->expects($this->never())
+            ->method('hasSchemaForSubjectAndVersion');
+
+        $this->cacheAdapter
+            ->expects($this->never())
+            ->method('getWithSubjectAndVersion');
+
+        /** @var PromiseInterface $promise */
+        $promise = $this->cachedRegistry->latestVersion($this->subject);
+
+        $this->assertInstanceOf(PromiseInterface::class, $promise);
+        $this->assertEquals($this->schema, $promise->wait());
+
+        $this->assertEquals($this->schema, $this->cachedRegistry->latestVersion($this->subject));
+    }
 }

@@ -138,6 +138,17 @@ class CachedRegistry implements Registry
     }
 
     /**
+     * The latest version should not be cached, it might already be replaced by a newly registered 'latest' version.
+     *
+     * {@inheritdoc}
+     */
+    public function latestVersion(string $subject, callable $requestCallback = null)
+    {
+        return $this->registry->latestVersion($subject, $requestCallback);
+    }
+
+
+    /**
      * {@inheritdoc}
      */
     private function applyValueHandlers($value, callable $promiseHandler, callable $valueHandler)

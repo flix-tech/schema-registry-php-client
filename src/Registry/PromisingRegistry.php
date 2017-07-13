@@ -9,7 +9,9 @@ use FlixTech\SchemaRegistryApi\AsynchronousRegistry;
 use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Promise\PromiseInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
@@ -27,9 +29,17 @@ class PromisingRegistry implements AsynchronousRegistry
      */
     private $client;
 
+    /**
+     * @var \Closure
+     */
+    private $rejectedCallback;
+
     public function __construct(ClientInterface $client)
     {
         $this->client = $client;
+        $this->rejectedCallback = function (\Exception $exception) {
+            return (ExceptionMap::instance())($exception);
+        };
     }
 
     /**
@@ -41,19 +51,13 @@ class PromisingRegistry implements AsynchronousRegistry
     {
         $request = registerNewSchemaVersionWithSubjectRequest((string) $schema, $subject);
 
-        return $this->client
-            ->sendAsync(
-                null !== $requestCallback ? $requestCallback($request) : $request
-            )->then(
-                function (ResponseInterface $response) {
-                    $schemaId = \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['id'];
+        $onFulfilled = function (ResponseInterface $response) {
+            $schemaId = \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['id'];
 
-                    return $schemaId;
-                },
-                function (\Exception $exception) {
-                    return (ExceptionMap::instance())($exception);
-                }
-            );
+            return $schemaId;
+        };
+
+        return $this->makeRequest($request, $onFulfilled, $requestCallback);
     }
 
     /**
@@ -65,19 +69,13 @@ class PromisingRegistry implements AsynchronousRegistry
     {
         $request = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
 
-        return $this->client
-            ->sendAsync(
-                null !== $requestCallback ? $requestCallback($request) : $request
-            )->then(
-                function (ResponseInterface $response) {
-                    $decodedResponse = \GuzzleHttp\json_decode($response->getBody()->getContents(), true);
+        $onFulfilled = function (ResponseInterface $response) {
+            $decodedResponse = \GuzzleHttp\json_decode($response->getBody()->getContents(), true);
 
-                    return $decodedResponse['id'];
-                },
-                function (\Exception $exception) {
-                    return (ExceptionMap::instance())($exception);
-                }
-            );
+            return $decodedResponse['id'];
+        };
+
+        return $this->makeRequest($request, $onFulfilled, $requestCallback);
     }
 
     /**
@@ -89,21 +87,15 @@ class PromisingRegistry implements AsynchronousRegistry
     {
         $request = schemaRequest(validateSchemaId($schemaId));
 
-        return $this->client
-            ->sendAsync(
-                null !== $requestCallback ? $requestCallback($request) : $request
-            )->then(
-                function (ResponseInterface $response) {
-                    $schema = AvroSchema::parse(
-                        \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['schema']
-                    );
-
-                    return $schema;
-                },
-                function (\Exception $exception) {
-                    return (ExceptionMap::instance())($exception);
-                }
+        $onFulfilled = function (ResponseInterface $response) {
+            $schema = AvroSchema::parse(
+                \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['schema']
             );
+
+            return $schema;
+        };
+
+        return $this->makeRequest($request, $onFulfilled, $requestCallback);
     }
 
     /**
@@ -115,20 +107,15 @@ class PromisingRegistry implements AsynchronousRegistry
     {
         $request = singleSubjectVersionRequest($subject, validateVersionId($version));
 
-        return $this->client
-            ->sendAsync(null !== $requestCallback ? $requestCallback($request) : $request)
-            ->then(
-                function (ResponseInterface $response) {
-                    $schema = AvroSchema::parse(
-                        \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['schema']
-                    );
-
-                    return $schema;
-                },
-                function (\Exception $exception) {
-                    return (ExceptionMap::instance())($exception);
-                }
+        $onFulfilled = function (ResponseInterface $response) {
+            $schema = AvroSchema::parse(
+                \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['schema']
             );
+
+            return $schema;
+        };
+
+        return $this->makeRequest($request, $onFulfilled, $requestCallback);
     }
 
     /**
@@ -140,15 +127,44 @@ class PromisingRegistry implements AsynchronousRegistry
     {
         $request = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
 
+        $onFulfilled = function (ResponseInterface $response) {
+            return \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['version'];
+        };
+
+        return $this->makeRequest($request, $onFulfilled, $requestCallback);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \RuntimeException
+     */
+    public function latestVersion(string $subject, callable $requestCallback = null): PromiseInterface
+    {
+        $request = singleSubjectVersionRequest($subject, VERSION_LATEST);
+
+        $onFulfilled = function (ResponseInterface $response) {
+            $schema = AvroSchema::parse(
+                \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['schema']
+            );
+
+            return $schema;
+        };
+
+        return $this->makeRequest($request, $onFulfilled, $requestCallback);
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @param callable         $onFulfilled
+     * @param callable|null    $requestCallback
+     *
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    private function makeRequest(RequestInterface $request, callable $onFulfilled, callable $requestCallback = null): PromiseInterface
+    {
         return $this->client
             ->sendAsync(null !== $requestCallback ? $requestCallback($request) : $request)
-            ->then(
-                function (ResponseInterface $response) {
-                    return \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['version'];
-                },
-                function (\Exception $exception) {
-                    return (ExceptionMap::instance())($exception);
-                }
-            );
+            ->then($onFulfilled, $this->rejectedCallback);
     }
 }

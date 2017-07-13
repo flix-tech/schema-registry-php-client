@@ -13,6 +13,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
+use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
@@ -149,6 +150,29 @@ class PromisingRegistryTest extends TestCase
         );
 
         $this->assertEquals(3, $promise->wait());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_get_the_latest_version()
+    {
+        $responses = [
+            new Response(200, [], '{"schema": "\"string\""}')
+        ];
+
+        $subject = 'test';
+        $schema = AvroSchema::parse('{"type": "string"}');
+        $expectedRequest = singleSubjectVersionRequest($subject, VERSION_LATEST);
+
+        $this->registry = new PromisingRegistry($this->clientWithMockResponses($responses));
+
+        $promise = $this->registry->latestVersion(
+            $subject,
+            $this->assertRequestCallable($expectedRequest)
+        );
+
+        $this->assertEquals($schema, $promise->wait());
     }
 
     /**
