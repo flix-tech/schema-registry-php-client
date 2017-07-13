@@ -74,20 +74,22 @@ $schema = AvroSchema::parse('{"type": "string"}');
 // If the subject does not exist, it will be created implicitly
 $promise = $registry->register('test-subject', $schema);
 
-// The promises have some default rejection/fulfillment callbacks, those are added here as an example
+// If you want to resolve the promise, you might either get the value or an instance of a SchemaRegistryException
+// It is more like an Either Monad, since returning Exceptions from rejection callbacks will throw them.
+// We want to leave that decision to the user of the lib.
+// TODO: Maybe return an Either Monad instead
 $promise = $promise->then(
-    function (int $schemaId) {
-        return $schemaId;
-    },
-    function (SchemaRegistryException $exception) {
-        // maybe do some logging instead of throwing
-        throw $exception;
+    function ($schemaIdOrSchemaRegistryException) {
+        if ($schemaIdOrSchemaRegistryException instanceof SchemaRegistryException) {
+            throw $schemaIdOrSchemaRegistryException;
+        }
+        
+        return $schemaIdOrSchemaRegistryException;
     }
 );
 
 // Resolve the promise
 $schemaId = $promise->wait();
-
 
 // Get a schema by schema id
 $promise = $registry->schemaForId($schemaId);
@@ -107,6 +109,10 @@ $version = $registry->schemaVersion(
 
 // You can also get a schema by subject and version
 $schema = $registry->schemaForSubjectAndVersion('test-subject', $version)->wait();
+
+// You can additionally just query for the currently latest schema within a subject.
+// *NOTE*: Once you requested this it might not be the latest version anymore.
+$latestSchema = $registry->latestVersion('test-subject')->wait();
 
 // Sometimes you want to find out the global schema id for a given schema
 $schemaId = $registry->schemaId('test-subject', $schema)->wait();

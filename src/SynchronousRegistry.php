@@ -28,6 +28,13 @@ interface SynchronousRegistry extends Registry
     /**
      * {@inheritdoc}
      *
+     * @return AvroSchema The latest schema for the given subject
+     */
+    public function latestVersion(string $subject, callable $requestCallback = null): AvroSchema;
+
+    /**
+     * {@inheritdoc}
+     *
      * @return int The schema id of the registered AvroSchema
      */
     public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null): int;

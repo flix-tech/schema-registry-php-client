@@ -8,7 +8,6 @@ use AvroSchema;
 use FlixTech\SchemaRegistryApi\AsynchronousRegistry;
 use FlixTech\SchemaRegistryApi\Registry\BlockingRegistry;
 use GuzzleHttp\Promise\FulfilledPromise;
-use GuzzleHttp\Promise\RejectedPromise;
 use PHPUnit\Framework\TestCase;
 
 class BlockingRegistryTest extends TestCase
@@ -111,6 +110,22 @@ class BlockingRegistryTest extends TestCase
 
     /**
      * @test
+     */
+    public function it_can_get_the_latest_version()
+    {
+        $schema = AvroSchema::parse('{"type": "string"}');
+
+        $this->asyncRegistry
+            ->expects($this->once())
+            ->method('latestVersion')
+            ->with('test')
+            ->willReturn(new FulfilledPromise($schema));
+
+        $this->assertEquals($schema, $this->blockingRegistry->latestVersion('test'));
+    }
+
+    /**
+     * @test
      *
      * @expectedException \RuntimeException
      * @expectedExceptionMessage I was thrown in a test
@@ -122,7 +137,7 @@ class BlockingRegistryTest extends TestCase
         $this->asyncRegistry
             ->expects($this->once())
             ->method('register')
-            ->willReturn(new RejectedPromise(new \RuntimeException('I was thrown in a test')));
+            ->willReturn(new FulfilledPromise(new \RuntimeException('I was thrown in a test')));
 
         $this->blockingRegistry->register('test', $schema);
     }
