@@ -29,9 +29,8 @@ before_script:
   - if [ "$INTEGRATION_TEST" == "enabled" ]; then chmod +x docker-compose; fi;
   - if [ "$INTEGRATION_TEST" == "enabled" ]; then sudo mv docker-compose /usr/local/bin; fi;
   - composer self-update
-  - composer install --prefer-source
   - if [ "$DEPENDENCIES" == "stable" ]; then composer update --prefer-stable; fi;
-  - if [ "$DEPENDENCIES" == "low" ]; then composer update --prefer-lowest; fi;
+  - if [ "$DEPENDENCIES" == "low" ]; then composer update --prefer-lowest --prefer-stable; fi;
 
 script:
   - if [ "$INTEGRATION_TEST" == "disabled" ]; then make quick-test; fi;
