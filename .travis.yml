@@ -39,7 +39,3 @@ script:
 
 after_script:
   - make clean
-
-cache:
-  directories:
-    - $HOME/.composer/cache
