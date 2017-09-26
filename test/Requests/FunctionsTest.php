@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Test\Requests;
 
+use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectRequest;
+use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectVersionRequest;
 use PHPUnit\Framework\TestCase;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
@@ -285,5 +287,35 @@ class FunctionsTest extends TestCase
     {
         $this->assertSame('3', validateSchemaId(3));
         $this->assertSame('3', validateSchemaId('3'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_produce_a_valid_subject_deletion_request()
+    {
+        $request = deleteSubjectRequest('test');
+
+        $this->assertEquals('DELETE', $request->getMethod());
+        $this->assertEquals('/subjects/test', $request->getUri());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_produce_a_valid_subject_version_deletion_request()
+    {
+        $request = deleteSubjectVersionRequest('test', VERSION_LATEST);
+
+        $this->assertEquals('DELETE', $request->getMethod());
+        $this->assertEquals('/subjects/test/versions/latest', $request->getUri());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+
+        $request = deleteSubjectVersionRequest('test', '5');
+
+        $this->assertEquals('DELETE', $request->getMethod());
+        $this->assertEquals('/subjects/test/versions/5', $request->getUri());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
     }
 }
