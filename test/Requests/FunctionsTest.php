@@ -17,6 +17,8 @@ use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevel
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\checkSchemaCompatibilityAgainstVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\defaultCompatibilityLevelRequest;
+use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectRequest;
+use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\prepareCompatibilityLevelForTransport;
 use function FlixTech\SchemaRegistryApi\Requests\prepareJsonSchemaForTransfer;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
@@ -285,5 +287,35 @@ class FunctionsTest extends TestCase
     {
         $this->assertSame('3', validateSchemaId(3));
         $this->assertSame('3', validateSchemaId('3'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_produce_a_valid_subject_deletion_request()
+    {
+        $request = deleteSubjectRequest('test');
+
+        $this->assertEquals('DELETE', $request->getMethod());
+        $this->assertEquals('/subjects/test', $request->getUri());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_produce_a_valid_subject_version_deletion_request()
+    {
+        $request = deleteSubjectVersionRequest('test', VERSION_LATEST);
+
+        $this->assertEquals('DELETE', $request->getMethod());
+        $this->assertEquals('/subjects/test/versions/latest', $request->getUri());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+
+        $request = deleteSubjectVersionRequest('test', '5');
+
+        $this->assertEquals('DELETE', $request->getMethod());
+        $this->assertEquals('/subjects/test/versions/5', $request->getUri());
+        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
     }
 }

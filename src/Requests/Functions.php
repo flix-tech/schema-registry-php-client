@@ -174,3 +174,21 @@ function validateSchemaId($schemaId): string
 
     return (string) $schemaId;
 }
+
+function deleteSubjectRequest(string $subjectName)
+{
+    return new Request(
+        'DELETE',
+        (new UriTemplate())->expand('/subjects/{name}', ['name' => $subjectName]),
+        ['Accept' => 'application/vnd.schemaregistry.v1+json']
+    );
+}
+
+function deleteSubjectVersionRequest(string $subjectName, string $versionId)
+{
+    return new Request(
+        'DELETE',
+        (new UriTemplate())->expand('/subjects/{name}/versions/{version}', ['name' => $subjectName, 'version' => $versionId]),
+        ['Accept' => 'application/vnd.schemaregistry.v1+json']
+    );
+}
