@@ -18,6 +18,11 @@ class AvroObjectCacheAdapter implements CacheAdapter
     private $idToSchema = [];
 
     /**
+     * @var int[]
+     */
+    private $hashToSchemaId = [];
+
+    /**
      * @var AvroSchema[]
      */
     private $subjectVersionToSchema = [];
@@ -28,6 +33,14 @@ class AvroObjectCacheAdapter implements CacheAdapter
     public function cacheSchemaWithId(AvroSchema $schema, int $schemaId)
     {
         $this->idToSchema[$schemaId] = $schema;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function cacheSchemaIdByHash(int $schemaId, string $schemaHash)
+    {
+        $this->hashToSchemaId[$schemaHash] = $schemaId;
     }
 
     /**
@@ -50,6 +63,15 @@ class AvroObjectCacheAdapter implements CacheAdapter
         return $this->idToSchema[$schemaId];
     }
 
+    public function getIdWithHash(string $hash)
+    {
+        if (!$this->hasSchemaIdForHash($hash)) {
+            return null;
+        }
+
+        return $this->hashToSchemaId[$hash];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -70,6 +92,14 @@ class AvroObjectCacheAdapter implements CacheAdapter
     public function hasSchemaForId(int $schemaId): bool
     {
         return array_key_exists($schemaId, $this->idToSchema);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasSchemaIdForHash(string $schemaHash): bool
+    {
+        return array_key_exists($schemaHash, $this->hashToSchemaId);
     }
 
     /**

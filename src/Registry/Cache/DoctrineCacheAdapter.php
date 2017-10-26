@@ -31,6 +31,11 @@ class DoctrineCacheAdapter implements CacheAdapter
         $this->doctrineCache->save($schemaId, (string) $schema);
     }
 
+    public function cacheSchemaIdByHash(int $schemaId, string $schemaHash)
+    {
+        $this->doctrineCache->save($schemaHash, $schemaId);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -59,6 +64,20 @@ class DoctrineCacheAdapter implements CacheAdapter
     /**
      * {@inheritdoc}
      */
+    public function getIdWithHash(string $hash)
+    {
+        $schemaId = $this->doctrineCache->fetch($hash);
+
+        if (!$schemaId) {
+            return null;
+        }
+
+        return $schemaId;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getWithSubjectAndVersion(string $subject, int $version)
     {
         $rawSchema = $this->doctrineCache->fetch(
@@ -80,6 +99,14 @@ class DoctrineCacheAdapter implements CacheAdapter
     public function hasSchemaForId(int $schemaId): bool
     {
         return $this->doctrineCache->contains($schemaId);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasSchemaIdForHash(string $schemaHash): bool
+    {
+        return $this->doctrineCache->contains($schemaHash);
     }
 
     /**
