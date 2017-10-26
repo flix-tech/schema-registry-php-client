@@ -23,10 +23,23 @@ class CachedRegistry implements Registry
      */
     private $cacheAdapter;
 
-    public function __construct(Registry $registry, CacheAdapter $cacheAdapter)
+    /**
+     * @var callable
+     */
+    private $hashAlgoFunc;
+
+    public function __construct(Registry $registry, CacheAdapter $cacheAdapter, callable $hashAlgoFunc = null)
     {
         $this->registry = $registry;
         $this->cacheAdapter = $cacheAdapter;
+
+        if (!$hashAlgoFunc) {
+            $hashAlgoFunc = function (AvroSchema $schema) {
+                return md5((string) $schema);
+            };
+        }
+
+        $this->hashAlgoFunc = $hashAlgoFunc;
     }
 
     /**
@@ -36,6 +49,7 @@ class CachedRegistry implements Registry
     {
         $closure = function (int $schemaId) use ($schema) {
             $this->cacheAdapter->cacheSchemaWithId($schema, $schemaId);
+            $this->cacheAdapter->cacheSchemaIdByHash($schemaId, $this->getSchemaHash($schema));
 
             return $schemaId;
         };
@@ -74,8 +88,15 @@ class CachedRegistry implements Registry
      */
     public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null)
     {
-        $closure = function (int $schemaId) use ($schema) {
+        $schemaHash = $this->getSchemaHash($schema);
+
+        if ($this->cacheAdapter->hasSchemaIdForHash($schemaHash)) {
+            return $this->cacheAdapter->getIdWithHash($schemaHash);
+        }
+
+        $closure = function (int $schemaId) use ($schema, $schemaHash) {
             $this->cacheAdapter->cacheSchemaWithId($schema, $schemaId);
+            $this->cacheAdapter->cacheSchemaIdByHash($schemaId, $schemaHash);
 
             return $schemaId;
         };
@@ -100,6 +121,7 @@ class CachedRegistry implements Registry
 
         $closure = function (AvroSchema $schema) use ($schemaId) {
             $this->cacheAdapter->cacheSchemaWithId($schema, $schemaId);
+            $this->cacheAdapter->cacheSchemaIdByHash($schemaId, $this->getSchemaHash($schema));
 
             return $schema;
         };
@@ -158,5 +180,10 @@ class CachedRegistry implements Registry
         }
 
         return $valueHandler($value);
+    }
+
+    private function getSchemaHash(AvroSchema $schema): string
+    {
+        return call_user_func($this->hashAlgoFunc, $schema);
     }
 }

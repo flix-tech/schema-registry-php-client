@@ -39,11 +39,20 @@ class CachedRegistryTest extends TestCase
      */
     private $schema;
 
+    /**
+     * @var callable
+     */
+    private $hashFunction;
+
     protected function setUp()
     {
         $this->schema = AvroSchema::parse('{"type": "string"}');
         $this->registryMock = $this->getMockForAbstractClass(Registry::class);
         $this->cacheAdapter = $this->getMockForAbstractClass(CacheAdapter::class);
+
+        $this->hashFunction = function (AvroSchema $schema) {
+            return md5((string) $schema);
+        };
 
         $this->cachedRegistry = new CachedRegistry($this->registryMock, $this->cacheAdapter);
     }
@@ -65,6 +74,11 @@ class CachedRegistryTest extends TestCase
             ->expects($this->exactly(2))
             ->method('cacheSchemaWithId')
             ->with($this->schema, 4);
+
+        $this->cacheAdapter
+            ->expects($this->exactly(2))
+            ->method('cacheSchemaIdByHash')
+            ->with(4, call_user_func($this->hashFunction, $this->schema));
 
         /** @var PromiseInterface $promise */
         $promise = $this->cachedRegistry->register($this->subject, $this->schema);
@@ -122,6 +136,11 @@ class CachedRegistryTest extends TestCase
             ->method('cacheSchemaWithId')
             ->with($this->schema, 1);
 
+        $this->cacheAdapter
+            ->expects($this->exactly(2))
+            ->method('cacheSchemaIdByHash')
+            ->with(1, call_user_func($this->hashFunction, $this->schema));
+
         /** @var PromiseInterface $promise */
         $promise = $this->cachedRegistry->schemaId($this->subject, $this->schema);
 
@@ -130,6 +149,93 @@ class CachedRegistryTest extends TestCase
 
         $version = $this->cachedRegistry->schemaId($this->subject, $this->schema);
         $this->assertEquals(1, $version);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_return_schema_id_from_the_cache_for_schema_hash()
+    {
+        $this->registryMock
+            ->expects($this->never())
+            ->method('schemaId');
+
+        $this->cacheAdapter
+            ->expects($this->once())
+            ->method('hasSchemaIdForHash')
+            ->with(call_user_func($this->hashFunction, $this->schema))
+            ->willReturn(true);
+
+        $this->cacheAdapter
+            ->expects($this->once())
+            ->method('getIdWithHash')
+            ->with(call_user_func($this->hashFunction, $this->schema))
+            ->willReturn(3);
+
+        $this->assertEquals(3, $this->cachedRegistry->schemaId($this->subject, $this->schema));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_cache_schema_id_for_hash_if_cache_is_stale()
+    {
+        $promise = new FulfilledPromise(3);
+
+        $this->registryMock
+            ->expects($this->exactly(2))
+            ->method('schemaId')
+            ->with($this->subject, $this->schema)
+            ->willReturnOnConsecutiveCalls($promise, 3);
+
+        $this->cacheAdapter
+            ->expects($this->exactly(2))
+            ->method('hasSchemaIdForHash')
+            ->with(call_user_func($this->hashFunction, $this->schema))
+            ->willReturn(false);
+
+        $this->cacheAdapter
+            ->expects($this->never())
+            ->method('getIdWithHash');
+
+        /** @var PromiseInterface $promise */
+        $promise = $this->cachedRegistry->schemaId($this->subject, $this->schema);
+
+        $this->assertInstanceOf(PromiseInterface::class, $promise);
+        $this->assertEquals(3, $promise->wait());
+
+        $id = $this->cachedRegistry->schemaId($this->subject, $this->schema);
+        $this->assertEquals(3, $id);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_accept_different_hash_algo_functions()
+    {
+        $sha1HashFunction = function (AvroSchema $schema) {
+            return sha1((string) $schema);
+        };
+
+        $this->cachedRegistry = new CachedRegistry($this->registryMock, $this->cacheAdapter, $sha1HashFunction);
+
+        $this->registryMock
+            ->expects($this->never())
+            ->method('schemaId');
+
+        $this->cacheAdapter
+            ->expects($this->once())
+            ->method('hasSchemaIdForHash')
+            ->with($sha1HashFunction($this->schema))
+            ->willReturn(true);
+
+        $this->cacheAdapter
+            ->expects($this->once())
+            ->method('getIdWithHash')
+            ->with($sha1HashFunction($this->schema))
+            ->willReturn(3);
+
+        $this->cachedRegistry->schemaId($this->subject, $this->schema);
     }
 
     /**
