@@ -14,10 +14,12 @@ compliant requests that can be used as well as high level abstractions to ease d
   - [Hard Dependencies](#hard-dependencies)
   - [Optional Dependencies](#optional-dependencies)
 - [Installation](#installation)
+- [Compatibility](#compatibility)
 - [Usage](#usage)
   - [Asynchronous API](#asynchronous-api)
   - [Synchronous API](#synchronous-api)
   - [Caching](#caching)
+  - [Low Level API](#low-level-api)
 - [Testing](#testing)
   - [Unit tests, Coding standards and static analysis](#unit-tests-coding-standards-and-static-analysis)
   - [Integration tests](#integration-tests)
@@ -30,7 +32,7 @@ compliant requests that can be used as well as high level abstractions to ease d
 | Dependency | Version | Reason |
 |:--- |:---:|:--- |
 | **`php`** | ~7.0 | Anything lower has reached EOL |
-| **`guzzlephp/guzzle`** | ~6.2 | Using `Request` to build PSR-7 `RequestInterface` |
+| **`guzzlephp/guzzle`** | ~6.3 | Using `Request` to build PSR-7 `RequestInterface` |
 | **`beberlei/assert`** | ~2.7 | The de-facto standard assertions library for PHP |
 | **`rg/avro-php`** | ~1.8 | The only Avro PHP implementation I have found so far. |
 
@@ -46,8 +48,14 @@ compliant requests that can be used as well as high level abstractions to ease d
 This library is installed via [`composer`](http://getcomposer.org).
 
 ```bash
-composer require "flix-tech/confluent-schema-registry-api=~3.0"
+composer require "flix-tech/confluent-schema-registry-api=~4.0"
 ```
+
+## Compatibility
+
+This library follows strict semantic versioning, so you can expect any minor and patch release to be compatible, while
+major version upgrades will have incompatibilities that will be released in the UPGRADE.md file.
+
 
 ## Usage
 
@@ -153,6 +161,11 @@ $schemaId = $registry->register('test-subject', $schema);
 There is a `CachedRegistry` that accepts a `CacheAdapter` together with a `Registry`.
 It supports both async and sync APIs.
 
+> **NOTE:**
+>
+> From version 4.x of this library the API for the `CacheAdapterInterface` has been changed in order to allow caching
+> of schema ids by hash of a given schema.
+
 #### Example
 
 ```php
@@ -173,7 +186,7 @@ $asyncApi = new PromisingRegistry(
 $syncApi = new BlockingRegistry($asyncApi);
 
 $doctrineCachedSyncApi = new CachedRegistry(
-    $syncApi,
+    $asyncApi,
     new DoctrineCacheAdapter(
         new ArrayCache()
     )
@@ -184,7 +197,32 @@ $avroObjectCachedAsyncApi = new CachedRegistry(
     $syncApi,
     new AvroObjectCacheAdapter()
 );
+
+// NEW in version 4.x, passing in custom hash functions to cache schema ids via the schema hash
+// By default the following function is used internally
+$defaultHashFunction = function (AvroSchema $schema) {
+   return md5((string) $schema); 
+};
+
+// You can also define your own hash callable
+$sha1HashFunction = function (AvroSchema $schema) {
+   return sha1((string) $schema); 
+};
+
+// Pass the hash function as optional 3rd parameter to the CachedRegistry constructor
+$avroObjectCachedAsyncApi = new CachedRegistry(
+    $syncApi,
+    new AvroObjectCacheAdapter(),
+    $sha1HashFunction
+);
 ```
+
+### Low Level API
+
+There is a low-level API that provides simple functions that return PSR-7 request objects for the different endpoints of
+the registry. See [Requests/Functions](src/Requests/Functions.php) for more information.
+
+There are also requests to use the new `DELETE` API of the schema registry.
 
 ## Testing
 
