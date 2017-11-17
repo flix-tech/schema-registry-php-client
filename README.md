@@ -34,7 +34,7 @@ compliant requests that can be used as well as high level abstractions to ease d
 | **`php`** | ~7.0 | Anything lower has reached EOL |
 | **`guzzlephp/guzzle`** | ~6.3 | Using `Request` to build PSR-7 `RequestInterface` |
 | **`beberlei/assert`** | ~2.7 | The de-facto standard assertions library for PHP |
-| **`rg/avro-php`** | ~1.8 | The only Avro PHP implementation I have found so far. |
+| **`flix-tech/avro-php`** | ^2.0 | Maintained fork of the only Avro PHP implementation: `rg/avro-php` |
 
 ### Optional dependencies
 
