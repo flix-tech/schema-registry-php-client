@@ -63,18 +63,29 @@ final class ExceptionMap
 
     private function guardAgainstMissingErrorCode(ResponseInterface $response): array
     {
-        $decodedBody = \GuzzleHttp\json_decode($response->getBody()->getContents(), true);
+        try {
+            $decodedBody = \GuzzleHttp\json_decode((string) $response->getBody(), true);
 
-        if (!array_key_exists(self::ERROR_CODE_FIELD_NAME, $decodedBody)) {
+            if (!\array_key_exists(self::ERROR_CODE_FIELD_NAME, $decodedBody)) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'Invalid message body received - cannot find "error_code" field in response body "%s"',
+                        (string) $response->getBody()
+                    )
+                );
+            }
+
+            return $decodedBody;
+        } catch (\Exception $e) {
             throw new \RuntimeException(
-                sprintf(
+                \sprintf(
                     'Invalid message body received - cannot find "error_code" field in response body "%s"',
-                    $response->getBody()->getContents()
-                )
+                    (string) $response->getBody()
+                ),
+                $e->getCode(),
+                $e
             );
         }
-
-        return $decodedBody;
     }
 
     private function mapErrorCodeToException($errorCode, $errorMessage)
