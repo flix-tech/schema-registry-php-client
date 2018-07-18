@@ -52,7 +52,7 @@ class PromisingRegistry implements AsynchronousRegistry
         $request = registerNewSchemaVersionWithSubjectRequest((string) $schema, $subject);
 
         $onFulfilled = function (ResponseInterface $response) {
-            $schemaId = \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['id'];
+            $schemaId = $this->getJsonFromResponseBody($response)['id'];
 
             return $schemaId;
         };
@@ -70,7 +70,7 @@ class PromisingRegistry implements AsynchronousRegistry
         $request = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
 
         $onFulfilled = function (ResponseInterface $response) {
-            $decodedResponse = \GuzzleHttp\json_decode($response->getBody()->getContents(), true);
+            $decodedResponse = $this->getJsonFromResponseBody($response);
 
             return $decodedResponse['id'];
         };
@@ -89,7 +89,7 @@ class PromisingRegistry implements AsynchronousRegistry
 
         $onFulfilled = function (ResponseInterface $response) {
             $schema = AvroSchema::parse(
-                \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['schema']
+                $this->getJsonFromResponseBody($response)['schema']
             );
 
             return $schema;
@@ -109,7 +109,7 @@ class PromisingRegistry implements AsynchronousRegistry
 
         $onFulfilled = function (ResponseInterface $response) {
             $schema = AvroSchema::parse(
-                \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['schema']
+                $this->getJsonFromResponseBody($response)['schema']
             );
 
             return $schema;
@@ -128,7 +128,7 @@ class PromisingRegistry implements AsynchronousRegistry
         $request = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
 
         $onFulfilled = function (ResponseInterface $response) {
-            return \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['version'];
+            return $this->getJsonFromResponseBody($response)['version'];
         };
 
         return $this->makeRequest($request, $onFulfilled, $requestCallback);
@@ -145,7 +145,7 @@ class PromisingRegistry implements AsynchronousRegistry
 
         $onFulfilled = function (ResponseInterface $response) {
             $schema = AvroSchema::parse(
-                \GuzzleHttp\json_decode($response->getBody()->getContents(), true)['schema']
+                $this->getJsonFromResponseBody($response)['schema']
             );
 
             return $schema;
@@ -166,5 +166,20 @@ class PromisingRegistry implements AsynchronousRegistry
         return $this->client
             ->sendAsync(null !== $requestCallback ? $requestCallback($request) : $request)
             ->then($onFulfilled, $this->rejectedCallback);
+    }
+
+    private function getJsonFromResponseBody(ResponseInterface $response): array
+    {
+        $body = (string) $response->getBody();
+
+        try {
+            return \GuzzleHttp\json_decode($body, true);
+        } catch (\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException(
+                \sprintf('%s - with content "%s"', $e->getMessage(), $body),
+                $e->getCode(),
+                $e
+            );
+        }
     }
 }
