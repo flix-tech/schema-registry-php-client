@@ -169,14 +169,14 @@ class CachedRegistry implements Registry
         return $this->registry->latestVersion($subject, $requestCallback);
     }
 
-
-    /**
-     * {@inheritdoc}
-     */
     private function applyValueHandlers($value, callable $promiseHandler, callable $valueHandler)
     {
         if ($value instanceof PromiseInterface) {
             return $promiseHandler($value);
+        }
+
+        if ($value instanceof \Exception) {
+            throw $value;
         }
 
         return $valueHandler($value);
