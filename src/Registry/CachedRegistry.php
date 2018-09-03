@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Registry;
 
 use AvroSchema;
+use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Registry;
 use GuzzleHttp\Promise\PromiseInterface;
 
@@ -47,7 +48,11 @@ class CachedRegistry implements Registry
      */
     public function register(string $subject, AvroSchema $schema, callable $requestCallback = null)
     {
-        $closure = function (int $schemaId) use ($schema) {
+        $closure = function ($schemaId) use ($schema) {
+            if ($schemaId instanceof SchemaRegistryException) {
+                return $schemaId;
+            }
+
             $this->cacheAdapter->cacheSchemaWithId($schema, $schemaId);
             $this->cacheAdapter->cacheSchemaIdByHash($schemaId, $this->getSchemaHash($schema));
 
@@ -68,7 +73,11 @@ class CachedRegistry implements Registry
      */
     public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null)
     {
-        $closure = function (int $version) use ($schema, $subject) {
+        $closure = function ($version) use ($schema, $subject) {
+            if ($version instanceof SchemaRegistryException) {
+                return $version;
+            }
+
             $this->cacheAdapter->cacheSchemaWithSubjectAndVersion($schema, $subject, $version);
 
             return $version;
@@ -94,7 +103,11 @@ class CachedRegistry implements Registry
             return $this->cacheAdapter->getIdWithHash($schemaHash);
         }
 
-        $closure = function (int $schemaId) use ($schema, $schemaHash) {
+        $closure = function ($schemaId) use ($schema, $schemaHash) {
+            if ($schemaId instanceof SchemaRegistryException) {
+                return $schemaId;
+            }
+
             $this->cacheAdapter->cacheSchemaWithId($schema, $schemaId);
             $this->cacheAdapter->cacheSchemaIdByHash($schemaId, $schemaHash);
 
@@ -119,7 +132,11 @@ class CachedRegistry implements Registry
             return $this->cacheAdapter->getWithId($schemaId);
         }
 
-        $closure = function (AvroSchema $schema) use ($schemaId) {
+        $closure = function ($schema) use ($schemaId) {
+            if ($schema instanceof SchemaRegistryException) {
+                return $schema;
+            }
+
             $this->cacheAdapter->cacheSchemaWithId($schema, $schemaId);
             $this->cacheAdapter->cacheSchemaIdByHash($schemaId, $this->getSchemaHash($schema));
 
@@ -144,7 +161,11 @@ class CachedRegistry implements Registry
             return $this->cacheAdapter->getWithSubjectAndVersion($subject, $version);
         }
 
-        $closure = function (AvroSchema $schema) use ($subject, $version) {
+        $closure = function ($schema) use ($subject, $version) {
+            if ($schema instanceof SchemaRegistryException) {
+                return $schema;
+            }
+
             $this->cacheAdapter->cacheSchemaWithSubjectAndVersion($schema, $subject, $version);
 
             return $schema;
@@ -184,6 +205,6 @@ class CachedRegistry implements Registry
 
     private function getSchemaHash(AvroSchema $schema): string
     {
-        return call_user_func($this->hashAlgoFunc, $schema);
+        return \call_user_func($this->hashAlgoFunc, $schema);
     }
 }
