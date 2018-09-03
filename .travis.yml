@@ -13,7 +13,7 @@ php:
 
 env:
   global:
-    - DOCKER_COMPOSE_VERSION=1.13.0
+    - DOCKER_COMPOSE_VERSION=1.19.0
   matrix:
     - DEPENDENCIES="low" INTEGRATION_TEST="enabled"
     - DEPENDENCIES="low" INTEGRATION_TEST="disabled"
