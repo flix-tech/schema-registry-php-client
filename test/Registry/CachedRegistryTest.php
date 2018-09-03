@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Test\Registry;
 
 use AvroSchema;
+use FlixTech\SchemaRegistryApi\Exception\SubjectNotFoundException;
 use FlixTech\SchemaRegistryApi\Registry;
 use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
 use FlixTech\SchemaRegistryApi\Registry\CachedRegistry;
@@ -380,5 +381,26 @@ class CachedRegistryTest extends TestCase
         $this->assertEquals($this->schema, $promise->wait());
 
         $this->assertEquals($this->schema, $this->cachedRegistry->latestVersion($this->subject));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_handle_exceptions_wrapped_in_promises_correctly()
+    {
+        $subjectNotFoundException = new SubjectNotFoundException();
+
+        $promise = new FulfilledPromise($subjectNotFoundException);
+
+        $this->registryMock
+            ->expects($this->once())
+            ->method('register')
+            ->with($this->subject, $this->schema)
+            ->willReturn($promise);
+
+        $this->assertEquals(
+            $this->cachedRegistry->register($this->subject, $this->schema)->wait(),
+            $subjectNotFoundException
+        );
     }
 }
