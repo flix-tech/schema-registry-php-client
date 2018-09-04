@@ -99,3 +99,7 @@ branches:
   - master
   - '/^ft-.*/'
   - '/^\d+\.\d+\.\d+$/'
+
+cache:
+  directories:
+  - $HOME/.composer/cache/files
