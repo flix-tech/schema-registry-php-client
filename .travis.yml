@@ -37,7 +37,7 @@ jobs:
     - DEPENDENCIES="stable"
     script:
     - PHP=php make coverage
-  - stage: coverage
+  - stage: integration
     php: 7.2
     env:
     - DEPENDENCIES="stable"
