@@ -226,12 +226,12 @@ There are also requests to use the new `DELETE` API of the schema registry.
 
 ## Testing
 
-This library uses a `Makefile` to run the test suite.
+This library uses a `Makefile` to run the test suite and requires `docker`.
 
 #### Unit tests, Coding standards and static analysis
 
 ```bash
-make quick-test
+make phpunit
 ```
 
 #### Integration tests

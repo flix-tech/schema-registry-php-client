@@ -3,39 +3,52 @@ sudo: required
 language: php
 
 services:
-  - docker
+- docker
 
 php:
-  - '7.0'
-  - '7.1'
-  - '7.2'
-  - nightly
+- '7.1'
+- '7.2'
 
 env:
   global:
-    - DOCKER_COMPOSE_VERSION=1.19.0
+  - DOCKER_COMPOSE_VERSION=1.22.0
   matrix:
-    - DEPENDENCIES="low" INTEGRATION_TEST="enabled"
-    - DEPENDENCIES="low" INTEGRATION_TEST="disabled"
-    - DEPENDENCIES="stable" INTEGRATION_TEST="enabled"
-    - DEPENDENCIES="stable" INTEGRATION_TEST="disabled"
-
-matrix:
-  allow_failures:
-    - php: nightly
+  - DEPENDENCIES="low"
+  - DEPENDENCIES="stable"
 
 before_script:
-  - if [ "$INTEGRATION_TEST" == "enabled" ]; then sudo rm /usr/local/bin/docker-compose; fi;
-  - if [ "$INTEGRATION_TEST" == "enabled" ]; then curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose; fi;
-  - if [ "$INTEGRATION_TEST" == "enabled" ]; then chmod +x docker-compose; fi;
-  - if [ "$INTEGRATION_TEST" == "enabled" ]; then sudo mv docker-compose /usr/local/bin; fi;
-  - composer self-update
-  - if [ "$DEPENDENCIES" == "stable" ]; then composer update --prefer-stable; fi;
-  - if [ "$DEPENDENCIES" == "low" ]; then composer update --prefer-lowest --prefer-stable; fi;
+- make install-phars
+- if [ "$INTEGRATION_TEST" == "enabled" ]; then sudo rm /usr/local/bin/docker-compose; fi;
+- if [ "$INTEGRATION_TEST" == "enabled" ]; then curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose; fi;
+- if [ "$INTEGRATION_TEST" == "enabled" ]; then chmod +x docker-compose; fi;
+- if [ "$INTEGRATION_TEST" == "enabled" ]; then sudo mv docker-compose /usr/local/bin; fi;
+- composer self-update
+- if [ "$DEPENDENCIES" == "stable" ]; then composer update --prefer-stable; fi;
+- if [ "$DEPENDENCIES" == "low" ]; then composer update --prefer-lowest --prefer-stable; fi;
 
 script:
-  - if [ "$INTEGRATION_TEST" == "disabled" ]; then make quick-test; fi;
-  - if [ "$INTEGRATION_TEST" == "enabled" ]; then make integration-test; fi;
+- COMPOSER=composer PHP=php make ci-local
 
+jobs:
+  include:
+  - stage: coverage
+    php: 7.2
+    env:
+    - DEPENDENCIES="stable"
+    script:
+    - PHP=php make coverage
+  - stage: coverage
+    php: 7.2
+    env:
+    - DEPENDENCIES="stable"
+    - INTEGRATION_TEST="enabled"
+    script:
+    - PHP=php make phpunit-integration
 after_script:
-  - make clean
+- make clean
+
+branches:
+  only:
+  - master
+  - '/^ft-.*/'
+  - '/^\d+\.\d+\.\d+$/'
