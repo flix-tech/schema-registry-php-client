@@ -21,7 +21,7 @@ class RequestCallbackValidator
 
     public static function instance(): RequestCallbackValidator
     {
-        if (!self::$instance) {
+        if (null === self::$instance) {
             self::$instance = new self();
         }
 

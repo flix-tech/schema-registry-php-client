@@ -46,7 +46,7 @@ function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subj
 {
     return new Request(
         'POST',
-        (new UriTemplate())->expand('/subjects/{name}/versions', ['name' => (string) $subjectName]),
+        (new UriTemplate())->expand('/subjects/{name}/versions', ['name' => $subjectName]),
         ['Accept' => 'application/vnd.schemaregistry.v1+json'],
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
