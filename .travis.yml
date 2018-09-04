@@ -42,7 +42,54 @@ jobs:
     env:
     - DEPENDENCIES="stable"
     - INTEGRATION_TEST="enabled"
+    - CONFLUENT_VERSION=3.1.2
     script:
+    - make platform
+    - PHP=php make phpunit-integration
+  - stage: integration
+    php: 7.2
+    env:
+    - DEPENDENCIES="stable"
+    - INTEGRATION_TEST="enabled"
+    - CONFLUENT_VERSION=3.2.4
+    script:
+    - make platform
+    - PHP=php make phpunit-integration
+  - stage: integration
+    php: 7.2
+    env:
+    - DEPENDENCIES="stable"
+    - INTEGRATION_TEST="enabled"
+    - CONFLUENT_VERSION=3.3.2
+    script:
+    - make platform
+    - PHP=php make phpunit-integration
+  - stage: integration
+    php: 7.2
+    env:
+    - DEPENDENCIES="stable"
+    - INTEGRATION_TEST="enabled"
+    - CONFLUENT_VERSION=4.0.2
+    script:
+    - make platform
+    - PHP=php make phpunit-integration
+  - stage: integration
+    php: 7.2
+    env:
+    - DEPENDENCIES="stable"
+    - INTEGRATION_TEST="enabled"
+    - CONFLUENT_VERSION=4.1.2
+    script:
+    - make platform
+    - PHP=php make phpunit-integration
+  - stage: integration
+    php: 7.2
+    env:
+    - DEPENDENCIES="stable"
+    - INTEGRATION_TEST="enabled"
+    - CONFLUENT_VERSION=5.0.0
+    script:
+    - make platform
     - PHP=php make phpunit-integration
 after_script:
 - make clean
