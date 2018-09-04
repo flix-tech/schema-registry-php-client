@@ -1,6 +1,8 @@
 # Confluent Schema Registry PHP API
 
 [![Build Status](https://travis-ci.org/flix-tech/schema-registry-php-client.svg?branch=2.0.2)](https://travis-ci.org/flix-tech/schema-registry-php-client)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/flix-tech/schema-registry-php-client/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/flix-tech/schema-registry-php-client/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/flix-tech/schema-registry-php-client/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/flix-tech/schema-registry-php-client/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/flix-tech/confluent-schema-registry-api/v/stable)](https://packagist.org/packages/flix-tech/confluent-schema-registry-api)
 [![Total Downloads](https://poser.pugx.org/flix-tech/confluent-schema-registry-api/downloads)](https://packagist.org/packages/flix-tech/confluent-schema-registry-api)
 [![License](https://poser.pugx.org/flix-tech/confluent-schema-registry-api/license)](https://packagist.org/packages/flix-tech/confluent-schema-registry-api)
@@ -228,10 +230,18 @@ There are also requests to use the new `DELETE` API of the schema registry.
 
 This library uses a `Makefile` to run the test suite and requires `docker`.
 
+You can set the default variables by copying `variables.mk.dist` to `variables.mk` and change them to your liking.
+
+#### Build the local docker image
+
+```bash
+make docker
+```
+
 #### Unit tests, Coding standards and static analysis
 
 ```bash
-make phpunit
+make ci-local
 ```
 
 #### Integration tests
@@ -240,7 +250,8 @@ This library uses a `docker-compose` configuration to fire up a schema registry 
 `docker-compose` from version 1.13.0 is required to run those tests.
 
 ```bash
-make integration-test
+CONFLUENT_VERSION=5.0.0 make platform
+make phpunit-integration
 make clean
 ```
 
