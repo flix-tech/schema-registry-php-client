@@ -9,9 +9,9 @@ use Psr\Http\Message\ResponseInterface;
 
 final class ExceptionMap
 {
-    const UNKNOWN_ERROR_MESSAGE = 'Unknown Error';
-    const ERROR_CODE_FIELD_NAME = 'error_code';
-    const ERROR_MESSAGE_FIELD_NAME = 'message';
+    public const UNKNOWN_ERROR_MESSAGE = 'Unknown Error';
+    public const ERROR_CODE_FIELD_NAME = 'error_code';
+    public const ERROR_MESSAGE_FIELD_NAME = 'message';
 
     /**
      * @var \FlixTech\SchemaRegistryApi\Exception\ExceptionMap
@@ -20,7 +20,7 @@ final class ExceptionMap
 
     public static function instance(): ExceptionMap
     {
-        if (!self::$instance) {
+        if (null === self::$instance) {
             self::$instance = new self();
         }
 

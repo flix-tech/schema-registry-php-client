@@ -26,9 +26,9 @@ class DoctrineCacheAdapter implements CacheAdapter
     /**
      * {@inheritdoc}
      */
-    public function cacheSchemaWithId(AvroSchema $schema, int $schemaId)
+    public function cacheSchemaWithId(AvroSchema $schema, int $schemaId): void
     {
-        $this->doctrineCache->save($schemaId, (string) $schema);
+        $this->doctrineCache->save((string) $schemaId, (string) $schema);
     }
 
     public function cacheSchemaIdByHash(int $schemaId, string $schemaHash)
@@ -52,7 +52,7 @@ class DoctrineCacheAdapter implements CacheAdapter
      */
     public function getWithId(int $schemaId)
     {
-        $rawSchema = $this->doctrineCache->fetch($schemaId);
+        $rawSchema = $this->doctrineCache->fetch((string) $schemaId);
 
         if (!$rawSchema) {
             return null;
@@ -88,9 +88,7 @@ class DoctrineCacheAdapter implements CacheAdapter
             return null;
         }
 
-        return AvroSchema::parse(
-            $rawSchema
-        );
+        return AvroSchema::parse($rawSchema);
     }
 
     /**
@@ -98,7 +96,7 @@ class DoctrineCacheAdapter implements CacheAdapter
      */
     public function hasSchemaForId(int $schemaId): bool
     {
-        return $this->doctrineCache->contains($schemaId);
+        return $this->doctrineCache->contains((string) $schemaId);
     }
 
     /**
