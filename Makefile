@@ -3,47 +3,17 @@ MAKEFLAGS =+ -rR --warn-undefined-variables
 
 .PHONY: composer-install composer-update phpstan cs-fixer examples docker run
 
-ifndef CONFLUENT_VERSION
-    CONFLUENT_VERSION := latest
-endif
+CONFLUENT_VERSION ?= latest
+CONFLUENT_NETWORK_SUBNET ?= 172.68.0.0/24
+SCHEMA_REGISTRY_IPV4 ?= 172.68.0.103
+KAFKA_BROKER_IPV4 ?= 172.68.0.102
+ZOOKEEPER_IPV4 ?= 172.68.0.101
+COMPOSER ?= bin/composer.phar
+COMPOSER_VERSION ?= 1.7.2
+PHP ?= bin/php
+PHP_VERSION ?= 7.2
+XDEBUG_VERSION ?= 2.6.1
 
-ifndef CONFLUENT_NETWORK_SUBNET
-    CONFLUENT_NETWORK_SUBNET := 172.68.0.0/24
-endif
-
-ifndef SCHEMA_REGISTRY_IPV4
-    SCHEMA_REGISTRY_IPV4 := 172.68.0.103
-endif
-
-ifndef KAFKA_BROKER_IPV4
-    KAFKA_BROKER_IPV4 := 172.68.0.102
-endif
-
-ifndef ZOOKEEPER_IPV4
-    ZOOKEEPER_IPV4 := 172.68.0.101
-endif
-
-ifndef COMPOSER
-    COMPOSER := bin/composer.phar
-endif
-
-ifndef COMPOSER_VERSION
-    COMPOSER_VERSION := 1.7.2
-endif
-
-ifndef PHP
-    PHP := bin/php
-endif
-
-ifndef PHP_VERSION
-    PHP_VERSION := 7.1
-endif
-
-ifndef XDEBUG_VERSION
-    XDEBUG_VERSION := 2.6.1
-endif
-
--include variables.mk
 export
 
 docker:
@@ -99,11 +69,10 @@ install-phars:
 	curl https://getcomposer.org/download/$(COMPOSER_VERSION)/composer.phar -o bin/composer.phar -LR -z bin/composer.phar
 	chmod a+x bin/composer.phar
 
-
 platform:
 	docker-compose down
 	docker-compose up -d
-	sleep 25
+	sleep 20
 
 clean:
 	rm -rf build
