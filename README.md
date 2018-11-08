@@ -33,10 +33,10 @@ compliant requests that can be used as well as high level abstractions to ease d
 
 | Dependency | Version | Reason |
 |:--- |:---:|:--- |
-| **`php`** | ~7.0 | Anything lower has reached EOL |
+| **`php`** | ~7.1 | Anything lower has reached EOL |
 | **`guzzlephp/guzzle`** | ~6.3 | Using `Request` to build PSR-7 `RequestInterface` |
 | **`beberlei/assert`** | ~2.7 | The de-facto standard assertions library for PHP |
-| **`flix-tech/avro-php`** | ^2.0 | Maintained fork of the only Avro PHP implementation: `rg/avro-php` |
+| **`wikimedia/avro`** | dev-master | TEMPORARY: Critical bug fixes require dev-master until new release is tagged |
 
 ### Optional dependencies
 
@@ -50,8 +50,13 @@ compliant requests that can be used as well as high level abstractions to ease d
 This library is installed via [`composer`](http://getcomposer.org).
 
 ```bash
-composer require "flix-tech/confluent-schema-registry-api=~4.0"
+composer require "flix-tech/confluent-schema-registry-api=^5.1"
 ```
+
+> **NOTE**
+>
+> If you are still running on a version less than `5.0.3` we recommend updating it immediately since there was a critical
+> bug with the exception handling.
 
 ## Compatibility
 
@@ -235,13 +240,13 @@ You can set the default variables by copying `variables.mk.dist` to `variables.m
 #### Build the local docker image
 
 ```bash
-make docker
+PHP_VERSION=7.1 XDEBUG_VERSION=2.6.1 make docker
 ```
 
 #### Unit tests, Coding standards and static analysis
 
 ```bash
-make ci-local
+PHP_VERSION=7.1 make ci-local
 ```
 
 #### Integration tests
@@ -249,8 +254,20 @@ make ci-local
 This library uses a `docker-compose` configuration to fire up a schema registry for integration testing, hence
 `docker-compose` from version 1.13.0 is required to run those tests.
 
+##### The platform can be controlled with the following environment variables
+
+```
+CONFLUENT_VERSION=latest
+CONFLUENT_NETWORK_SUBNET=172.68.0.0/24
+SCHEMA_REGISTRY_IPV4=172.68.0.103
+KAFKA_BROKER_IPV4=172.68.0.102
+ZOOKEEPER_IPV4=172.68.0.101
+```
+
+##### Building the confluent platform with a specific version and run the integation tests
+
 ```bash
-CONFLUENT_VERSION=5.0.0 make platform
+CONFLUENT_VERSION=5.0.3 make platform
 make phpunit-integration
 make clean
 ```
