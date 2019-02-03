@@ -27,7 +27,7 @@ class ExceptionMapTest extends TestCase
     /**
      * @test
      */
-    public function it_should_handle_InvalidAvroSchema_code()
+    public function it_should_handle_InvalidAvroSchema_code(): void
     {
         $this->assertSchemaRegistryException(
             InvalidAvroSchemaException::class,
@@ -50,7 +50,7 @@ class ExceptionMapTest extends TestCase
     /**
      * @test
      */
-    public function it_should_handle_IncompatibleAvroSchema_code()
+    public function it_should_handle_IncompatibleAvroSchema_code(): void
     {
         $this->assertSchemaRegistryException(
             IncompatibleAvroSchemaException::class,
@@ -73,7 +73,7 @@ class ExceptionMapTest extends TestCase
     /**
      * @test
      */
-    public function it_should_handle_BackendDataStore_code()
+    public function it_should_handle_BackendDataStore_code(): void
     {
         $this->assertSchemaRegistryException(
             BackendDataStoreException::class,
@@ -96,7 +96,7 @@ class ExceptionMapTest extends TestCase
     /**
      * @test
      */
-    public function it_should_handle_InvalidCompatibilityLevel_code()
+    public function it_should_handle_InvalidCompatibilityLevel_code(): void
     {
         $this->assertSchemaRegistryException(
             InvalidCompatibilityLevelException::class,
@@ -119,7 +119,7 @@ class ExceptionMapTest extends TestCase
     /**
      * @test
      */
-    public function it_should_handle_InvalidVersion_code()
+    public function it_should_handle_InvalidVersion_code(): void
     {
         $this->assertSchemaRegistryException(
             InvalidVersionException::class,
@@ -142,7 +142,7 @@ class ExceptionMapTest extends TestCase
     /**
      * @test
      */
-    public function it_should_handle_MasterProxy_code()
+    public function it_should_handle_MasterProxy_code(): void
     {
         $this->assertSchemaRegistryException(
             MasterProxyException::class,
@@ -165,7 +165,7 @@ class ExceptionMapTest extends TestCase
     /**
      * @test
      */
-    public function it_should_handle_OperationTimedOut_code()
+    public function it_should_handle_OperationTimedOut_code(): void
     {
         $this->assertSchemaRegistryException(
             OperationTimedOutException::class,
@@ -188,7 +188,7 @@ class ExceptionMapTest extends TestCase
     /**
      * @test
      */
-    public function it_should_handle_SchemaNotFound_code()
+    public function it_should_handle_SchemaNotFound_code(): void
     {
         $this->assertSchemaRegistryException(
             SchemaNotFoundException::class,
@@ -211,7 +211,7 @@ class ExceptionMapTest extends TestCase
     /**
      * @test
      */
-    public function it_should_handle_SubjectNotFound_code()
+    public function it_should_handle_SubjectNotFound_code(): void
     {
         $this->assertSchemaRegistryException(
             SubjectNotFoundException::class,
@@ -234,7 +234,7 @@ class ExceptionMapTest extends TestCase
     /**
      * @test
      */
-    public function it_should_handle_VersionNotFound_code()
+    public function it_should_handle_VersionNotFound_code(): void
     {
         $this->assertSchemaRegistryException(
             VersionNotFoundException::class,
@@ -260,7 +260,7 @@ class ExceptionMapTest extends TestCase
      * @expectedException \RuntimeException
      * @expectedExceptionMessage RequestException has no response to inspect
      */
-    public function it_should_not_process_exceptions_with_missing_response()
+    public function it_should_not_process_exceptions_with_missing_response(): void
     {
         (ExceptionMap::instance())(
             new RequestException(
@@ -275,7 +275,7 @@ class ExceptionMapTest extends TestCase
      *
      * @expectedException \LogicException
      */
-    public function it_will_check_for_invalid_schema_registry_exceptions_not_defining_a_code()
+    public function it_will_check_for_invalid_schema_registry_exceptions_not_defining_a_code(): void
     {
         InvalidNewSchemaRegistryException::errorCode();
     }
@@ -286,7 +286,7 @@ class ExceptionMapTest extends TestCase
      * @expectedException \RuntimeException
      * @expectedExceptionMessage Invalid message body received - cannot find "error_code" field in response body
      */
-    public function it_should_not_process_exceptions_with_missing_error_codes()
+    public function it_should_not_process_exceptions_with_missing_error_codes(): void
     {
         (ExceptionMap::instance())(
             new RequestException(
@@ -307,7 +307,7 @@ class ExceptionMapTest extends TestCase
      * @expectedException \RuntimeException
      * @expectedExceptionMessage Unknown error code "99999"
      */
-    public function it_should_not_process_unknown_error_codes()
+    public function it_should_not_process_unknown_error_codes(): void
     {
         (ExceptionMap::instance())(
             new RequestException(
@@ -327,7 +327,8 @@ class ExceptionMapTest extends TestCase
         string $expectedMessage,
         int $errorCode,
         SchemaRegistryException $exception
-    ) {
+    ): void
+    {
         $this->assertInstanceOf($exceptionClass, $exception);
         $this->assertEquals($errorCode, $exception->getCode());
         $this->assertEquals($expectedMessage, $exception->getMessage());
