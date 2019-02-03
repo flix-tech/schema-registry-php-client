@@ -2,10 +2,10 @@ ARG PHP_VERSION=7.1
 
 FROM php:${PHP_VERSION}-cli-alpine
 
-ARG XDEBUG_VERSION=2.6.1
+ARG XDEBUG_VERSION=2.7.0RC1
 
-RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS zlib-dev \
-    && apk add --no-cache --virtual .runtime-deps git \
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+    && apk add --no-cache --virtual .runtime-deps git libzip-dev \
     && docker-php-ext-install zip \
     && pecl install xdebug-$XDEBUG_VERSION \
     && docker-php-ext-enable xdebug \
