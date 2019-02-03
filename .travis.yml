@@ -8,6 +8,7 @@ services:
 php:
 - '7.1'
 - '7.2'
+- '7.3'
 
 env:
   global:
@@ -32,13 +33,13 @@ script:
 jobs:
   include:
   - stage: coverage
-    php: 7.2
+    php: '7.2'
     env:
     - DEPENDENCIES="stable"
     script:
     - PHP=php make coverage
   - stage: integration
-    php: 7.2
+    php: '7.2'
     env:
     - DEPENDENCIES="stable"
     - INTEGRATION_TEST="enabled"
@@ -47,7 +48,7 @@ jobs:
     - make platform
     - PHP=php make phpunit-integration
   - stage: integration
-    php: 7.2
+    php: '7.2'
     env:
     - DEPENDENCIES="stable"
     - INTEGRATION_TEST="enabled"
@@ -56,7 +57,7 @@ jobs:
     - make platform
     - PHP=php make phpunit-integration
   - stage: integration
-    php: 7.2
+    php: '7.2'
     env:
     - DEPENDENCIES="stable"
     - INTEGRATION_TEST="enabled"
@@ -65,7 +66,7 @@ jobs:
     - make platform
     - PHP=php make phpunit-integration
   - stage: integration
-    php: 7.2
+    php: '7.2'
     env:
     - DEPENDENCIES="stable"
     - INTEGRATION_TEST="enabled"
@@ -74,7 +75,7 @@ jobs:
     - make platform
     - PHP=php make phpunit-integration
   - stage: integration
-    php: 7.2
+    php: '7.2'
     env:
     - DEPENDENCIES="stable"
     - INTEGRATION_TEST="enabled"
@@ -83,7 +84,7 @@ jobs:
     - make platform
     - PHP=php make phpunit-integration
   - stage: integration
-    php: 7.2
+    php: '7.2'
     env:
     - DEPENDENCIES="stable"
     - INTEGRATION_TEST="enabled"

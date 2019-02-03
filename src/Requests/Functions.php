@@ -7,8 +7,11 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\UriTemplate;
 use Psr\Http\Message\RequestInterface;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 
@@ -154,7 +157,16 @@ function prepareJsonSchemaForTransfer(string $schema): string
 function validateCompatibilityLevel(string $compatibilityVersion): string
 {
     Assert::that($compatibilityVersion)->inArray(
-        [COMPATIBILITY_NONE, COMPATIBILITY_BACKWARD, COMPATIBILITY_FORWARD, COMPATIBILITY_FULL],
+        [
+            COMPATIBILITY_NONE,
+            COMPATIBILITY_BACKWARD,
+            COMPATIBILITY_BACKWARD_TRANSITIVE,
+            COMPATIBILITY_FORWARD,
+            COMPATIBILITY_FORWARD_TRANSITIVE,
+            COMPATIBILITY_FULL,
+            COMPATIBILITY_FULL_TRANSITIVE,
+
+        ],
         '$level must be one of "NONE", "BACKWARD", "FORWARD" or "FULL"'
     );
 

@@ -1,7 +1,7 @@
 # no buildin rules and variables
 MAKEFLAGS =+ -rR --warn-undefined-variables
 
-.PHONY: composer-install composer-update phpstan cs-fixer examples docker run
+.PHONY: composer-install composer-update phpstan cs-fixer cs-fixer-modify examples coverage docker run ci-local platform
 
 CONFLUENT_VERSION ?= latest
 CONFLUENT_NETWORK_SUBNET ?= 172.68.0.0/24
@@ -9,10 +9,10 @@ SCHEMA_REGISTRY_IPV4 ?= 172.68.0.103
 KAFKA_BROKER_IPV4 ?= 172.68.0.102
 ZOOKEEPER_IPV4 ?= 172.68.0.101
 COMPOSER ?= bin/composer.phar
-COMPOSER_VERSION ?= 1.7.2
+COMPOSER_VERSION ?= 1.8.3
 PHP ?= bin/php
 PHP_VERSION ?= 7.2
-XDEBUG_VERSION ?= 2.6.1
+XDEBUG_VERSION ?= 2.7.0RC1
 
 export
 
@@ -72,7 +72,7 @@ install-phars:
 platform:
 	docker-compose down
 	docker-compose up -d
-	sleep 20
+	sleep 25
 
 clean:
 	rm -rf build
