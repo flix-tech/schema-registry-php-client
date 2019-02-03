@@ -6,8 +6,11 @@ namespace FlixTech\SchemaRegistryApi\Test\Requests;
 
 use PHPUnit\Framework\TestCase;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
+use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
@@ -35,7 +38,7 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_produce_a_Request_to_get_all_subjects()
+    public function it_should_produce_a_Request_to_get_all_subjects(): void
     {
         $request = allSubjectsRequest();
 
@@ -47,7 +50,7 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_produce_a_Request_to_get_all_subject_versions()
+    public function it_should_produce_a_Request_to_get_all_subject_versions(): void
     {
         $request = allSubjectVersionsRequest('test');
 
@@ -59,7 +62,7 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_produce_a_Request_to_get_a_specific_subject_version()
+    public function it_should_produce_a_Request_to_get_a_specific_subject_version(): void
     {
         $request = singleSubjectVersionRequest('test', '3');
 
@@ -71,7 +74,7 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_produce_a_request_to_register_a_new_schema_version()
+    public function it_should_produce_a_request_to_register_a_new_schema_version(): void
     {
         $request = registerNewSchemaVersionWithSubjectRequest('{"type": "string"}', 'test');
 
@@ -91,7 +94,7 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_produce_a_request_to_check_schema_compatibility_against_a_subject_version()
+    public function it_should_produce_a_request_to_check_schema_compatibility_against_a_subject_version(): void
     {
         $request = checkSchemaCompatibilityAgainstVersionRequest(
             '{"type":"test"}',
@@ -108,7 +111,7 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_produce_a_request_to_check_if_a_subject_already_has_a_schema()
+    public function it_should_produce_a_request_to_check_if_a_subject_already_has_a_schema(): void
     {
         $request = checkIfSubjectHasSchemaRegisteredRequest('test', '{"type":"test"}');
 
@@ -121,7 +124,7 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_produce_a_request_to_get_a_specific_schema_by_id()
+    public function it_should_produce_a_request_to_get_a_specific_schema_by_id(): void
     {
         $request = schemaRequest('3');
 
@@ -133,7 +136,7 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_produce_a_request_to_get_the_global_compatibility_level()
+    public function it_should_produce_a_request_to_get_the_global_compatibility_level(): void
     {
         $request = defaultCompatibilityLevelRequest();
 
@@ -145,7 +148,7 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_produce_a_request_to_change_the_global_compatibility_level()
+    public function it_should_produce_a_request_to_change_the_global_compatibility_level(): void
     {
         $request = changeDefaultCompatibilityLevelRequest(COMPATIBILITY_FULL);
 
@@ -158,7 +161,7 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_produce_a_request_to_get_the_subject_compatibility_level()
+    public function it_should_produce_a_request_to_get_the_subject_compatibility_level(): void
     {
         $request = subjectCompatibilityLevelRequest('test');
 
@@ -170,7 +173,7 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_produce_a_request_to_change_the_subject_compatibility_level()
+    public function it_should_produce_a_request_to_change_the_subject_compatibility_level(): void
     {
         $request = changeSubjectCompatibilityLevelRequest('test', COMPATIBILITY_FORWARD);
 
@@ -186,7 +189,7 @@ class FunctionsTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage $schema must be a valid JSON string
      */
-    public function it_should_validate_a_JSON_schema_string()
+    public function it_should_validate_a_JSON_schema_string(): void
     {
         $this->assertJsonStringEqualsJsonString('{"type":"test"}', validateSchemaStringAsJson('{"type":"test"}'));
 
@@ -196,7 +199,7 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_prepare_a_JSON_schema_for_transfer()
+    public function it_should_prepare_a_JSON_schema_for_transfer(): void
     {
         $this->assertJsonStringEqualsJsonString(
             '{"schema":"{\"type\":\"string\"}"}',
@@ -215,12 +218,36 @@ class FunctionsTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage $level must be one of "NONE", "BACKWARD", "FORWARD" or "FULL"
      */
-    public function it_should_validate_a_compatibility_level_string()
+    public function it_should_validate_a_compatibility_level_string(): void
     {
-        $this->assertEquals(COMPATIBILITY_NONE, validateCompatibilityLevel(COMPATIBILITY_NONE));
-        $this->assertEquals(COMPATIBILITY_FULL, validateCompatibilityLevel(COMPATIBILITY_FULL));
-        $this->assertEquals(COMPATIBILITY_BACKWARD, validateCompatibilityLevel(COMPATIBILITY_BACKWARD));
-        $this->assertEquals(COMPATIBILITY_FORWARD, validateCompatibilityLevel(COMPATIBILITY_FORWARD));
+        $this->assertEquals(
+            COMPATIBILITY_NONE,
+            validateCompatibilityLevel(COMPATIBILITY_NONE)
+        );
+        $this->assertEquals(
+            COMPATIBILITY_FULL,
+            validateCompatibilityLevel(COMPATIBILITY_FULL)
+        );
+        $this->assertEquals(
+            COMPATIBILITY_FULL_TRANSITIVE,
+            validateCompatibilityLevel(COMPATIBILITY_FULL_TRANSITIVE)
+        );
+        $this->assertEquals(
+            COMPATIBILITY_BACKWARD,
+            validateCompatibilityLevel(COMPATIBILITY_BACKWARD)
+        );
+        $this->assertEquals(
+            COMPATIBILITY_BACKWARD_TRANSITIVE,
+            validateCompatibilityLevel(COMPATIBILITY_BACKWARD_TRANSITIVE)
+        );
+        $this->assertEquals(
+            COMPATIBILITY_FORWARD,
+            validateCompatibilityLevel(COMPATIBILITY_FORWARD)
+        );
+        $this->assertEquals(
+            COMPATIBILITY_FORWARD_TRANSITIVE,
+            validateCompatibilityLevel(COMPATIBILITY_FORWARD_TRANSITIVE)
+        );
 
         validateCompatibilityLevel('INVALID');
     }
@@ -228,14 +255,37 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_prepare_compatibility_string_for_transport()
+    public function it_should_prepare_compatibility_string_for_transport(): void
     {
-        $this->assertEquals('{"compatibility":"NONE"}', prepareCompatibilityLevelForTransport(COMPATIBILITY_NONE));
-        $this->assertEquals('{"compatibility":"BACKWARD"}', prepareCompatibilityLevelForTransport(COMPATIBILITY_BACKWARD));
-        $this->assertEquals('{"compatibility":"FORWARD"}', prepareCompatibilityLevelForTransport(COMPATIBILITY_FORWARD));
-        $this->assertEquals('{"compatibility":"FULL"}', prepareCompatibilityLevelForTransport(COMPATIBILITY_FULL));
+        $this->assertEquals(
+            '{"compatibility":"NONE"}',
+            prepareCompatibilityLevelForTransport(COMPATIBILITY_NONE)
+        );
+        $this->assertEquals(
+            '{"compatibility":"BACKWARD"}',
+            prepareCompatibilityLevelForTransport(COMPATIBILITY_BACKWARD)
+        );
+        $this->assertEquals(
+            '{"compatibility":"BACKWARD_TRANSITIVE"}',
+            prepareCompatibilityLevelForTransport(COMPATIBILITY_BACKWARD_TRANSITIVE)
+        );
+        $this->assertEquals(
+            '{"compatibility":"FORWARD"}',
+            prepareCompatibilityLevelForTransport(COMPATIBILITY_FORWARD)
+        );
+        $this->assertEquals(
+            '{"compatibility":"FORWARD_TRANSITIVE"}',
+            prepareCompatibilityLevelForTransport(COMPATIBILITY_FORWARD_TRANSITIVE)
+        );
+        $this->assertEquals(
+            '{"compatibility":"FULL"}',
+            prepareCompatibilityLevelForTransport(COMPATIBILITY_FULL)
+        );
+        $this->assertEquals(
+            '{"compatibility":"FULL_TRANSITIVE"}',
+            prepareCompatibilityLevelForTransport(COMPATIBILITY_FULL_TRANSITIVE)
+        );
     }
-
 
     /**
      * @test
@@ -243,7 +293,7 @@ class FunctionsTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage $versionId must be an integer of type int or string
      */
-    public function it_should_validate_version_id_type()
+    public function it_should_validate_version_id_type(): void
     {
         validateVersionId([3]);
     }
@@ -254,7 +304,7 @@ class FunctionsTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage $versionId must be between 1 and 2^31 - 1
      */
-    public function it_should_validate_version_id_overflow()
+    public function it_should_validate_version_id_overflow(): void
     {
         validateVersionId(2 ** 31);
     }
@@ -265,7 +315,7 @@ class FunctionsTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage $versionId must be between 1 and 2^31 - 1
      */
-    public function it_should_validate_version_id_less_than_one()
+    public function it_should_validate_version_id_less_than_one(): void
     {
         validateVersionId(0);
     }
@@ -273,7 +323,7 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_validate_valid_version_id()
+    public function it_should_validate_valid_version_id(): void
     {
         $this->assertSame(VERSION_LATEST, validateVersionId(VERSION_LATEST));
         $this->assertSame('3', validateVersionId(3));
@@ -283,7 +333,7 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_validate_valid_schema_ids()
+    public function it_should_validate_valid_schema_ids(): void
     {
         $this->assertSame('3', validateSchemaId(3));
         $this->assertSame('3', validateSchemaId('3'));
@@ -292,7 +342,7 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_produce_a_valid_subject_deletion_request()
+    public function it_should_produce_a_valid_subject_deletion_request(): void
     {
         $request = deleteSubjectRequest('test');
 
@@ -304,7 +354,7 @@ class FunctionsTest extends TestCase
     /**
      * @test
      */
-    public function it_should_produce_a_valid_subject_version_deletion_request()
+    public function it_should_produce_a_valid_subject_version_deletion_request(): void
     {
         $request = deleteSubjectVersionRequest('test', VERSION_LATEST);
 
