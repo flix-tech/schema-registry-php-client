@@ -14,7 +14,7 @@
     "php": "~7.1",
     "guzzlehttp/guzzle": "~6.3",
     "beberlei/assert": "~2.7",
-    "wikimedia/avro": "dev-master@dev"
+    "flix-tech/avro-php": "^3.0"
   },
   "require-dev": {
     "phpunit/phpunit": "~7.0",
@@ -25,9 +25,6 @@
   "suggest": {
     "raphhh/trex-reflection": "Needed if you want to use the `RequestCallbackValidator`",
     "doctrine/cache": "If you want to use the DoctrineCacheAdapter"
-  },
-  "replace": {
-    "flix-tech/avro-php": "*"
   },
   "autoload": {
     "psr-4": {
