@@ -13,7 +13,7 @@
   "require": {
     "php": "~7.1",
     "guzzlehttp/guzzle": "~6.3",
-    "beberlei/assert": "~2.7",
+    "beberlei/assert": "~3.0",
     "flix-tech/avro-php": "^3.0"
   },
   "require-dev": {
