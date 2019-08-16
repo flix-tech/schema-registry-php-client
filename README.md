@@ -7,7 +7,7 @@
 [![Total Downloads](https://poser.pugx.org/flix-tech/confluent-schema-registry-api/downloads)](https://packagist.org/packages/flix-tech/confluent-schema-registry-api)
 [![License](https://poser.pugx.org/flix-tech/confluent-schema-registry-api/license)](https://packagist.org/packages/flix-tech/confluent-schema-registry-api)
 
-A PHP 7.0+ library to consume the Confluent Schema Registry REST API. It provides low level functions to create PSR-7
+A PHP 7.1+ library to consume the Confluent Schema Registry REST API. It provides low level functions to create PSR-7
 compliant requests that can be used as well as high level abstractions to ease developer experience.
 
 #### Contents
@@ -36,7 +36,7 @@ compliant requests that can be used as well as high level abstractions to ease d
 | **`php`** | ~7.1 | Anything lower has reached EOL |
 | **`guzzlephp/guzzle`** | ~6.3 | Using `Request` to build PSR-7 `RequestInterface` |
 | **`beberlei/assert`** | ~2.7 | The de-facto standard assertions library for PHP |
-| **`wikimedia/avro`** | dev-master | TEMPORARY: Critical bug fixes require dev-master until new release is tagged |
+| **`flix-tech/avro-php`** | ^3.0 | Maintained fork of the only Avro PHP implementation: `rg/avro-php` |
 
 ### Optional dependencies
 
