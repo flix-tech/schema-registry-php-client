@@ -12,7 +12,7 @@ COMPOSER ?= bin/composer.phar
 COMPOSER_VERSION ?= 1.8.3
 PHP ?= bin/php
 PHP_VERSION ?= 7.2
-XDEBUG_VERSION ?= 2.7.0RC1
+XDEBUG_VERSION ?= 2.7.2
 
 export
 

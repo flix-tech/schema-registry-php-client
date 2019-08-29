@@ -1,8 +1,8 @@
-ARG PHP_VERSION=7.1
+ARG PHP_VERSION=7.2
 
 FROM php:${PHP_VERSION}-cli-alpine
 
-ARG XDEBUG_VERSION=2.7.0RC1
+ARG XDEBUG_VERSION=2.7.2
 
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
     && apk add --no-cache --virtual .runtime-deps git libzip-dev \

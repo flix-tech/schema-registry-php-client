@@ -4,5 +4,5 @@ namespace FlixTech\SchemaRegistryApi\Exception;
 
 class OperationTimedOutException extends AbstractSchemaRegistryException
 {
-    const ERROR_CODE = 50002;
+    public const ERROR_CODE = 50002;
 }

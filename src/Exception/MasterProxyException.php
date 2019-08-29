@@ -6,5 +6,5 @@ namespace FlixTech\SchemaRegistryApi\Exception;
 
 class MasterProxyException extends AbstractSchemaRegistryException
 {
-    const ERROR_CODE = 50003;
+    public const ERROR_CODE = 50003;
 }

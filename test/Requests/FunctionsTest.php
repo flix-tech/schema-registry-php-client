@@ -216,7 +216,7 @@ class FunctionsTest extends TestCase
      * @test
      *
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $level must be one of "NONE", "BACKWARD", "FORWARD" or "FULL"
+     * @expectedExceptionMessage $level must be one of NONE, BACKWARD, BACKWARD_TRANSITIVE, FORWARD, FORWARD_TRANSITIVE, FULL, FULL_TRANSITIVE
      */
     public function it_should_validate_a_compatibility_level_string(): void
     {

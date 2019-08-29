@@ -14,6 +14,7 @@ use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
+use function implode;
 
 function allSubjectsRequest(): RequestInterface
 {
@@ -156,18 +157,19 @@ function prepareJsonSchemaForTransfer(string $schema): string
 
 function validateCompatibilityLevel(string $compatibilityVersion): string
 {
-    Assert::that($compatibilityVersion)->inArray(
-        [
-            COMPATIBILITY_NONE,
-            COMPATIBILITY_BACKWARD,
-            COMPATIBILITY_BACKWARD_TRANSITIVE,
-            COMPATIBILITY_FORWARD,
-            COMPATIBILITY_FORWARD_TRANSITIVE,
-            COMPATIBILITY_FULL,
-            COMPATIBILITY_FULL_TRANSITIVE,
+    $compatibilities = [
+        COMPATIBILITY_NONE,
+        COMPATIBILITY_BACKWARD,
+        COMPATIBILITY_BACKWARD_TRANSITIVE,
+        COMPATIBILITY_FORWARD,
+        COMPATIBILITY_FORWARD_TRANSITIVE,
+        COMPATIBILITY_FULL,
+        COMPATIBILITY_FULL_TRANSITIVE,
 
-        ],
-        '$level must be one of "NONE", "BACKWARD", "FORWARD" or "FULL"'
+    ];
+    Assert::that($compatibilityVersion)->inArray(
+        $compatibilities,
+        '$level must be one of ' . implode(', ', $compatibilities)
     );
 
     return $compatibilityVersion;

@@ -6,5 +6,5 @@ namespace FlixTech\SchemaRegistryApi\Exception;
 
 class SchemaNotFoundException extends AbstractSchemaRegistryException
 {
-    const ERROR_CODE = 40403;
+    public const ERROR_CODE = 40403;
 }
