@@ -1,13 +1,13 @@
 # Confluent Schema Registry PHP API
 
-[![Build Status](https://travis-ci.org/flix-tech/schema-registry-php-client.svg?branch=2.0.2)](https://travis-ci.org/flix-tech/schema-registry-php-client)
+[![Build Status](https://travis-ci.org/flix-tech/schema-registry-php-client.svg?branch=master)](https://travis-ci.org/flix-tech/schema-registry-php-client)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/flix-tech/schema-registry-php-client/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/flix-tech/schema-registry-php-client/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/flix-tech/schema-registry-php-client/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/flix-tech/schema-registry-php-client/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/flix-tech/confluent-schema-registry-api/v/stable)](https://packagist.org/packages/flix-tech/confluent-schema-registry-api)
 [![Total Downloads](https://poser.pugx.org/flix-tech/confluent-schema-registry-api/downloads)](https://packagist.org/packages/flix-tech/confluent-schema-registry-api)
 [![License](https://poser.pugx.org/flix-tech/confluent-schema-registry-api/license)](https://packagist.org/packages/flix-tech/confluent-schema-registry-api)
 
-A PHP 7.1+ library to consume the Confluent Schema Registry REST API. It provides low level functions to create PSR-7
+A PHP 7.2+ library to consume the Confluent Schema Registry REST API. It provides low level functions to create PSR-7
 compliant requests that can be used as well as high level abstractions to ease developer experience.
 
 #### Contents
@@ -33,9 +33,9 @@ compliant requests that can be used as well as high level abstractions to ease d
 
 | Dependency | Version | Reason |
 |:--- |:---:|:--- |
-| **`php`** | ~7.1 | Anything lower has reached EOL |
+| **`php`** | ~7.2 | Anything lower has reached EOL |
 | **`guzzlephp/guzzle`** | ~6.3 | Using `Request` to build PSR-7 `RequestInterface` |
-| **`beberlei/assert`** | ~2.7 | The de-facto standard assertions library for PHP |
+| **`beberlei/assert`** | ~2.7\|~3.0 | The de-facto standard assertions library for PHP |
 | **`flix-tech/avro-php`** | ^3.0 | Maintained fork of the only Avro PHP implementation: `rg/avro-php` |
 
 ### Optional dependencies
@@ -50,7 +50,7 @@ compliant requests that can be used as well as high level abstractions to ease d
 This library is installed via [`composer`](http://getcomposer.org).
 
 ```bash
-composer require "flix-tech/confluent-schema-registry-api=^6.0"
+composer require "flix-tech/confluent-schema-registry-api=^7.0"
 ```
 
 > **NOTE**
@@ -97,7 +97,7 @@ $promise = $registry->register('test-subject', $schema);
 // We want to leave that decision to the user of the lib.
 // TODO: Maybe return an Either Monad instead
 $promise = $promise->then(
-    function ($schemaIdOrSchemaRegistryException) {
+    static function ($schemaIdOrSchemaRegistryException) {
         if ($schemaIdOrSchemaRegistryException instanceof SchemaRegistryException) {
             throw $schemaIdOrSchemaRegistryException;
         }
@@ -120,7 +120,7 @@ $schema = $promise->wait();
 $version = $registry->schemaVersion(
     'test-subject',
     $schema,
-    function (RequestInterface $request) {
+    static function (RequestInterface $request) {
         return $request->withAddedHeader('Cache-Control', 'no-cache');
     }
 )->wait();
@@ -207,12 +207,12 @@ $avroObjectCachedAsyncApi = new CachedRegistry(
 
 // NEW in version 4.x, passing in custom hash functions to cache schema ids via the schema hash
 // By default the following function is used internally
-$defaultHashFunction = function (AvroSchema $schema) {
+$defaultHashFunction = static function (AvroSchema $schema) {
    return md5((string) $schema); 
 };
 
 // You can also define your own hash callable
-$sha1HashFunction = function (AvroSchema $schema) {
+$sha1HashFunction = static function (AvroSchema $schema) {
    return sha1((string) $schema); 
 };
 
@@ -240,13 +240,13 @@ You can set the default variables by copying `variables.mk.dist` to `variables.m
 #### Build the local docker image
 
 ```bash
-PHP_VERSION=7.1 XDEBUG_VERSION=2.6.1 make docker
+PHP_VERSION=7.2 XDEBUG_VERSION=2.7.2 make docker
 ```
 
 #### Unit tests, Coding standards and static analysis
 
 ```bash
-PHP_VERSION=7.1 make ci-local
+PHP_VERSION=7.2 make ci-local
 ```
 
 #### Integration tests
@@ -264,10 +264,10 @@ KAFKA_BROKER_IPV4=172.68.0.102
 ZOOKEEPER_IPV4=172.68.0.101
 ```
 
-##### Building the confluent platform with a specific version and run the integation tests
+##### Building the confluent platform with a specific version and run the integration tests
 
 ```bash
-CONFLUENT_VERSION=5.0.3 make platform
+CONFLUENT_VERSION=5.2.3 make platform
 make phpunit-integration
 make clean
 ```
