@@ -6,5 +6,5 @@ namespace FlixTech\SchemaRegistryApi\Exception;
 
 class InvalidCompatibilityLevelException extends AbstractSchemaRegistryException
 {
-    const ERROR_CODE = 42203;
+    public const ERROR_CODE = 42203;
 }

@@ -6,5 +6,5 @@ namespace FlixTech\SchemaRegistryApi\Exception;
 
 class InvalidVersionException extends AbstractSchemaRegistryException
 {
-    const ERROR_CODE = 42202;
+    public const ERROR_CODE = 42202;
 }

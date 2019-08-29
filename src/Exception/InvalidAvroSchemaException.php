@@ -6,5 +6,5 @@ namespace FlixTech\SchemaRegistryApi\Exception;
 
 class InvalidAvroSchemaException extends AbstractSchemaRegistryException
 {
-    const ERROR_CODE = 42201;
+    public const ERROR_CODE = 42201;
 }
