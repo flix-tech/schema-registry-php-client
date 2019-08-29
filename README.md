@@ -212,7 +212,7 @@ $defaultHashFunction = static function (AvroSchema $schema) {
 };
 
 // You can also define your own hash callable
-$sha1HashFunction = staticfunction (AvroSchema $schema) {
+$sha1HashFunction = static function (AvroSchema $schema) {
    return sha1((string) $schema); 
 };
 
@@ -264,7 +264,7 @@ KAFKA_BROKER_IPV4=172.68.0.102
 ZOOKEEPER_IPV4=172.68.0.101
 ```
 
-##### Building the confluent platform with a specific version and run the integation tests
+##### Building the confluent platform with a specific version and run the integration tests
 
 ```bash
 CONFLUENT_VERSION=5.2.3 make platform
