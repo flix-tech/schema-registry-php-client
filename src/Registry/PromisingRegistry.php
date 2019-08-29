@@ -10,6 +10,7 @@ use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\PromiseInterface;
+use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
@@ -19,6 +20,7 @@ use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
+use function sprintf;
 
 /**
  * {@inheritdoc}
@@ -38,8 +40,10 @@ class PromisingRegistry implements AsynchronousRegistry
     public function __construct(ClientInterface $client)
     {
         $this->client = $client;
-        $this->rejectedCallback = function (RequestException $exception) {
-            return (ExceptionMap::instance())($exception);
+        $exceptionMap = ExceptionMap::instance();
+
+        $this->rejectedCallback = static function (RequestException $exception) use ($exceptionMap) {
+            return $exceptionMap($exception);
         };
     }
 
@@ -165,9 +169,9 @@ class PromisingRegistry implements AsynchronousRegistry
 
         try {
             return \GuzzleHttp\json_decode($body, true);
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException(
-                \sprintf('%s - with content "%s"', $e->getMessage(), $body),
+        } catch (InvalidArgumentException $e) {
+            throw new InvalidArgumentException(
+                sprintf('%s - with content "%s"', $e->getMessage(), $body),
                 $e->getCode(),
                 $e
             );

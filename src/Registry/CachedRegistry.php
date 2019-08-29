@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Registry;
 
 use AvroSchema;
+use Exception;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Registry;
 use GuzzleHttp\Promise\PromiseInterface;
+use function call_user_func;
 
 /**
  * {@inheritdoc}
@@ -35,7 +37,7 @@ class CachedRegistry implements Registry
         $this->cacheAdapter = $cacheAdapter;
 
         if (!$hashAlgoFunc) {
-            $hashAlgoFunc = function (AvroSchema $schema) {
+            $hashAlgoFunc = static function (AvroSchema $schema) {
                 return md5((string) $schema);
             };
         }
@@ -45,6 +47,8 @@ class CachedRegistry implements Registry
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function register(string $subject, AvroSchema $schema, callable $requestCallback = null)
     {
@@ -61,7 +65,7 @@ class CachedRegistry implements Registry
 
         return $this->applyValueHandlers(
             $this->registry->register($subject, $schema, $requestCallback),
-            function (PromiseInterface $promise) use ($closure) {
+            static function (PromiseInterface $promise) use ($closure) {
                 return $promise->then($closure);
             },
             $closure
@@ -70,6 +74,8 @@ class CachedRegistry implements Registry
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null)
     {
@@ -85,7 +91,7 @@ class CachedRegistry implements Registry
 
         return $this->applyValueHandlers(
             $this->registry->schemaVersion($subject, $schema, $requestCallback),
-            function (PromiseInterface $promise) use ($closure) {
+            static function (PromiseInterface $promise) use ($closure) {
                 return $promise->then($closure);
             },
             $closure
@@ -94,6 +100,8 @@ class CachedRegistry implements Registry
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null)
     {
@@ -116,7 +124,7 @@ class CachedRegistry implements Registry
 
         return $this->applyValueHandlers(
             $this->registry->schemaId($subject, $schema, $requestCallback),
-            function (PromiseInterface $promise) use ($closure) {
+            static function (PromiseInterface $promise) use ($closure) {
                 return $promise->then($closure);
             },
             $closure
@@ -125,6 +133,7 @@ class CachedRegistry implements Registry
 
     /**
      * {@inheritdoc}
+     * @throws \Exception
      */
     public function schemaForId(int $schemaId, callable $requestCallback = null)
     {
@@ -145,7 +154,7 @@ class CachedRegistry implements Registry
 
         return $this->applyValueHandlers(
             $this->registry->schemaForId($schemaId, $requestCallback),
-            function (PromiseInterface $promise) use ($closure) {
+            static function (PromiseInterface $promise) use ($closure) {
                 return $promise->then($closure);
             },
             $closure
@@ -154,6 +163,8 @@ class CachedRegistry implements Registry
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null)
     {
@@ -173,7 +184,7 @@ class CachedRegistry implements Registry
 
         return $this->applyValueHandlers(
             $this->registry->schemaForSubjectAndVersion($subject, $version, $requestCallback),
-            function (PromiseInterface $promise) use ($closure) {
+            static function (PromiseInterface $promise) use ($closure) {
                 return $promise->then($closure);
             },
             $closure
@@ -190,13 +201,22 @@ class CachedRegistry implements Registry
         return $this->registry->latestVersion($subject, $requestCallback);
     }
 
+    /**
+     * @param PromiseInterface|\Exception|mixed  $value
+     * @param callable                           $promiseHandler
+     * @param callable                           $valueHandler
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
     private function applyValueHandlers($value, callable $promiseHandler, callable $valueHandler)
     {
         if ($value instanceof PromiseInterface) {
             return $promiseHandler($value);
         }
 
-        if ($value instanceof \Exception) {
+        if ($value instanceof Exception) {
             throw $value;
         }
 
@@ -205,6 +225,6 @@ class CachedRegistry implements Registry
 
     private function getSchemaHash(AvroSchema $schema): string
     {
-        return \call_user_func($this->hashAlgoFunc, $schema);
+        return call_user_func($this->hashAlgoFunc, $schema);
     }
 }

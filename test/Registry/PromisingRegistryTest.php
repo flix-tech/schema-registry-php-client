@@ -40,8 +40,10 @@ class PromisingRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \AvroSchemaParseException
      */
-    public function it_should_register_schemas()
+    public function it_should_register_schemas(): void
     {
         $responses = [
             new Response(200, [], '{"id": 3}')
@@ -63,8 +65,10 @@ class PromisingRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \AvroSchemaParseException
      */
-    public function it_can_get_the_schema_id_for_a_schema_and_subject()
+    public function it_can_get_the_schema_id_for_a_schema_and_subject(): void
     {
         $responses = [
             new Response(200, [], '{"id": 2}')
@@ -86,8 +90,10 @@ class PromisingRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \AvroSchemaParseException
      */
-    public function it_can_get_a_schema_for_id()
+    public function it_can_get_a_schema_for_id(): void
     {
         $responses = [
             new Response(200, [], '{"schema": "\"string\""}')
@@ -107,8 +113,10 @@ class PromisingRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \AvroSchemaParseException
      */
-    public function it_can_get_a_schema_for_subject_and_version()
+    public function it_can_get_a_schema_for_subject_and_version(): void
     {
         $responses = [
             new Response(200, [], '{"schema": "\"string\""}')
@@ -131,8 +139,10 @@ class PromisingRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \AvroSchemaParseException
      */
-    public function it_can_get_the_schema_version()
+    public function it_can_get_the_schema_version(): void
     {
         $responses = [
             new Response(200, [], '{"version": 3}')
@@ -154,8 +164,10 @@ class PromisingRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \AvroSchemaParseException
      */
-    public function it_can_get_the_latest_version()
+    public function it_can_get_the_latest_version(): void
     {
         $responses = [
             new Response(200, [], '{"schema": "\"string\""}')
@@ -177,8 +189,9 @@ class PromisingRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
-    public function it_will_not_throw_but_pass_exceptions()
+    public function it_will_not_throw_but_pass_exceptions(): void
     {
         $responses = [
             new Response(

@@ -24,8 +24,9 @@ abstract class AbstractCacheAdapterTestCase extends TestCase
 
     /**
      * @test
+     * @throws \AvroSchemaParseException
      */
-    public function it_should_store_and_fetch_schemas_with_ids()
+    public function it_should_store_and_fetch_schemas_with_ids(): void
     {
         $schemaId = 3;
         $invalidSchemaId = 2;
@@ -42,8 +43,9 @@ abstract class AbstractCacheAdapterTestCase extends TestCase
 
     /**
      * @test
+     * @throws \AvroSchemaParseException
      */
-    public function it_should_store_and_fetch_schemas_with_subject_and_version()
+    public function it_should_store_and_fetch_schemas_with_subject_and_version(): void
     {
         $subject = 'test';
         $version = 2;
@@ -62,7 +64,7 @@ abstract class AbstractCacheAdapterTestCase extends TestCase
     /**
      * @test
      */
-    public function it_should_store_and_fetch_schema_ids_with_schema_hashes()
+    public function it_should_store_and_fetch_schema_ids_with_schema_hashes(): void
     {
         $schemaId = 3;
         $hash = 'hash';

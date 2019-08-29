@@ -13,15 +13,15 @@ class RequestCallbackValidatorTest extends TestCase
     /**
      * @test
      */
-    public function it_validates_correct_callbacks()
+    public function it_validates_correct_callbacks(): void
     {
-        $callback = function (RequestInterface $request) { return $request; };
+        $callback = static function (RequestInterface $request) { return $request; };
         $this->assertSame($callback, RequestCallbackValidator::instance()($callback));
 
-        $callback = function (RequestInterface $request): RequestInterface { return $request; };
+        $callback = static function (RequestInterface $request): RequestInterface { return $request; };
         $this->assertSame($callback, RequestCallbackValidator::instance()($callback));
 
-        $callback = function (MyRequestInterface $request): MyRequestInterface { return $request; };
+        $callback = static function (MyRequestInterface $request): MyRequestInterface { return $request; };
         $this->assertSame($callback, RequestCallbackValidator::instance()($callback));
 
         $callback = null;
@@ -33,9 +33,9 @@ class RequestCallbackValidatorTest extends TestCase
      *
      * @expectedException \InvalidArgumentException
      */
-    public function it_fails_for_invalid_parameter_hint()
+    public function it_fails_for_invalid_parameter_hint(): void
     {
-        $callback = function (InvalidRequestInterface $request) { return $request; };
+        $callback = static function (InvalidRequestInterface $request) { return $request; };
         RequestCallbackValidator::instance()($callback);
     }
 
@@ -44,9 +44,12 @@ class RequestCallbackValidatorTest extends TestCase
      *
      * @expectedException \InvalidArgumentException
      */
-    public function it_fails_for_invalid_return_type_hint()
+    public function it_fails_for_invalid_return_type_hint(): void
     {
-        $callback = function (RequestInterface $request): InvalidRequestInterface { return $request; };
+        $callback = static function (RequestInterface $request): InvalidRequestInterface {
+            /** @noinspection PhpIncompatibleReturnTypeInspection */
+            return $request;
+        };
         RequestCallbackValidator::instance()($callback);
     }
 
@@ -55,9 +58,9 @@ class RequestCallbackValidatorTest extends TestCase
      *
      * @expectedException \InvalidArgumentException
      */
-    public function it_fails_for_un_hinted_callable()
+    public function it_fails_for_un_hinted_callable(): void
     {
-        $callback = function ($request) { return $request; };
+        $callback = static function ($request) { return $request; };
         RequestCallbackValidator::instance()($callback);
     }
 }

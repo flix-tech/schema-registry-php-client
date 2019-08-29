@@ -45,13 +45,17 @@ class CachedRegistryTest extends TestCase
      */
     private $hashFunction;
 
+    /**
+     * @throws \AvroSchemaParseException
+     * @throws \ReflectionException
+     */
     protected function setUp()
     {
         $this->schema = AvroSchema::parse('{"type": "string"}');
         $this->registryMock = $this->getMockForAbstractClass(Registry::class);
         $this->cacheAdapter = $this->getMockForAbstractClass(CacheAdapter::class);
 
-        $this->hashFunction = function (AvroSchema $schema) {
+        $this->hashFunction = static function (AvroSchema $schema) {
             return md5((string) $schema);
         };
 
@@ -60,8 +64,10 @@ class CachedRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
-    public function it_should_cache_from_register_responses()
+    public function it_should_cache_from_register_responses(): void
     {
         $promise = new FulfilledPromise(4);
 
@@ -93,8 +99,10 @@ class CachedRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
-    public function it_should_cache_from_schema_version_responses()
+    public function it_should_cache_from_schema_version_responses(): void
     {
         $promise = new FulfilledPromise(3);
 
@@ -121,8 +129,10 @@ class CachedRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
-    public function it_should_cache_from_schema_id_responses()
+    public function it_should_cache_from_schema_id_responses(): void
     {
         $promise = new FulfilledPromise(1);
 
@@ -154,8 +164,9 @@ class CachedRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
-    public function it_should_return_schema_id_from_the_cache_for_schema_hash()
+    public function it_should_return_schema_id_from_the_cache_for_schema_hash(): void
     {
         $this->registryMock
             ->expects($this->never())
@@ -178,8 +189,10 @@ class CachedRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
-    public function it_should_cache_schema_id_for_hash_if_cache_is_stale()
+    public function it_should_cache_schema_id_for_hash_if_cache_is_stale(): void
     {
         $promise = new FulfilledPromise(3);
 
@@ -211,10 +224,11 @@ class CachedRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
-    public function it_should_accept_different_hash_algo_functions()
+    public function it_should_accept_different_hash_algo_functions(): void
     {
-        $sha1HashFunction = function (AvroSchema $schema) {
+        $sha1HashFunction = static function (AvroSchema $schema) {
             return sha1((string) $schema);
         };
 
@@ -241,8 +255,9 @@ class CachedRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
-    public function it_should_return_schema_from_the_cache_for_schema_by_id()
+    public function it_should_return_schema_from_the_cache_for_schema_by_id(): void
     {
         $this->registryMock
             ->expects($this->never())
@@ -265,8 +280,10 @@ class CachedRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
-    public function it_should_cache_schema_for_id_responses_if_cache_is_stale()
+    public function it_should_cache_schema_for_id_responses_if_cache_is_stale(): void
     {
         $promise = new FulfilledPromise($this->schema);
 
@@ -298,8 +315,9 @@ class CachedRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
-    public function it_should_return_schema_from_the_cache_for_schema_by_subject_and_version()
+    public function it_should_return_schema_from_the_cache_for_schema_by_subject_and_version(): void
     {
         $this->registryMock
             ->expects($this->never())
@@ -322,8 +340,10 @@ class CachedRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
-    public function it_should_cache_schema_for_subject_and_version_responses_if_cache_is_stale()
+    public function it_should_cache_schema_for_subject_and_version_responses_if_cache_is_stale(): void
     {
         $promise = new FulfilledPromise($this->schema);
 
@@ -355,8 +375,10 @@ class CachedRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
-    public function it_should_not_cache_latest_version_calls()
+    public function it_should_not_cache_latest_version_calls(): void
     {
         $promise = new FulfilledPromise($this->schema);
 
@@ -385,8 +407,9 @@ class CachedRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
-    public function it_should_handle_exceptions_wrapped_in_promises_correctly()
+    public function it_should_handle_exceptions_wrapped_in_promises_correctly(): void
     {
         $subjectNotFoundException = new SubjectNotFoundException();
 

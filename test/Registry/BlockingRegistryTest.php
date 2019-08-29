@@ -9,6 +9,7 @@ use FlixTech\SchemaRegistryApi\AsynchronousRegistry;
 use FlixTech\SchemaRegistryApi\Registry\BlockingRegistry;
 use GuzzleHttp\Promise\FulfilledPromise;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class BlockingRegistryTest extends TestCase
 {
@@ -22,6 +23,9 @@ class BlockingRegistryTest extends TestCase
      */
     private $blockingRegistry;
 
+    /**
+     * @throws \ReflectionException
+     */
     protected function setUp()
     {
         $this->asyncRegistry = $this->getMockForAbstractClass(AsynchronousRegistry::class);
@@ -30,8 +34,10 @@ class BlockingRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \AvroSchemaParseException
      */
-    public function it_should_register_schema()
+    public function it_should_register_schema(): void
     {
         $schema = AvroSchema::parse('{"type": "string"}');
 
@@ -46,8 +52,10 @@ class BlockingRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \AvroSchemaParseException
      */
-    public function it_can_get_the_schema_id_for_a_schema_and_subject()
+    public function it_can_get_the_schema_id_for_a_schema_and_subject(): void
     {
         $schema = AvroSchema::parse('{"type": "string"}');
 
@@ -62,8 +70,10 @@ class BlockingRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \AvroSchemaParseException
      */
-    public function it_can_get_a_schema_for_id()
+    public function it_can_get_a_schema_for_id(): void
     {
         $schema = AvroSchema::parse('{"type": "string"}');
 
@@ -78,8 +88,10 @@ class BlockingRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \AvroSchemaParseException
      */
-    public function it_can_get_a_schema_for_subject_and_version()
+    public function it_can_get_a_schema_for_subject_and_version(): void
     {
         $schema = AvroSchema::parse('{"type": "string"}');
 
@@ -94,8 +106,10 @@ class BlockingRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \AvroSchemaParseException
      */
-    public function it_can_get_the_schema_version()
+    public function it_can_get_the_schema_version(): void
     {
         $schema = AvroSchema::parse('{"type": "string"}');
 
@@ -110,8 +124,10 @@ class BlockingRegistryTest extends TestCase
 
     /**
      * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \AvroSchemaParseException
      */
-    public function it_can_get_the_latest_version()
+    public function it_can_get_the_latest_version(): void
     {
         $schema = AvroSchema::parse('{"type": "string"}');
 
@@ -129,15 +145,17 @@ class BlockingRegistryTest extends TestCase
      *
      * @expectedException \RuntimeException
      * @expectedExceptionMessage I was thrown in a test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \AvroSchemaParseException
      */
-    public function it_throws_exceptions_from_promises()
+    public function it_throws_exceptions_from_promises(): void
     {
         $schema = AvroSchema::parse('{"type": "string"}');
 
         $this->asyncRegistry
             ->expects($this->once())
             ->method('register')
-            ->willReturn(new FulfilledPromise(new \RuntimeException('I was thrown in a test')));
+            ->willReturn(new FulfilledPromise(new RuntimeException('I was thrown in a test')));
 
         $this->blockingRegistry->register('test', $schema);
     }
