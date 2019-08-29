@@ -19,7 +19,7 @@ interface CacheAdapter
      *
      * @return void
      */
-    public function cacheSchemaWithId(AvroSchema $schema, int $schemaId);
+    public function cacheSchemaWithId(AvroSchema $schema, int $schemaId): void;
 
     /**
      * Caches an AvroSchema with a given subject and version
@@ -40,7 +40,7 @@ interface CacheAdapter
      *
      * @return void
      */
-    public function cacheSchemaIdByHash(int $schemaId, string $schemaHash);
+    public function cacheSchemaIdByHash(int $schemaId, string $schemaHash): void;
 
     /**
      * Tries to fetch a cache with the global schema id.
@@ -50,7 +50,7 @@ interface CacheAdapter
      *
      * @return AvroSchema|null
      */
-    public function getWithId(int $schemaId);
+    public function getWithId(int $schemaId): ?AvroSchema;
 
     /**
      * Tries to fetch a cached schema id with a given hash.
@@ -60,7 +60,7 @@ interface CacheAdapter
      *
      * @return int|null
      */
-    public function getIdWithHash(string $hash);
+    public function getIdWithHash(string $hash): ?int;
 
     /**
      * Tries to fetch a cache with a given subject and version.
@@ -71,7 +71,7 @@ interface CacheAdapter
      *
      * @return AvroSchema|null
      */
-    public function getWithSubjectAndVersion(string $subject, int $version);
+    public function getWithSubjectAndVersion(string $subject, int $version): ?AvroSchema;
 
     /**
      * Checks if the cache engine has a cached schema for a given global schema id.

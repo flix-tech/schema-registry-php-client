@@ -30,7 +30,7 @@ class AvroObjectCacheAdapter implements CacheAdapter
     /**
      * {@inheritdoc}
      */
-    public function cacheSchemaWithId(AvroSchema $schema, int $schemaId)
+    public function cacheSchemaWithId(AvroSchema $schema, int $schemaId): void
     {
         $this->idToSchema[$schemaId] = $schema;
     }
@@ -38,7 +38,7 @@ class AvroObjectCacheAdapter implements CacheAdapter
     /**
      * {@inheritdoc}
      */
-    public function cacheSchemaIdByHash(int $schemaId, string $schemaHash)
+    public function cacheSchemaIdByHash(int $schemaId, string $schemaHash): void
     {
         $this->hashToSchemaId[$schemaHash] = $schemaId;
     }
@@ -46,7 +46,7 @@ class AvroObjectCacheAdapter implements CacheAdapter
     /**
      * {@inheritdoc}
      */
-    public function cacheSchemaWithSubjectAndVersion(AvroSchema $schema, string $subject, int $version)
+    public function cacheSchemaWithSubjectAndVersion(AvroSchema $schema, string $subject, int $version): void
     {
         $this->subjectVersionToSchema[$this->makeKeyFromSubjectAndVersion($subject, $version)] = $schema;
     }
@@ -54,7 +54,7 @@ class AvroObjectCacheAdapter implements CacheAdapter
     /**
      * {@inheritdoc}
      */
-    public function getWithId(int $schemaId)
+    public function getWithId(int $schemaId): ?AvroSchema
     {
         if (!$this->hasSchemaForId($schemaId)) {
             return null;
@@ -63,7 +63,7 @@ class AvroObjectCacheAdapter implements CacheAdapter
         return $this->idToSchema[$schemaId];
     }
 
-    public function getIdWithHash(string $hash)
+    public function getIdWithHash(string $hash): ?int
     {
         if (!$this->hasSchemaIdForHash($hash)) {
             return null;
@@ -75,7 +75,7 @@ class AvroObjectCacheAdapter implements CacheAdapter
     /**
      * {@inheritdoc}
      */
-    public function getWithSubjectAndVersion(string $subject, int $version)
+    public function getWithSubjectAndVersion(string $subject, int $version): ?AvroSchema
     {
         $key = $this->makeKeyFromSubjectAndVersion($subject, $version);
 
