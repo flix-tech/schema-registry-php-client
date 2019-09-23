@@ -89,4 +89,21 @@ interface Registry
      * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
     public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null);
+
+    /**
+     * Check if a given schema is compatible with a given schema and version
+     *
+     * @param string        $schema
+     * @param string        $subject
+     * @param int           $version
+     * @param callable|null $requestCallback
+     *
+     * @return bool
+     */
+    public function checkSchemaCompatibilityAgainstVersion(
+        AvroSchema $schema,
+        string $subject,
+        string $versionId,
+        callable $requestCallback = null
+    );
 }

@@ -12,6 +12,7 @@ use FlixTech\SchemaRegistryApi\Registry\CachedRegistry;
 use GuzzleHttp\Promise\FulfilledPromise;
 use GuzzleHttp\Promise\PromiseInterface;
 use PHPUnit\Framework\TestCase;
+use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 
 class CachedRegistryTest extends TestCase
 {
@@ -403,6 +404,27 @@ class CachedRegistryTest extends TestCase
         $this->assertEquals($this->schema, $promise->wait());
 
         $this->assertEquals($this->schema, $this->cachedRegistry->latestVersion($this->subject));
+    }
+
+    /**
+     * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     */
+    public function it_should_return_bool_for_schema_compatibility_calls(): void
+    {
+        $promise = new FulfilledPromise(true);
+
+        $this->registryMock
+            ->expects($this->once())
+            ->method('checkSchemaCompatibilityAgainstVersion')
+            ->with($this->schema, $this->subject, VERSION_LATEST)
+            ->willReturn($promise);
+
+        /** @var PromiseInterface $promise */
+        $promise = $this->cachedRegistry->checkSchemaCompatibilityAgainstVersion($this->schema, $this->subject, VERSION_LATEST);
+
+        $this->assertInstanceOf(PromiseInterface::class, $promise);
+        $this->assertTrue($promise->wait());
     }
 
     /**

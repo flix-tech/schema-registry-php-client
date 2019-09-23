@@ -52,4 +52,16 @@ interface SynchronousRegistry extends Registry
      * @return AvroSchema The schema for the given subject and version
      */
     public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null): AvroSchema;
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return bool
+     */
+    public function checkSchemaCompatibilityAgainstVersion(
+        AvroSchema $schema,
+        string $subject,
+        string $versionId,
+        callable $requestCallback = null
+    ): bool;
 }

@@ -105,6 +105,28 @@ class BlockingRegistry implements SynchronousRegistry
     /**
      * {@inheritdoc}
      *
+     * @throws \LogicException
+     * @throws \Exception
+     */
+    public function checkSchemaCompatibilityAgainstVersion(
+        AvroSchema $schema,
+        string $subject,
+        string $versionId,
+        callable $requestCallback = null
+    ): bool {
+        return $this->addExceptionThrowCallableToPromise(
+            $this->asyncRegistry->checkSchemaCompatibilityAgainstVersion(
+                $schema,
+                $subject,
+                $versionId,
+                $requestCallback
+            )
+        )->wait();
+    }
+
+    /**
+     * {@inheritdoc}
+     *
      * @throws \Exception
      */
     private function addExceptionThrowCallableToPromise(PromiseInterface $promise): PromiseInterface

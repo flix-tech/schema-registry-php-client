@@ -202,6 +202,25 @@ class CachedRegistry implements Registry
     }
 
     /**
+     * {@inheritdoc}
+     *
+     * @throws \Exception
+     */
+    public function checkSchemaCompatibilityAgainstVersion(
+        AvroSchema $schema,
+        string $subject,
+        string $versionId,
+        callable $requestCallback = null
+    ) {
+        return $this->registry->checkSchemaCompatibilityAgainstVersion(
+            $schema,
+            $subject,
+            $versionId,
+            $requestCallback
+        );
+    }
+
+    /**
      * @param PromiseInterface|\Exception|mixed  $value
      * @param callable                           $promiseHandler
      * @param callable                           $valueHandler

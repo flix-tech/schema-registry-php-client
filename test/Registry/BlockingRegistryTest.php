@@ -10,6 +10,7 @@ use FlixTech\SchemaRegistryApi\Registry\BlockingRegistry;
 use GuzzleHttp\Promise\FulfilledPromise;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 
 class BlockingRegistryTest extends TestCase
 {
@@ -138,6 +139,24 @@ class BlockingRegistryTest extends TestCase
             ->willReturn(new FulfilledPromise($schema));
 
         $this->assertEquals($schema, $this->blockingRegistry->latestVersion('test'));
+    }
+
+    /**
+     * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \AvroSchemaParseException
+     */
+    public function it_can_check_compatibility(): void
+    {
+        $schema = AvroSchema::parse('{"type": "string"}');
+
+        $this->asyncRegistry
+            ->expects($this->once())
+            ->method('checkSchemaCompatibilityAgainstVersion')
+            ->with($schema, 'test', VERSION_LATEST)
+            ->willReturn(new FulfilledPromise(true));
+
+        $this->assertTrue($this->blockingRegistry->checkSchemaCompatibilityAgainstVersion($schema, 'test', VERSION_LATEST));
     }
 
     /**

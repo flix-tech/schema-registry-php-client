@@ -190,6 +190,33 @@ class PromisingRegistryTest extends TestCase
     /**
      * @test
      * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws \AvroSchemaParseException
+     */
+    public function it_can_check_compatibility_for_schema_and_version(): void
+    {
+        $responses = [
+            new Response(200, [], '{"is_compatible": true}')
+        ];
+
+        $subject = 'test';
+        $schema = AvroSchema::parse('{"type": "string"}');
+        $expectedRequest = checkSchemaCompatibilityAgainstVersionRequest($schema, $subject, VERSION_LATEST);
+
+        $this->registry = new PromisingRegistry($this->clientWithMockResponses($responses));
+
+        $promise = $this->registry->checkSchemaCompatibilityAgainstVersion(
+            $schema,
+            $subject,
+            VERSION_LATEST,
+            $this->assertRequestCallable($expectedRequest)
+        );
+
+        $this->assertTrue($promise->wait());
+    }
+
+    /**
+     * @test
+     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
      */
     public function it_will_not_throw_but_pass_exceptions(): void
     {

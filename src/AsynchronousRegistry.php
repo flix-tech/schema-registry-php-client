@@ -53,4 +53,16 @@ interface AsynchronousRegistry extends Registry
      * @return PromiseInterface Either the schema as AvroSchema or a SchemaRegistryException object when fulfilled
      */
     public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null): PromiseInterface;
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return bool
+     */
+    public function checkSchemaCompatibilityAgainstVersion(
+        AvroSchema $schema,
+        string $subject,
+        string $versionId,
+        callable $requestCallback = null
+    ): PromiseInterface;
 }

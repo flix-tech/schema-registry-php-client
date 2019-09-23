@@ -149,6 +149,21 @@ class PromisingRegistry implements AsynchronousRegistry
         return $this->makeRequest($request, $onFulfilled, $requestCallback);
     }
 
+    public function checkSchemaCompatibilityAgainstVersion(
+        AvroSchema $schema,
+        string $subject,
+        string $versionId,
+        callable $requestCallback = null
+    ): PromiseInterface {
+        $request = checkSchemaCompatibilityAgainstVersionRequest((string) $schema, $subject, $versionId);
+
+        $onFulfilled = function (ResponseInterface $response) {
+            return $this->getJsonFromResponseBody($response)['is_compatible'];
+        };
+
+        return $this->makeRequest($request, $onFulfilled, $requestCallback);
+    }
+
     /**
      * @param RequestInterface $request
      * @param callable         $onFulfilled
