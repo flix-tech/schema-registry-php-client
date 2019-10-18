@@ -6,7 +6,7 @@ use Assert\Assert;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\UriTemplate;
 use Psr\Http\Message\RequestInterface;
-use const FlixTech\SchemaRegistryApi\Constants\[ACCEPT_HEADER];
+use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;

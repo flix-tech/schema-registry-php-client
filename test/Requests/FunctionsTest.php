@@ -12,6 +12,7 @@ use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
+use const FlixTech\SchemaRegistryApi\Constants\MEDIA_TYPE_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
@@ -44,7 +45,7 @@ class FunctionsTest extends TestCase
 
         $this->assertEquals('GET', $request->getMethod());
         $this->assertEquals('/subjects', $request->getUri());
-        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals([ACCEPT_HEADER], $request->getHeaders());
     }
 
     /**
@@ -56,7 +57,7 @@ class FunctionsTest extends TestCase
 
         $this->assertEquals('GET', $request->getMethod());
         $this->assertEquals('/subjects/test/versions', $request->getUri());
-        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals([ACCEPT_HEADER], $request->getHeaders());
     }
 
     /**
@@ -68,7 +69,7 @@ class FunctionsTest extends TestCase
 
         $this->assertEquals('GET', $request->getMethod());
         $this->assertEquals('/subjects/test/versions/3', $request->getUri());
-        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals([ACCEPT_HEADER], $request->getHeaders());
     }
 
     /**
@@ -80,14 +81,14 @@ class FunctionsTest extends TestCase
 
         $this->assertEquals('POST', $request->getMethod());
         $this->assertEquals('/subjects/test/versions', $request->getUri());
-        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals([MEDIA_TYPE_HEADER], $request->getHeaders());
         $this->assertEquals('{"schema":"{\"type\":\"string\"}"}', $request->getBody()->getContents());
 
         $request = registerNewSchemaVersionWithSubjectRequest('{"schema": "{\"type\": \"string\"}"}', 'test');
 
         $this->assertEquals('POST', $request->getMethod());
         $this->assertEquals('/subjects/test/versions', $request->getUri());
-        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals([MEDIA_TYPE_HEADER], $request->getHeaders());
         $this->assertEquals('{"schema":"{\"type\": \"string\"}"}', $request->getBody()->getContents());
     }
 
@@ -105,7 +106,7 @@ class FunctionsTest extends TestCase
         $this->assertEquals('POST', $request->getMethod());
         $this->assertEquals('/compatibility/subjects/test/versions/latest', $request->getUri());
         $this->assertEquals('{"schema":"{\"type\":\"test\"}"}', $request->getBody()->getContents());
-        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals([MEDIA_TYPE_HEADER], $request->getHeaders());
     }
 
     /**
@@ -118,7 +119,7 @@ class FunctionsTest extends TestCase
         $this->assertEquals('POST', $request->getMethod());
         $this->assertEquals('/subjects/test', $request->getUri());
         $this->assertEquals('{"schema":"{\"type\":\"test\"}"}', $request->getBody()->getContents());
-        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals([MEDIA_TYPE_HEADER], $request->getHeaders());
     }
 
     /**
@@ -130,7 +131,7 @@ class FunctionsTest extends TestCase
 
         $this->assertEquals('GET', $request->getMethod());
         $this->assertEquals('/schemas/ids/3', $request->getUri());
-        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals([ACCEPT_HEADER], $request->getHeaders());
     }
 
     /**
@@ -142,7 +143,7 @@ class FunctionsTest extends TestCase
 
         $this->assertEquals('GET', $request->getMethod());
         $this->assertEquals('/config', $request->getUri());
-        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals([ACCEPT_HEADER], $request->getHeaders());
     }
 
     /**
@@ -155,7 +156,7 @@ class FunctionsTest extends TestCase
         $this->assertEquals('PUT', $request->getMethod());
         $this->assertEquals('/config', $request->getUri());
         $this->assertEquals('{"compatibility":"FULL"}', $request->getBody()->getContents());
-        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals([ACCEPT_HEADER], $request->getHeaders());
     }
 
     /**
@@ -167,7 +168,7 @@ class FunctionsTest extends TestCase
 
         $this->assertEquals('GET', $request->getMethod());
         $this->assertEquals('/config/test', $request->getUri());
-        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals([ACCEPT_HEADER], $request->getHeaders());
     }
 
     /**
@@ -180,7 +181,7 @@ class FunctionsTest extends TestCase
         $this->assertEquals('PUT', $request->getMethod());
         $this->assertEquals('/config/test', $request->getUri());
         $this->assertEquals('{"compatibility":"FORWARD"}', $request->getBody()->getContents());
-        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals([ACCEPT_HEADER], $request->getHeaders());
     }
 
     /**
@@ -348,7 +349,7 @@ class FunctionsTest extends TestCase
 
         $this->assertEquals('DELETE', $request->getMethod());
         $this->assertEquals('/subjects/test', $request->getUri());
-        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals([ACCEPT_HEADER], $request->getHeaders());
     }
 
     /**
@@ -360,12 +361,12 @@ class FunctionsTest extends TestCase
 
         $this->assertEquals('DELETE', $request->getMethod());
         $this->assertEquals('/subjects/test/versions/latest', $request->getUri());
-        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals([ACCEPT_HEADER], $request->getHeaders());
 
         $request = deleteSubjectVersionRequest('test', '5');
 
         $this->assertEquals('DELETE', $request->getMethod());
         $this->assertEquals('/subjects/test/versions/5', $request->getUri());
-        $this->assertEquals(['application/vnd.schemaregistry.v1+json'], $request->getHeader('Accept'));
+        $this->assertEquals([ACCEPT_HEADER], $request->getHeaders());
     }
 }
