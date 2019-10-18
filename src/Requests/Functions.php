@@ -51,7 +51,10 @@ function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subj
     return new Request(
         'POST',
         (new UriTemplate())->expand('/subjects/{name}/versions', ['name' => $subjectName]),
-        ['Accept' => 'application/vnd.schemaregistry.v1+json'],
+        [
+            'Accept' => 'application/vnd.schemaregistry.v1+json',
+            'Content-Type' => 'application/vnd.schemaregistry.v1+json'
+        ],
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
@@ -64,7 +67,10 @@ function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $s
             '/compatibility/subjects/{name}/versions/{version}',
             ['name' => $subjectName, 'version' => $versionId]
         ),
-        ['Accept' => 'application/vnd.schemaregistry.v1+json'],
+        [
+            'Accept' => 'application/vnd.schemaregistry.v1+json',
+            'Content-Type' => 'application/vnd.schemaregistry.v1+json'
+        ],
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
@@ -74,7 +80,10 @@ function checkIfSubjectHasSchemaRegisteredRequest(string $subjectName, string $s
     return new Request(
         'POST',
         (new UriTemplate())->expand('/subjects/{name}', ['name' => $subjectName]),
-        ['Accept' => 'application/vnd.schemaregistry.v1+json'],
+        [
+            'Accept' => 'application/vnd.schemaregistry.v1+json',
+            'Content-Type' => 'application/vnd.schemaregistry.v1+json'
+        ],
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
