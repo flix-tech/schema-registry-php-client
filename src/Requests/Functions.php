@@ -14,7 +14,7 @@ use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
-use const FlixTech\SchemaRegistryApi\Constants\MEDIA_TYPE_HEADER;
+use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function implode;
 
@@ -53,7 +53,7 @@ function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subj
     return new Request(
         'POST',
         (new UriTemplate())->expand('/subjects/{name}/versions', ['name' => $subjectName]),
-        MEDIA_TYPE_HEADER,
+        [CONTENT_TYPE_HEADER, ACCEPT_HEADER],
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
@@ -66,7 +66,7 @@ function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $s
             '/compatibility/subjects/{name}/versions/{version}',
             ['name' => $subjectName, 'version' => $versionId]
         ),
-        MEDIA_TYPE_HEADER,
+        [CONTENT_TYPE_HEADER, ACCEPT_HEADER],
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
@@ -76,7 +76,7 @@ function checkIfSubjectHasSchemaRegisteredRequest(string $subjectName, string $s
     return new Request(
         'POST',
         (new UriTemplate())->expand('/subjects/{name}', ['name' => $subjectName]),
-        MEDIA_TYPE_HEADER,
+        [CONTENT_TYPE_HEADER, ACCEPT_HEADER],
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
