@@ -6,6 +6,7 @@ use Assert\Assert;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\UriTemplate;
 use Psr\Http\Message\RequestInterface;
+use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
@@ -13,6 +14,7 @@ use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
+use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function implode;
 
@@ -21,7 +23,7 @@ function allSubjectsRequest(): RequestInterface
     return new Request(
         'GET',
         '/subjects',
-        ['Accept' => 'application/vnd.schemaregistry.v1+json']
+        [ACCEPT_HEADER]
     );
 }
 
@@ -30,7 +32,7 @@ function allSubjectVersionsRequest(string $subjectName): RequestInterface
     return new Request(
         'GET',
         (new UriTemplate())->expand('/subjects/{name}/versions', ['name' => $subjectName]),
-        ['Accept' => 'application/vnd.schemaregistry.v1+json']
+        [ACCEPT_HEADER]
     );
 }
 
@@ -42,7 +44,7 @@ function singleSubjectVersionRequest(string $subjectName, string $versionId): Re
             '/subjects/{name}/versions/{id}',
             ['name' => $subjectName, 'id' => $versionId]
         ),
-        ['Accept' => 'application/vnd.schemaregistry.v1+json']
+        [ACCEPT_HEADER]
     );
 }
 
@@ -51,7 +53,7 @@ function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subj
     return new Request(
         'POST',
         (new UriTemplate())->expand('/subjects/{name}/versions', ['name' => $subjectName]),
-        ['Accept' => 'application/vnd.schemaregistry.v1+json'],
+        [CONTENT_TYPE_HEADER, ACCEPT_HEADER],
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
@@ -64,7 +66,7 @@ function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $s
             '/compatibility/subjects/{name}/versions/{version}',
             ['name' => $subjectName, 'version' => $versionId]
         ),
-        ['Accept' => 'application/vnd.schemaregistry.v1+json'],
+        [CONTENT_TYPE_HEADER, ACCEPT_HEADER],
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
@@ -74,7 +76,7 @@ function checkIfSubjectHasSchemaRegisteredRequest(string $subjectName, string $s
     return new Request(
         'POST',
         (new UriTemplate())->expand('/subjects/{name}', ['name' => $subjectName]),
-        ['Accept' => 'application/vnd.schemaregistry.v1+json'],
+        [CONTENT_TYPE_HEADER, ACCEPT_HEADER],
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
@@ -84,7 +86,7 @@ function schemaRequest(string $id): RequestInterface
     return new Request(
         'GET',
         (new UriTemplate())->expand('/schemas/ids/{id}', ['id' => $id]),
-        ['Accept' => 'application/vnd.schemaregistry.v1+json']
+        [ACCEPT_HEADER]
     );
 }
 
@@ -93,7 +95,7 @@ function defaultCompatibilityLevelRequest(): RequestInterface
     return new Request(
         'GET',
         '/config',
-        ['Accept' => 'application/vnd.schemaregistry.v1+json']
+        [ACCEPT_HEADER]
     );
 }
 
@@ -102,7 +104,7 @@ function changeDefaultCompatibilityLevelRequest(string $level): RequestInterface
     return new Request(
         'PUT',
         '/config',
-        ['Accept' => 'application/vnd.schemaregistry.v1+json'],
+        [ACCEPT_HEADER],
         prepareCompatibilityLevelForTransport(validateCompatibilityLevel($level))
     );
 }
@@ -112,7 +114,7 @@ function subjectCompatibilityLevelRequest(string $subjectName): RequestInterface
     return new Request(
         'GET',
         (new UriTemplate())->expand('/config/{subject}', ['subject' => $subjectName]),
-        ['Accept' => 'application/vnd.schemaregistry.v1+json']
+        [ACCEPT_HEADER]
     );
 }
 
@@ -121,7 +123,7 @@ function changeSubjectCompatibilityLevelRequest(string $subjectName, string $lev
     return new Request(
         'PUT',
         (new UriTemplate())->expand('/config/{subject}', ['subject' => $subjectName]),
-        ['Accept' => 'application/vnd.schemaregistry.v1+json'],
+        [ACCEPT_HEADER],
         prepareCompatibilityLevelForTransport(validateCompatibilityLevel($level))
     );
 }
@@ -194,7 +196,7 @@ function deleteSubjectRequest(string $subjectName)
     return new Request(
         'DELETE',
         (new UriTemplate())->expand('/subjects/{name}', ['name' => $subjectName]),
-        ['Accept' => 'application/vnd.schemaregistry.v1+json']
+        [ACCEPT_HEADER]
     );
 }
 
@@ -203,6 +205,6 @@ function deleteSubjectVersionRequest(string $subjectName, string $versionId)
     return new Request(
         'DELETE',
         (new UriTemplate())->expand('/subjects/{name}/versions/{version}', ['name' => $subjectName, 'version' => $versionId]),
-        ['Accept' => 'application/vnd.schemaregistry.v1+json']
+        [ACCEPT_HEADER]
     );
 }
