@@ -163,6 +163,10 @@ class PromisingRegistry implements AsynchronousRegistry
             ->then($onFulfilled, $this->rejectedCallback);
     }
 
+    /**
+     * @param ResponseInterface $response
+     * @return array<mixed, mixed>
+     */
     private function getJsonFromResponseBody(ResponseInterface $response): array
     {
         $body = (string) $response->getBody();

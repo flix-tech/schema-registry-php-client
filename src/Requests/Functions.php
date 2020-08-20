@@ -128,6 +128,10 @@ function changeSubjectCompatibilityLevelRequest(string $subjectName, string $lev
     );
 }
 
+/**
+ * @param int|string $versionId
+ * @return string
+ */
 function validateVersionId($versionId): string
 {
     if (VERSION_LATEST !== $versionId) {
@@ -182,6 +186,10 @@ function prepareCompatibilityLevelForTransport(string $compatibilityLevel): stri
     return \GuzzleHttp\json_encode(['compatibility' => $compatibilityLevel]);
 }
 
+/**
+ * @param int|string $schemaId
+ * @return string
+ */
 function validateSchemaId($schemaId): string
 {
     Assert::that($schemaId)
@@ -191,7 +199,11 @@ function validateSchemaId($schemaId): string
     return (string) $schemaId;
 }
 
-function deleteSubjectRequest(string $subjectName)
+/**
+ * @param string $subjectName
+ * @return RequestInterface
+ */
+function deleteSubjectRequest(string $subjectName): RequestInterface
 {
     return new Request(
         'DELETE',
@@ -200,7 +212,12 @@ function deleteSubjectRequest(string $subjectName)
     );
 }
 
-function deleteSubjectVersionRequest(string $subjectName, string $versionId)
+/**
+ * @param string $subjectName
+ * @param string $versionId
+ * @return RequestInterface
+ */
+function deleteSubjectVersionRequest(string $subjectName, string $versionId): RequestInterface
 {
     return new Request(
         'DELETE',
