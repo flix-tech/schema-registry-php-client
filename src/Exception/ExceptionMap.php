@@ -61,6 +61,10 @@ final class ExceptionMap
         return $response;
     }
 
+    /**
+     * @param ResponseInterface $response
+     * @return array<mixed, mixed>
+     */
     private function guardAgainstMissingErrorCode(ResponseInterface $response): array
     {
         try {
@@ -88,7 +92,12 @@ final class ExceptionMap
         }
     }
 
-    private function mapErrorCodeToException($errorCode, $errorMessage)
+    /**
+     * @param int $errorCode
+     * @param string $errorMessage
+     * @return SchemaRegistryException
+     */
+    private function mapErrorCodeToException($errorCode, $errorMessage): SchemaRegistryException
     {
         switch ($errorCode) {
             case IncompatibleAvroSchemaException::errorCode():
