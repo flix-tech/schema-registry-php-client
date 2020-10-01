@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Registry\Cache;
 
 use AvroSchema;
+use AvroSchemaParseException;
 use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
 use Psr\SimpleCache\CacheInterface;
 
@@ -50,7 +51,7 @@ class SimpleCacheAdapter implements CacheAdapter
     /**
      * {@inheritdoc}
      *
-     * @throws \AvroSchemaParseException
+     * @throws AvroSchemaParseException
      */
     public function getWithId(int $schemaId): ?AvroSchema
     {
@@ -75,7 +76,7 @@ class SimpleCacheAdapter implements CacheAdapter
     /**
      * {@inheritdoc}
      *
-     * @throws \AvroSchemaParseException
+     * @throws AvroSchemaParseException
      */
     public function getWithSubjectAndVersion(string $subject, int $version): ?AvroSchema
     {

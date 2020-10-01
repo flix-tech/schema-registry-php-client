@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Registry;
 
 use Assert\Assert;
+use InvalidArgumentException;
+use LogicException;
 use Psr\Http\Message\RequestInterface;
 use TRex\Reflection\CallableReflection;
 
@@ -33,8 +35,8 @@ class RequestCallbackValidator
      *
      * @return callable|null
      *
-     * @throws \LogicException
-     * @throws \InvalidArgumentException
+     * @throws LogicException
+     * @throws InvalidArgumentException
      */
     public function __invoke(callable $requestCallback = null)
     {
@@ -53,7 +55,7 @@ class RequestCallbackValidator
         $reflectionParameter = $reflection->getParameters()[0];
 
         if (!$reflectionParameter->hasType()) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(
                     'First parameter of callback must be type hinted against "%s" or classes that implement it.',
                     RequestInterface::class

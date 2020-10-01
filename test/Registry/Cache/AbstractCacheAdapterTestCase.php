@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Test\Registry\Cache;
 
 use AvroSchema;
+use AvroSchemaParseException;
 use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
 use PHPUnit\Framework\TestCase;
 
@@ -17,14 +18,14 @@ abstract class AbstractCacheAdapterTestCase extends TestCase
      */
     protected $cacheAdapter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->cacheAdapter = $this->getAdapter();
     }
 
     /**
      * @test
-     * @throws \AvroSchemaParseException
+     * @throws AvroSchemaParseException
      */
     public function it_should_store_and_fetch_schemas_with_ids(): void
     {
@@ -34,16 +35,16 @@ abstract class AbstractCacheAdapterTestCase extends TestCase
 
         $this->cacheAdapter->cacheSchemaWithId($schema, $schemaId);
 
-        $this->assertFalse($this->cacheAdapter->hasSchemaForId($invalidSchemaId));
-        $this->assertTrue($this->cacheAdapter->hasSchemaForId($schemaId));
+        self::assertFalse($this->cacheAdapter->hasSchemaForId($invalidSchemaId));
+        self::assertTrue($this->cacheAdapter->hasSchemaForId($schemaId));
 
-        $this->assertNull($this->cacheAdapter->getWithId($invalidSchemaId));
-        $this->assertEquals($schema, $this->cacheAdapter->getWithId($schemaId));
+        self::assertNull($this->cacheAdapter->getWithId($invalidSchemaId));
+        self::assertEquals($schema, $this->cacheAdapter->getWithId($schemaId));
     }
 
     /**
      * @test
-     * @throws \AvroSchemaParseException
+     * @throws AvroSchemaParseException
      */
     public function it_should_store_and_fetch_schemas_with_subject_and_version(): void
     {
@@ -54,11 +55,11 @@ abstract class AbstractCacheAdapterTestCase extends TestCase
 
         $this->cacheAdapter->cacheSchemaWithSubjectAndVersion($schema, $subject, $version);
 
-        $this->assertFalse($this->cacheAdapter->hasSchemaForSubjectAndVersion($invalidSubject, $version));
-        $this->assertTrue($this->cacheAdapter->hasSchemaForSubjectAndVersion($subject, $version));
+        self::assertFalse($this->cacheAdapter->hasSchemaForSubjectAndVersion($invalidSubject, $version));
+        self::assertTrue($this->cacheAdapter->hasSchemaForSubjectAndVersion($subject, $version));
 
-        $this->assertNull($this->cacheAdapter->getWithSubjectAndVersion($invalidSubject, $version));
-        $this->assertEquals($schema, $this->cacheAdapter->getWithSubjectAndVersion($subject, $version));
+        self::assertNull($this->cacheAdapter->getWithSubjectAndVersion($invalidSubject, $version));
+        self::assertEquals($schema, $this->cacheAdapter->getWithSubjectAndVersion($subject, $version));
     }
 
     /**
@@ -70,15 +71,15 @@ abstract class AbstractCacheAdapterTestCase extends TestCase
         $hash = 'hash';
         $anotherHash = 'another';
 
-        $this->assertFalse($this->cacheAdapter->hasSchemaIdForHash($hash));
-        $this->assertFalse($this->cacheAdapter->hasSchemaIdForHash($anotherHash));
+        self::assertFalse($this->cacheAdapter->hasSchemaIdForHash($hash));
+        self::assertFalse($this->cacheAdapter->hasSchemaIdForHash($anotherHash));
 
         $this->cacheAdapter->cacheSchemaIdByHash($schemaId, $hash);
 
-        $this->assertTrue($this->cacheAdapter->hasSchemaIdForHash($hash));
-        $this->assertFalse($this->cacheAdapter->hasSchemaIdForHash($anotherHash));
+        self::assertTrue($this->cacheAdapter->hasSchemaIdForHash($hash));
+        self::assertFalse($this->cacheAdapter->hasSchemaIdForHash($anotherHash));
 
-        $this->assertNull($this->cacheAdapter->getIdWithHash($anotherHash));
-        $this->assertSame($schemaId, $this->cacheAdapter->getIdWithHash($hash));
+        self::assertNull($this->cacheAdapter->getIdWithHash($anotherHash));
+        self::assertSame($schemaId, $this->cacheAdapter->getIdWithHash($hash));
     }
 }

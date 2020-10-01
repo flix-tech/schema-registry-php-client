@@ -48,7 +48,7 @@ class CachedRegistry implements Registry
     /**
      * {@inheritdoc}
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function register(string $subject, AvroSchema $schema, callable $requestCallback = null)
     {
@@ -75,7 +75,7 @@ class CachedRegistry implements Registry
     /**
      * {@inheritdoc}
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null)
     {
@@ -101,7 +101,7 @@ class CachedRegistry implements Registry
     /**
      * {@inheritdoc}
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null)
     {
@@ -133,7 +133,7 @@ class CachedRegistry implements Registry
 
     /**
      * {@inheritdoc}
-     * @throws \Exception
+     * @throws Exception
      */
     public function schemaForId(int $schemaId, callable $requestCallback = null)
     {
@@ -164,7 +164,7 @@ class CachedRegistry implements Registry
     /**
      * {@inheritdoc}
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null)
     {
@@ -202,13 +202,13 @@ class CachedRegistry implements Registry
     }
 
     /**
-     * @param PromiseInterface|\Exception|mixed  $value
+     * @param PromiseInterface|Exception|mixed  $value
      * @param callable                           $promiseHandler
      * @param callable                           $valueHandler
      *
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function applyValueHandlers($value, callable $promiseHandler, callable $valueHandler)
     {

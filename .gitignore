@@ -17,3 +17,5 @@ variables.mk
 /build/
 ocular.phar
 php-cs-fixer.phar
+
+.phpunit.result.cache

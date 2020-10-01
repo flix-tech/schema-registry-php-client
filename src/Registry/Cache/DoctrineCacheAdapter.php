@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Registry\Cache;
 
 use AvroSchema;
+use AvroSchemaParseException;
 use Doctrine\Common\Cache\Cache;
 use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
 
@@ -14,7 +15,7 @@ use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
 class DoctrineCacheAdapter implements CacheAdapter
 {
     /**
-     * @var \Doctrine\Common\Cache\Cache
+     * @var Cache
      */
     private $doctrineCache;
 
@@ -50,7 +51,7 @@ class DoctrineCacheAdapter implements CacheAdapter
     /**
      * {@inheritdoc}
      *
-     * @throws \AvroSchemaParseException
+     * @throws AvroSchemaParseException
      */
     public function getWithId(int $schemaId): ?AvroSchema
     {
@@ -80,7 +81,7 @@ class DoctrineCacheAdapter implements CacheAdapter
     /**
      * {@inheritdoc}
      *
-     * @throws \AvroSchemaParseException
+     * @throws AvroSchemaParseException
      */
     public function getWithSubjectAndVersion(string $subject, int $version): ?AvroSchema
     {

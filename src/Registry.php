@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi;
 
 use AvroSchema;
+use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 
 /**
  * Client that talk to a schema registry over http
@@ -23,7 +24,7 @@ interface Registry
      *
      * @return mixed Should either return the schema id as int or a PromiseInterface
      *
-     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws SchemaRegistryException
      */
     public function register(string $subject, AvroSchema $schema, callable $requestCallback = null);
 
@@ -36,7 +37,7 @@ interface Registry
      *
      * @return mixed Should either return the version as int or a PromiseInterface
      *
-     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws SchemaRegistryException
      */
     public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null);
 
@@ -48,7 +49,7 @@ interface Registry
      *
      * @return mixed Should either return the version as int or a PromiseInterface
      *
-     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws SchemaRegistryException
      */
     public function latestVersion(string $subject, callable $requestCallback = null);
 
@@ -61,7 +62,7 @@ interface Registry
      *
      * @return mixed Should either return the schema id as int or a PromiseInterface
      *
-     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws SchemaRegistryException
      */
     public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null);
 
@@ -73,7 +74,7 @@ interface Registry
      *
      * @return mixed Should either return the schema as AvroSchema or a PromiseInterface
      *
-     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws SchemaRegistryException
      */
     public function schemaForId(int $schemaId, callable $requestCallback = null);
 
@@ -86,7 +87,7 @@ interface Registry
      *
      * @return mixed Should either return the schema as AvroSchema or a PromiseInterface
      *
-     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws SchemaRegistryException
      */
     public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null);
 }

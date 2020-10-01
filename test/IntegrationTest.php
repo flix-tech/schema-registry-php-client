@@ -12,6 +12,7 @@ use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\SubjectNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\VersionNotFoundException;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\UriTemplate;
 use PHPUnit\Framework\TestCase;
@@ -40,7 +41,7 @@ class IntegrationTest extends TestCase
     public const SUBJECT_NAME = 'integration-test';
 
     /**
-     * @var \GuzzleHttp\ClientInterface
+     * @var ClientInterface
      */
     private $client;
 
@@ -97,7 +98,7 @@ INCOMPATIBLE;
     private $invalidSchema = '{"invalid": "invalid"}';
 
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if ((bool) getenv('ENABLE_INTEGRATION_TEST') === false) {
             self::markTestSkipped('Integration tests are disabled');

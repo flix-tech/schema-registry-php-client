@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Exception;
 
+use Exception;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
+use function array_key_exists;
+use function sprintf;
 
 final class ExceptionMap
 {
@@ -14,7 +18,7 @@ final class ExceptionMap
     public const ERROR_MESSAGE_FIELD_NAME = 'message';
 
     /**
-     * @var \FlixTech\SchemaRegistryApi\Exception\ExceptionMap
+     * @var ExceptionMap
      */
     private static $instance;
 
@@ -38,7 +42,7 @@ final class ExceptionMap
      *
      * @return SchemaRegistryException
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function __invoke(RequestException $exception): SchemaRegistryException
     {
@@ -55,7 +59,7 @@ final class ExceptionMap
         $response = $exception->getResponse();
 
         if (!$response) {
-            throw new \RuntimeException('RequestException has no response to inspect', 0, $exception);
+            throw new RuntimeException('RequestException has no response to inspect', 0, $exception);
         }
 
         return $response;
@@ -70,8 +74,8 @@ final class ExceptionMap
         try {
             $decodedBody = \GuzzleHttp\json_decode((string) $response->getBody(), true);
 
-            if (!\array_key_exists(self::ERROR_CODE_FIELD_NAME, $decodedBody)) {
-                throw new \RuntimeException(
+            if (!array_key_exists(self::ERROR_CODE_FIELD_NAME, $decodedBody)) {
+                throw new RuntimeException(
                     sprintf(
                         'Invalid message body received - cannot find "error_code" field in response body "%s"',
                         (string) $response->getBody()
@@ -80,9 +84,9 @@ final class ExceptionMap
             }
 
             return $decodedBody;
-        } catch (\Exception $e) {
-            throw new \RuntimeException(
-                \sprintf(
+        } catch (Exception $e) {
+            throw new RuntimeException(
+                sprintf(
                     'Invalid message body received - cannot find "error_code" field in response body "%s"',
                     (string) $response->getBody()
                 ),
@@ -92,12 +96,7 @@ final class ExceptionMap
         }
     }
 
-    /**
-     * @param int $errorCode
-     * @param string $errorMessage
-     * @return SchemaRegistryException
-     */
-    private function mapErrorCodeToException($errorCode, $errorMessage): SchemaRegistryException
+    private function mapErrorCodeToException(int $errorCode, string $errorMessage): SchemaRegistryException
     {
         switch ($errorCode) {
             case IncompatibleAvroSchemaException::errorCode():
@@ -131,7 +130,7 @@ final class ExceptionMap
                 return new InvalidCompatibilityLevelException($errorMessage, $errorCode);
 
             default:
-                throw new \RuntimeException(sprintf('Unknown error code "%d"', $errorCode));
+                throw new RuntimeException(sprintf('Unknown error code "%d"', $errorCode));
         }
     }
 }

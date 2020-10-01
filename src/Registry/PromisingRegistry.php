@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Registry;
 
 use AvroSchema;
+use Closure;
 use FlixTech\SchemaRegistryApi\AsynchronousRegistry;
 use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
 use GuzzleHttp\ClientInterface;
@@ -13,6 +14,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
@@ -33,7 +35,7 @@ class PromisingRegistry implements AsynchronousRegistry
     private $client;
 
     /**
-     * @var \Closure
+     * @var Closure
      */
     private $rejectedCallback;
 
@@ -50,7 +52,7 @@ class PromisingRegistry implements AsynchronousRegistry
     /**
      * {@inheritdoc}
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function register(string $subject, AvroSchema $schema, callable $requestCallback = null): PromiseInterface
     {
@@ -66,7 +68,7 @@ class PromisingRegistry implements AsynchronousRegistry
     /**
      * {@inheritdoc}
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null): PromiseInterface
     {
@@ -82,7 +84,7 @@ class PromisingRegistry implements AsynchronousRegistry
     /**
      * {@inheritdoc}
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function schemaForId(int $schemaId, callable $requestCallback = null): PromiseInterface
     {
@@ -100,7 +102,7 @@ class PromisingRegistry implements AsynchronousRegistry
     /**
      * {@inheritdoc}
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null): PromiseInterface
     {
@@ -118,7 +120,7 @@ class PromisingRegistry implements AsynchronousRegistry
     /**
      * {@inheritdoc}
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null): PromiseInterface
     {
@@ -134,7 +136,7 @@ class PromisingRegistry implements AsynchronousRegistry
     /**
      * {@inheritdoc}
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function latestVersion(string $subject, callable $requestCallback = null): PromiseInterface
     {
@@ -154,7 +156,7 @@ class PromisingRegistry implements AsynchronousRegistry
      * @param callable         $onFulfilled
      * @param callable|null    $requestCallback
      *
-     * @return \GuzzleHttp\Promise\PromiseInterface
+     * @return PromiseInterface
      */
     private function makeRequest(RequestInterface $request, callable $onFulfilled, callable $requestCallback = null): PromiseInterface
     {

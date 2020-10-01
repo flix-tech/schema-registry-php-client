@@ -12,4 +12,3 @@ const COMPATIBILITY_FULL_TRANSITIVE = 'FULL_TRANSITIVE';
 const VERSION_LATEST = 'latest';
 const ACCEPT_HEADER = ['Accept' => 'application/vnd.schemaregistry.v1+json'];
 const CONTENT_TYPE_HEADER = ['Content-Type' => 'application/vnd.schemaregistry.v1+json'];
-
