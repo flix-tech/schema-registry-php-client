@@ -45,7 +45,6 @@ compliant requests that can be used as well as high level abstractions to ease d
 | **`doctrine/cache`** | ~1.3 | If you want to use the `DoctrineCacheAdapter` |
 | **`psr/cache`** | ^1.0 | If you want to use the `CacheItemPoolAdapter` |
 | **`psr/simple-cache`** | ^1.0 | If you want to use the `SimpleCacheAdapter` |
-| **`raphhh/trex-reflection`** | ~1.0 | If you want to use the `RequestCallbackValidator`s |
 
 ## Installation
 
@@ -80,7 +79,6 @@ major version upgrades will have incompatibilities that will be released in the 
 use GuzzleHttp\Client;
 use FlixTech\SchemaRegistryApi\Registry\PromisingRegistry;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
-use Psr\Http\Message\RequestInterface;
 
 $registry = new PromisingRegistry(
     new Client(['base_uri' => 'registry.example.com'])
@@ -117,14 +115,9 @@ $promise = $registry->schemaForId($schemaId);
 $schema = $promise->wait();
 
 // Get the version of a schema for a given subject.
-// All methods also have a request callback third parameter.
-// It takes a `Psr\Http\Message\RequestInterface` and should return a `Psr\Http\Message\RequestInterface`
 $version = $registry->schemaVersion(
     'test-subject',
-    $schema,
-    static function (RequestInterface $request) {
-        return $request->withAddedHeader('Cache-Control', 'no-cache');
-    }
+    $schema
 )->wait();
 
 // You can also get a schema by subject and version

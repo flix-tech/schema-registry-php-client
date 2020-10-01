@@ -54,7 +54,7 @@ class PromisingRegistry implements AsynchronousRegistry
      *
      * @throws RuntimeException
      */
-    public function register(string $subject, AvroSchema $schema, callable $requestCallback = null): PromiseInterface
+    public function register(string $subject, AvroSchema $schema): PromiseInterface
     {
         $request = registerNewSchemaVersionWithSubjectRequest((string) $schema, $subject);
 
@@ -62,7 +62,7 @@ class PromisingRegistry implements AsynchronousRegistry
             return $this->getJsonFromResponseBody($response)['id'];
         };
 
-        return $this->makeRequest($request, $onFulfilled, $requestCallback);
+        return $this->makeRequest($request, $onFulfilled);
     }
 
     /**
@@ -70,7 +70,7 @@ class PromisingRegistry implements AsynchronousRegistry
      *
      * @throws RuntimeException
      */
-    public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null): PromiseInterface
+    public function schemaId(string $subject, AvroSchema $schema): PromiseInterface
     {
         $request = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
 
@@ -78,7 +78,7 @@ class PromisingRegistry implements AsynchronousRegistry
             return $this->getJsonFromResponseBody($response)['id'];
         };
 
-        return $this->makeRequest($request, $onFulfilled, $requestCallback);
+        return $this->makeRequest($request, $onFulfilled);
     }
 
     /**
@@ -86,7 +86,7 @@ class PromisingRegistry implements AsynchronousRegistry
      *
      * @throws RuntimeException
      */
-    public function schemaForId(int $schemaId, callable $requestCallback = null): PromiseInterface
+    public function schemaForId(int $schemaId): PromiseInterface
     {
         $request = schemaRequest(validateSchemaId($schemaId));
 
@@ -96,7 +96,7 @@ class PromisingRegistry implements AsynchronousRegistry
             );
         };
 
-        return $this->makeRequest($request, $onFulfilled, $requestCallback);
+        return $this->makeRequest($request, $onFulfilled);
     }
 
     /**
@@ -104,7 +104,7 @@ class PromisingRegistry implements AsynchronousRegistry
      *
      * @throws RuntimeException
      */
-    public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null): PromiseInterface
+    public function schemaForSubjectAndVersion(string $subject, int $version): PromiseInterface
     {
         $request = singleSubjectVersionRequest($subject, validateVersionId($version));
 
@@ -114,7 +114,7 @@ class PromisingRegistry implements AsynchronousRegistry
             );
         };
 
-        return $this->makeRequest($request, $onFulfilled, $requestCallback);
+        return $this->makeRequest($request, $onFulfilled);
     }
 
     /**
@@ -122,7 +122,7 @@ class PromisingRegistry implements AsynchronousRegistry
      *
      * @throws RuntimeException
      */
-    public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null): PromiseInterface
+    public function schemaVersion(string $subject, AvroSchema $schema): PromiseInterface
     {
         $request = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
 
@@ -130,7 +130,7 @@ class PromisingRegistry implements AsynchronousRegistry
             return $this->getJsonFromResponseBody($response)['version'];
         };
 
-        return $this->makeRequest($request, $onFulfilled, $requestCallback);
+        return $this->makeRequest($request, $onFulfilled);
     }
 
     /**
@@ -138,7 +138,7 @@ class PromisingRegistry implements AsynchronousRegistry
      *
      * @throws RuntimeException
      */
-    public function latestVersion(string $subject, callable $requestCallback = null): PromiseInterface
+    public function latestVersion(string $subject): PromiseInterface
     {
         $request = singleSubjectVersionRequest($subject, VERSION_LATEST);
 
@@ -148,20 +148,19 @@ class PromisingRegistry implements AsynchronousRegistry
             );
         };
 
-        return $this->makeRequest($request, $onFulfilled, $requestCallback);
+        return $this->makeRequest($request, $onFulfilled);
     }
 
     /**
      * @param RequestInterface $request
      * @param callable         $onFulfilled
-     * @param callable|null    $requestCallback
      *
      * @return PromiseInterface
      */
-    private function makeRequest(RequestInterface $request, callable $onFulfilled, callable $requestCallback = null): PromiseInterface
+    private function makeRequest(RequestInterface $request, callable $onFulfilled): PromiseInterface
     {
         return $this->client
-            ->sendAsync(null !== $requestCallback ? $requestCallback($request) : $request)
+            ->sendAsync($request)
             ->then($onFulfilled, $this->rejectedCallback);
     }
 

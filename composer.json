@@ -29,7 +29,6 @@
     "psr/simple-cache": "^1.0"
   },
   "suggest": {
-    "raphhh/trex-reflection": "Needed if you want to use the `RequestCallbackValidator`",
     "doctrine/cache": "If you want to use the DoctrineCacheAdapter",
     "psr/cache": "If you want to use the CacheItemPoolAdapter",
     "psr/simple-cache": "If you want to use the SimpleCacheAdapter"

@@ -32,10 +32,10 @@ class BlockingRegistry implements SynchronousRegistry
      * @throws LogicException
      * @throws Exception
      */
-    public function register(string $subject, AvroSchema $schema, callable $requestCallback = null): int
+    public function register(string $subject, AvroSchema $schema): int
     {
         return $this->addExceptionThrowCallableToPromise(
-            $this->asyncRegistry->register($subject, $schema, $requestCallback)
+            $this->asyncRegistry->register($subject, $schema)
         )->wait();
     }
 
@@ -45,10 +45,10 @@ class BlockingRegistry implements SynchronousRegistry
      * @throws LogicException
      * @throws Exception
      */
-    public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null): int
+    public function schemaId(string $subject, AvroSchema $schema): int
     {
         return $this->addExceptionThrowCallableToPromise(
-            $this->asyncRegistry->schemaId($subject, $schema, $requestCallback)
+            $this->asyncRegistry->schemaId($subject, $schema)
         )->wait();
     }
 
@@ -58,10 +58,10 @@ class BlockingRegistry implements SynchronousRegistry
      * @throws LogicException
      * @throws Exception
      */
-    public function schemaForId(int $schemaId, callable $requestCallback = null): AvroSchema
+    public function schemaForId(int $schemaId): AvroSchema
     {
         return $this->addExceptionThrowCallableToPromise(
-            $this->asyncRegistry->schemaForId($schemaId, $requestCallback)
+            $this->asyncRegistry->schemaForId($schemaId)
         )->wait();
     }
 
@@ -71,10 +71,10 @@ class BlockingRegistry implements SynchronousRegistry
      * @throws LogicException
      * @throws Exception
      */
-    public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null): AvroSchema
+    public function schemaForSubjectAndVersion(string $subject, int $version): AvroSchema
     {
         return $this->addExceptionThrowCallableToPromise(
-            $this->asyncRegistry->schemaForSubjectAndVersion($subject, $version, $requestCallback)
+            $this->asyncRegistry->schemaForSubjectAndVersion($subject, $version)
         )->wait();
     }
 
@@ -84,10 +84,10 @@ class BlockingRegistry implements SynchronousRegistry
      * @throws LogicException
      * @throws Exception
      */
-    public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null): int
+    public function schemaVersion(string $subject, AvroSchema $schema): int
     {
         return $this->addExceptionThrowCallableToPromise(
-            $this->asyncRegistry->schemaVersion($subject, $schema, $requestCallback)
+            $this->asyncRegistry->schemaVersion($subject, $schema)
         )->wait();
     }
 
@@ -97,10 +97,10 @@ class BlockingRegistry implements SynchronousRegistry
      * @throws LogicException
      * @throws Exception
      */
-    public function latestVersion(string $subject, callable $requestCallback = null): AvroSchema
+    public function latestVersion(string $subject): AvroSchema
     {
         return $this->addExceptionThrowCallableToPromise(
-            $this->asyncRegistry->latestVersion($subject, $requestCallback)
+            $this->asyncRegistry->latestVersion($subject)
         )->wait();
     }
 

@@ -16,40 +16,40 @@ interface SynchronousRegistry extends Registry
      *
      * @return int The schema id of the registered AvroSchema
      */
-    public function register(string $subject, AvroSchema $schema, callable $requestCallback = null): int;
+    public function register(string $subject, AvroSchema $schema): int;
 
     /**
      * {@inheritdoc}
      *
      * @return int The schema version of this AvroSchema for the given subject
      */
-    public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null): int;
+    public function schemaVersion(string $subject, AvroSchema $schema): int;
 
     /**
      * {@inheritdoc}
      *
      * @return AvroSchema The latest schema for the given subject
      */
-    public function latestVersion(string $subject, callable $requestCallback = null): AvroSchema;
+    public function latestVersion(string $subject): AvroSchema;
 
     /**
      * {@inheritdoc}
      *
      * @return int The schema id of the registered AvroSchema
      */
-    public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null): int;
+    public function schemaId(string $subject, AvroSchema $schema): int;
 
     /**
      * {@inheritdoc}
      *
      * @return AvroSchema The schema for the given schema id
      */
-    public function schemaForId(int $schemaId, callable $requestCallback = null): AvroSchema;
+    public function schemaForId(int $schemaId): AvroSchema;
 
     /**
      * {@inheritdoc}
      *
      * @return AvroSchema The schema for the given subject and version
      */
-    public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null): AvroSchema;
+    public function schemaForSubjectAndVersion(string $subject, int $version): AvroSchema;
 }

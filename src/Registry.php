@@ -20,74 +20,68 @@ interface Registry
      *
      * @param string        $subject
      * @param AvroSchema    $schema
-     * @param callable|null $requestCallback
      *
      * @return mixed Should either return the schema id as int or a PromiseInterface
      *
      * @throws SchemaRegistryException
      */
-    public function register(string $subject, AvroSchema $schema, callable $requestCallback = null);
+    public function register(string $subject, AvroSchema $schema);
 
     /**
      * Look up the version of a schema for a given subject
      *
      * @param string        $subject
      * @param AvroSchema    $schema
-     * @param callable|null $requestCallback
      *
      * @return mixed Should either return the version as int or a PromiseInterface
      *
      * @throws SchemaRegistryException
      */
-    public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null);
+    public function schemaVersion(string $subject, AvroSchema $schema);
 
     /**
      * Fetches the latest version of a schema from a subject
      *
      * @param string $subject
-     * @param callable|null $requestCallback
      *
      * @return mixed Should either return the version as int or a PromiseInterface
      *
      * @throws SchemaRegistryException
      */
-    public function latestVersion(string $subject, callable $requestCallback = null);
+    public function latestVersion(string $subject);
 
     /**
      * Look up the global schema id of a schema for a given subject
      *
      * @param string        $subject
      * @param AvroSchema    $schema
-     * @param callable|null $requestCallback
      *
      * @return mixed Should either return the schema id as int or a PromiseInterface
      *
      * @throws SchemaRegistryException
      */
-    public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null);
+    public function schemaId(string $subject, AvroSchema $schema);
 
     /**
      * Gets an AvroSchema for a given global schema id
      *
      * @param int           $schemaId
-     * @param callable|null $requestCallback
      *
      * @return mixed Should either return the schema as AvroSchema or a PromiseInterface
      *
      * @throws SchemaRegistryException
      */
-    public function schemaForId(int $schemaId, callable $requestCallback = null);
+    public function schemaForId(int $schemaId);
 
     /**
      * Gets an AvroSchema for a given subject and version
      *
      * @param string        $subject
      * @param int           $version
-     * @param callable|null $requestCallback
      *
      * @return mixed Should either return the schema as AvroSchema or a PromiseInterface
      *
      * @throws SchemaRegistryException
      */
-    public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null);
+    public function schemaForSubjectAndVersion(string $subject, int $version);
 }
