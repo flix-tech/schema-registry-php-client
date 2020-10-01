@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Test\Registry;
 
 use AvroSchema;
+use AvroSchemaParseException;
+use Exception;
 use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
+use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Registry\PromisingRegistry;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
@@ -13,6 +16,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
@@ -23,10 +27,6 @@ use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 
 class PromisingRegistryTest extends TestCase
 {
-    /**
-     * @var Client
-     */
-    private $clientMock;
 
     /**
      * @var PromisingRegistry
@@ -34,14 +34,9 @@ class PromisingRegistryTest extends TestCase
     private $registry;
 
     /**
-     * @var MockHandler
-     */
-    private $mockHandler;
-
-    /**
      * @test
-     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
-     * @throws \AvroSchemaParseException
+     * @throws SchemaRegistryException
+     * @throws AvroSchemaParseException
      */
     public function it_should_register_schemas(): void
     {
@@ -60,13 +55,13 @@ class PromisingRegistryTest extends TestCase
             $this->assertRequestCallable($expectedRequest)
         );
 
-        $this->assertEquals(3, $promise->wait());
+        self::assertEquals(3, $promise->wait());
     }
 
     /**
      * @test
-     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
-     * @throws \AvroSchemaParseException
+     * @throws SchemaRegistryException
+     * @throws AvroSchemaParseException
      */
     public function it_can_get_the_schema_id_for_a_schema_and_subject(): void
     {
@@ -85,13 +80,13 @@ class PromisingRegistryTest extends TestCase
             $this->assertRequestCallable($expectedRequest)
         );
 
-        $this->assertEquals(2, $promise->wait());
+        self::assertEquals(2, $promise->wait());
     }
 
     /**
      * @test
-     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
-     * @throws \AvroSchemaParseException
+     * @throws SchemaRegistryException
+     * @throws AvroSchemaParseException
      */
     public function it_can_get_a_schema_for_id(): void
     {
@@ -108,13 +103,13 @@ class PromisingRegistryTest extends TestCase
             $this->assertRequestCallable($expectedRequest)
         );
 
-        $this->assertEquals($schema, $promise->wait());
+        self::assertEquals($schema, $promise->wait());
     }
 
     /**
      * @test
-     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
-     * @throws \AvroSchemaParseException
+     * @throws SchemaRegistryException
+     * @throws AvroSchemaParseException
      */
     public function it_can_get_a_schema_for_subject_and_version(): void
     {
@@ -134,13 +129,13 @@ class PromisingRegistryTest extends TestCase
             $this->assertRequestCallable($expectedRequest)
         );
 
-        $this->assertEquals($schema, $promise->wait());
+        self::assertEquals($schema, $promise->wait());
     }
 
     /**
      * @test
-     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
-     * @throws \AvroSchemaParseException
+     * @throws SchemaRegistryException
+     * @throws AvroSchemaParseException
      */
     public function it_can_get_the_schema_version(): void
     {
@@ -159,13 +154,13 @@ class PromisingRegistryTest extends TestCase
             $this->assertRequestCallable($expectedRequest)
         );
 
-        $this->assertEquals(3, $promise->wait());
+        self::assertEquals(3, $promise->wait());
     }
 
     /**
      * @test
-     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
-     * @throws \AvroSchemaParseException
+     * @throws SchemaRegistryException
+     * @throws AvroSchemaParseException
      */
     public function it_can_get_the_latest_version(): void
     {
@@ -184,12 +179,12 @@ class PromisingRegistryTest extends TestCase
             $this->assertRequestCallable($expectedRequest)
         );
 
-        $this->assertEquals($schema, $promise->wait());
+        self::assertEquals($schema, $promise->wait());
     }
 
     /**
      * @test
-     * @throws \FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException
+     * @throws SchemaRegistryException
      */
     public function it_will_not_throw_but_pass_exceptions(): void
     {
@@ -202,26 +197,26 @@ class PromisingRegistryTest extends TestCase
         ];
         $this->registry = new PromisingRegistry($this->clientWithMockResponses($responses));
 
-        /** @var \Exception $exception */
+        /** @var Exception $exception */
         $exception = $this->registry->schemaForId(1)->wait();
 
-        $this->assertInstanceOf(SchemaNotFoundException::class, $exception);
-        $this->assertEquals('test', $exception->getMessage());
+        self::assertInstanceOf(SchemaNotFoundException::class, $exception);
+        self::assertEquals('test', $exception->getMessage());
     }
 
     /**
-     * @param \Psr\Http\Message\ResponseInterface[] $responses
+     * @param ResponseInterface[] $responses
      *
      * @return Client
      */
     private function clientWithMockResponses(array $responses): Client
     {
-        $this->mockHandler = new MockHandler($responses);
-        $stack = HandlerStack::create($this->mockHandler);
+        $mockHandler = new MockHandler($responses);
+        $stack = HandlerStack::create($mockHandler);
 
-        $this->clientMock = new Client(['handler' => $stack]);
+        $clientMock = new Client(['handler' => $stack]);
 
-        return $this->clientMock;
+        return $clientMock;
     }
 
     private function assertRequestCallable(RequestInterface $expectedRequest): callable

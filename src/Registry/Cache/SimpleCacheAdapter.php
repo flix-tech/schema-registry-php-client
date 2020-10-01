@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Registry\Cache;
 
 use AvroSchema;
+use AvroSchemaParseException;
 use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
 use Psr\SimpleCache\CacheInterface;
+use Symfony\Component\Cache\Exception\InvalidArgumentException;
 
 class SimpleCacheAdapter implements CacheAdapter
 {
@@ -22,6 +24,8 @@ class SimpleCacheAdapter implements CacheAdapter
 
     /**
      * {@inheritdoc}
+     *
+     * @throws InvalidArgumentException
      */
     public function cacheSchemaWithId(AvroSchema $schema, int $schemaId): void
     {
@@ -30,6 +34,8 @@ class SimpleCacheAdapter implements CacheAdapter
 
     /**
      * {@inheritdoc}
+     *
+     * @throws InvalidArgumentException
      */
     public function cacheSchemaIdByHash(int $schemaId, string $schemaHash): void
     {
@@ -38,6 +44,8 @@ class SimpleCacheAdapter implements CacheAdapter
 
     /**
      * {@inheritdoc}
+     *
+     * @throws InvalidArgumentException
      */
     public function cacheSchemaWithSubjectAndVersion(AvroSchema $schema, string $subject, int $version): void
     {
@@ -50,7 +58,7 @@ class SimpleCacheAdapter implements CacheAdapter
     /**
      * {@inheritdoc}
      *
-     * @throws \AvroSchemaParseException
+     * @throws AvroSchemaParseException|InvalidArgumentException
      */
     public function getWithId(int $schemaId): ?AvroSchema
     {
@@ -75,7 +83,7 @@ class SimpleCacheAdapter implements CacheAdapter
     /**
      * {@inheritdoc}
      *
-     * @throws \AvroSchemaParseException
+     * @throws AvroSchemaParseException|InvalidArgumentException
      */
     public function getWithSubjectAndVersion(string $subject, int $version): ?AvroSchema
     {
@@ -92,6 +100,8 @@ class SimpleCacheAdapter implements CacheAdapter
 
     /**
      * {@inheritdoc}
+     *
+     * @throws InvalidArgumentException
      */
     public function hasSchemaForId(int $schemaId): bool
     {
@@ -100,6 +110,8 @@ class SimpleCacheAdapter implements CacheAdapter
 
     /**
      * {@inheritdoc}
+     *
+     * @throws InvalidArgumentException
      */
     public function hasSchemaIdForHash(string $schemaHash): bool
     {
@@ -108,6 +120,8 @@ class SimpleCacheAdapter implements CacheAdapter
 
     /**
      * {@inheritdoc}
+     *
+     * @throws InvalidArgumentException
      */
     public function hasSchemaForSubjectAndVersion(string $subject, int $version): bool
     {
@@ -118,9 +132,6 @@ class SimpleCacheAdapter implements CacheAdapter
         return null !== $schema;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     private function makeKeyFromSubjectAndVersion(string $subject, int $version): string
     {
         return sprintf('%s_%d', $subject, $version);

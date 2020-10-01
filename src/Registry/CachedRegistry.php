@@ -48,9 +48,9 @@ class CachedRegistry implements Registry
     /**
      * {@inheritdoc}
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function register(string $subject, AvroSchema $schema, callable $requestCallback = null)
+    public function register(string $subject, AvroSchema $schema)
     {
         $closure = function ($schemaId) use ($schema) {
             if ($schemaId instanceof SchemaRegistryException) {
@@ -64,7 +64,7 @@ class CachedRegistry implements Registry
         };
 
         return $this->applyValueHandlers(
-            $this->registry->register($subject, $schema, $requestCallback),
+            $this->registry->register($subject, $schema),
             static function (PromiseInterface $promise) use ($closure) {
                 return $promise->then($closure);
             },
@@ -75,9 +75,9 @@ class CachedRegistry implements Registry
     /**
      * {@inheritdoc}
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function schemaVersion(string $subject, AvroSchema $schema, callable $requestCallback = null)
+    public function schemaVersion(string $subject, AvroSchema $schema)
     {
         $closure = function ($version) use ($schema, $subject) {
             if ($version instanceof SchemaRegistryException) {
@@ -90,7 +90,7 @@ class CachedRegistry implements Registry
         };
 
         return $this->applyValueHandlers(
-            $this->registry->schemaVersion($subject, $schema, $requestCallback),
+            $this->registry->schemaVersion($subject, $schema),
             static function (PromiseInterface $promise) use ($closure) {
                 return $promise->then($closure);
             },
@@ -101,9 +101,9 @@ class CachedRegistry implements Registry
     /**
      * {@inheritdoc}
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function schemaId(string $subject, AvroSchema $schema, callable $requestCallback = null)
+    public function schemaId(string $subject, AvroSchema $schema)
     {
         $schemaHash = $this->getSchemaHash($schema);
 
@@ -123,7 +123,7 @@ class CachedRegistry implements Registry
         };
 
         return $this->applyValueHandlers(
-            $this->registry->schemaId($subject, $schema, $requestCallback),
+            $this->registry->schemaId($subject, $schema),
             static function (PromiseInterface $promise) use ($closure) {
                 return $promise->then($closure);
             },
@@ -133,9 +133,9 @@ class CachedRegistry implements Registry
 
     /**
      * {@inheritdoc}
-     * @throws \Exception
+     * @throws Exception
      */
-    public function schemaForId(int $schemaId, callable $requestCallback = null)
+    public function schemaForId(int $schemaId)
     {
         if ($this->cacheAdapter->hasSchemaForId($schemaId)) {
             return $this->cacheAdapter->getWithId($schemaId);
@@ -153,7 +153,7 @@ class CachedRegistry implements Registry
         };
 
         return $this->applyValueHandlers(
-            $this->registry->schemaForId($schemaId, $requestCallback),
+            $this->registry->schemaForId($schemaId),
             static function (PromiseInterface $promise) use ($closure) {
                 return $promise->then($closure);
             },
@@ -164,9 +164,9 @@ class CachedRegistry implements Registry
     /**
      * {@inheritdoc}
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function schemaForSubjectAndVersion(string $subject, int $version, callable $requestCallback = null)
+    public function schemaForSubjectAndVersion(string $subject, int $version)
     {
         if ($this->cacheAdapter->hasSchemaForSubjectAndVersion($subject, $version)) {
             return $this->cacheAdapter->getWithSubjectAndVersion($subject, $version);
@@ -183,7 +183,7 @@ class CachedRegistry implements Registry
         };
 
         return $this->applyValueHandlers(
-            $this->registry->schemaForSubjectAndVersion($subject, $version, $requestCallback),
+            $this->registry->schemaForSubjectAndVersion($subject, $version),
             static function (PromiseInterface $promise) use ($closure) {
                 return $promise->then($closure);
             },
@@ -196,19 +196,19 @@ class CachedRegistry implements Registry
      *
      * {@inheritdoc}
      */
-    public function latestVersion(string $subject, callable $requestCallback = null)
+    public function latestVersion(string $subject)
     {
-        return $this->registry->latestVersion($subject, $requestCallback);
+        return $this->registry->latestVersion($subject);
     }
 
     /**
-     * @param PromiseInterface|\Exception|mixed  $value
+     * @param PromiseInterface|Exception|mixed  $value
      * @param callable                           $promiseHandler
      * @param callable                           $valueHandler
      *
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function applyValueHandlers($value, callable $promiseHandler, callable $valueHandler)
     {

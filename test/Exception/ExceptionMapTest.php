@@ -20,7 +20,9 @@ use FlixTech\SchemaRegistryApi\Exception\VersionNotFoundException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use LogicException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class ExceptionMapTest extends TestCase
 {
@@ -256,12 +258,12 @@ class ExceptionMapTest extends TestCase
 
     /**
      * @test
-     *
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage RequestException has no response to inspect
      */
     public function it_should_not_process_exceptions_with_missing_response(): void
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage("RequestException has no response to inspect");
+
         (ExceptionMap::instance())(
             new RequestException(
                 '404 Not Found',
@@ -272,22 +274,21 @@ class ExceptionMapTest extends TestCase
 
     /**
      * @test
-     *
-     * @expectedException \LogicException
      */
     public function it_will_check_for_invalid_schema_registry_exceptions_not_defining_a_code(): void
     {
+        $this->expectException(LogicException::class);
         InvalidNewSchemaRegistryException::errorCode();
     }
 
     /**
      * @test
-     *
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Invalid message body received - cannot find "error_code" field in response body
      */
     public function it_should_not_process_exceptions_with_missing_error_codes(): void
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Invalid message body received - cannot find "error_code" field in response body');
+
         (ExceptionMap::instance())(
             new RequestException(
                 '404 Not Found',
@@ -303,12 +304,12 @@ class ExceptionMapTest extends TestCase
 
     /**
      * @test
-     *
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Unknown error code "99999"
      */
     public function it_should_not_process_unknown_error_codes(): void
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unknown error code "99999"');
+
         (ExceptionMap::instance())(
             new RequestException(
                 '404 Not Found',
@@ -329,9 +330,9 @@ class ExceptionMapTest extends TestCase
         SchemaRegistryException $exception
     ): void
     {
-        $this->assertInstanceOf($exceptionClass, $exception);
-        $this->assertEquals($errorCode, $exception->getCode());
-        $this->assertEquals($expectedMessage, $exception->getMessage());
+        self::assertInstanceOf($exceptionClass, $exception);
+        self::assertEquals($errorCode, $exception->getCode());
+        self::assertEquals($expectedMessage, $exception->getMessage());
     }
 }
 

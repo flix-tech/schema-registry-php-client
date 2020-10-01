@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Registry\Cache;
 
 use AvroSchema;
+use AvroSchemaParseException;
 use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
 use Psr\Cache\CacheItemPoolInterface;
+use Symfony\Component\Cache\Exception\InvalidArgumentException;
 
 class CacheItemPoolAdapter implements CacheAdapter
 {
@@ -32,6 +34,8 @@ class CacheItemPoolAdapter implements CacheAdapter
 
     /**
      * {@inheritdoc}
+     *
+     * @throws InvalidArgumentException
      */
     public function cacheSchemaIdByHash(int $schemaId, string $schemaHash): void
     {
@@ -42,6 +46,8 @@ class CacheItemPoolAdapter implements CacheAdapter
 
     /**
      * {@inheritdoc}
+     *
+     * @throws InvalidArgumentException
      */
     public function cacheSchemaWithSubjectAndVersion(AvroSchema $schema, string $subject, int $version): void
     {
@@ -53,7 +59,7 @@ class CacheItemPoolAdapter implements CacheAdapter
     /**
      * {@inheritdoc}
      *
-     * @throws \AvroSchemaParseException
+     * @throws AvroSchemaParseException|InvalidArgumentException
      */
     public function getWithId(int $schemaId): ?AvroSchema
     {
@@ -85,7 +91,7 @@ class CacheItemPoolAdapter implements CacheAdapter
     /**
      * {@inheritdoc}
      *
-     * @throws \AvroSchemaParseException
+     * @throws AvroSchemaParseException|InvalidArgumentException
      */
     public function getWithSubjectAndVersion(string $subject, int $version): ?AvroSchema
     {
@@ -134,9 +140,6 @@ class CacheItemPoolAdapter implements CacheAdapter
             ->isHit();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     private function makeKeyFromSubjectAndVersion(string $subject, int $version): string
     {
         return sprintf('%s_%d', $subject, $version);

@@ -30,7 +30,7 @@ interface CacheAdapter
      *
      * @return void
      */
-    public function cacheSchemaWithSubjectAndVersion(AvroSchema $schema, string $subject, int $version);
+    public function cacheSchemaWithSubjectAndVersion(AvroSchema $schema, string $subject, int $version): void;
 
     /**
      * Caches a schema id by a hash (i.e. the hash of the Avro schema string representation)
