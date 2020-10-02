@@ -65,7 +65,7 @@ function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subj
         'POST',
         Utils::uriFor("/subjects/$subjectName/versions"),
         Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
-        Requests::prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
+        Requests::prepareJsonSchemaForTransfer(validateStringAsJson($schema))
     );
 }
 
@@ -75,7 +75,7 @@ function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $s
         'POST',
         Utils::uriFor("/compatibility/subjects/$subjectName/versions/$versionId"),
         Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
-        Requests::prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
+        Requests::prepareJsonSchemaForTransfer(validateStringAsJson($schema))
     );
 }
 
@@ -85,7 +85,7 @@ function checkIfSubjectHasSchemaRegisteredRequest(string $subjectName, string $s
         'POST',
         Utils::uriFor("/subjects/$subjectName"),
         Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
-        Requests::prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
+        Requests::prepareJsonSchemaForTransfer(validateStringAsJson($schema))
     );
 }
 
@@ -151,7 +151,7 @@ function validateVersionId($versionId): string
     return (string) $versionId;
 }
 
-function validateSchemaStringAsJson(string $schema): string
+function validateStringAsJson(string $schema): string
 {
     Assert::that($schema)->isJsonString('$schema must be a valid JSON string');
 

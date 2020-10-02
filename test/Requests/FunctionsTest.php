@@ -21,7 +21,7 @@ use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateCompatibilityLevel;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
-use function FlixTech\SchemaRegistryApi\Requests\validateSchemaStringAsJson;
+use function FlixTech\SchemaRegistryApi\Requests\validateStringAsJson;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 
 class FunctionsTest extends TestCase
@@ -194,9 +194,9 @@ class FunctionsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$schema must be a valid JSON string');
 
-        self::assertJsonStringEqualsJsonString('{"type":"test"}', validateSchemaStringAsJson('{"type":"test"}'));
+        self::assertJsonStringEqualsJsonString('{"type":"test"}', validateStringAsJson('{"type":"test"}'));
 
-        validateSchemaStringAsJson('INVALID');
+        validateStringAsJson('INVALID');
     }
 
     /**
