@@ -23,7 +23,6 @@ use Psr\Http\Message\ResponseInterface;
 use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
-use function FlixTech\SchemaRegistryApi\Requests\checkSchemaCompatibilityAgainstVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\defaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
@@ -167,7 +166,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(checkSchemaCompatibilityAgainstVersionRequest(
+            ->sendAsync(Requests::checkSchemaCompatibilityAgainstVersionRequest(
                 $this->compatibleSchemaEvolution,
                 self::SUBJECT_NAME,
                 Constants::VERSION_LATEST
@@ -180,7 +179,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(checkSchemaCompatibilityAgainstVersionRequest(
+            ->sendAsync(Requests::checkSchemaCompatibilityAgainstVersionRequest(
                 $this->incompatibleSchemaEvolution,
                 self::SUBJECT_NAME,
                 Constants::VERSION_LATEST

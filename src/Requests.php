@@ -62,6 +62,16 @@ final class Requests
         );
     }
 
+    public static function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $subjectName, string $versionId): RequestInterface
+    {
+        return new Request(
+            'POST',
+            Utils::uriFor("/compatibility/subjects/$subjectName/versions/$versionId"),
+            Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
+            Requests::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
+        );
+    }
+
     private function __clone()
     {
     }

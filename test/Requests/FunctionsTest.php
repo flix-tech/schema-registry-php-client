@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
 use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
-use function FlixTech\SchemaRegistryApi\Requests\checkSchemaCompatibilityAgainstVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\defaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectVersionRequest;
@@ -92,7 +91,7 @@ class FunctionsTest extends TestCase
      */
     public function it_should_produce_a_request_to_check_schema_compatibility_against_a_subject_version(): void
     {
-        $request = checkSchemaCompatibilityAgainstVersionRequest(
+        $request = Requests::checkSchemaCompatibilityAgainstVersionRequest(
             '{"type":"test"}',
             'test',
             Constants::VERSION_LATEST
