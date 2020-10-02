@@ -59,7 +59,7 @@ final class Requests
             'POST',
             Utils::uriFor("/subjects/$subjectName/versions"),
             Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
-            Requests::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
+            self::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
         );
     }
 
@@ -69,7 +69,7 @@ final class Requests
             'POST',
             Utils::uriFor("/compatibility/subjects/$subjectName/versions/$versionId"),
             Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
-            Requests::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
+            self::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
         );
     }
 
@@ -79,7 +79,7 @@ final class Requests
             'POST',
             Utils::uriFor("/subjects/$subjectName"),
             Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
-            Requests::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
+            self::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
         );
     }
 
@@ -132,7 +132,7 @@ final class Requests
             'PUT',
             '/config',
             Constants::ACCEPT_HEADER,
-            Requests::prepareCompatibilityLevelForTransport(Requests::validateCompatibilityLevel($level))
+            self::prepareCompatibilityLevelForTransport(self::validateCompatibilityLevel($level))
         );
     }
 
@@ -151,7 +151,7 @@ final class Requests
             'PUT',
             Utils::uriFor("/config/$subjectName"),
             Constants::ACCEPT_HEADER,
-            Requests::prepareCompatibilityLevelForTransport(Requests::validateCompatibilityLevel($level))
+            self::prepareCompatibilityLevelForTransport(self::validateCompatibilityLevel($level))
         );
     }
 
