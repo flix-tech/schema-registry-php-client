@@ -18,7 +18,6 @@ use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 
 class Psr18SyncRegistry implements SynchronousRegistry
 {
@@ -80,7 +79,7 @@ class Psr18SyncRegistry implements SynchronousRegistry
 
     public function schemaForId(int $schemaId): AvroSchema
     {
-        $request = Requests::schemaRequest(validateSchemaId($schemaId));
+        $request = Requests::schemaRequest(Requests::validateSchemaId($schemaId));
 
         $response = $this->makeRequest($request);
         $this->guardAgainstErrorResponse($response);

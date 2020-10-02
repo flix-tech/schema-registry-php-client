@@ -170,6 +170,19 @@ final class Requests
         return (string)$versionId;
     }
 
+    /**
+     * @param int|string $schemaId
+     * @return string
+     */
+    public static function validateSchemaId($schemaId): string
+    {
+        Assert::that($schemaId)
+            ->integerish('$schemaId must be an integer value of type int or string')
+            ->greaterThan(0, '$schemaId must be greater than 0');
+
+        return (string)$schemaId;
+    }
+
     private function __clone()
     {
     }

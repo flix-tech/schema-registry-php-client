@@ -19,7 +19,6 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 
 class Psr18SyncRegistryTest extends TestCase
 {
@@ -81,7 +80,7 @@ class Psr18SyncRegistryTest extends TestCase
             new Response(200, [], '{"schema": "\"string\""}')
         ];
         $schema = AvroSchema::parse('"string"');
-        $expectedRequest = Requests::schemaRequest(validateSchemaId(1));
+        $expectedRequest = Requests::schemaRequest(Requests::validateSchemaId(1));
 
         $container = [];
         $this->registry = new Psr18SyncRegistry($this->clientWithMockResponses($responses, $container));

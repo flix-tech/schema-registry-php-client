@@ -11,7 +11,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectVersionRequest;
-use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 
 class FunctionsTest extends TestCase
 {
@@ -327,8 +326,8 @@ class FunctionsTest extends TestCase
      */
     public function it_should_validate_valid_schema_ids(): void
     {
-        self::assertSame('3', validateSchemaId(3));
-        self::assertSame('3', validateSchemaId('3'));
+        self::assertSame('3', Requests::validateSchemaId(3));
+        self::assertSame('3', Requests::validateSchemaId('3'));
     }
 
     /**

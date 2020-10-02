@@ -2,24 +2,10 @@
 
 namespace FlixTech\SchemaRegistryApi\Requests;
 
-use Assert\Assert;
 use FlixTech\SchemaRegistryApi\Constants;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\RequestInterface;
-
-/**
- * @param int|string $schemaId
- * @return string
- */
-function validateSchemaId($schemaId): string
-{
-    Assert::that($schemaId)
-        ->integerish('$schemaId must be an integer value of type int or string')
-        ->greaterThan(0, '$schemaId must be greater than 0');
-
-    return (string) $schemaId;
-}
 
 /**
  * @param string $subjectName
