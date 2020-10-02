@@ -6,6 +6,7 @@ namespace FlixTech\SchemaRegistryApi\Test\Registry;
 
 use AvroSchema;
 use AvroSchemaParseException;
+use FlixTech\SchemaRegistryApi\Constants;
 use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Registry\Psr18SyncRegistry;
@@ -19,7 +20,6 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE;
-use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
@@ -152,7 +152,7 @@ class Psr18SyncRegistryTest extends TestCase
 
         $subject = 'test';
         $schema = AvroSchema::parse('{"type": "string"}');
-        $expectedRequest = singleSubjectVersionRequest($subject, VERSION_LATEST);
+        $expectedRequest = singleSubjectVersionRequest($subject, Constants::VERSION_LATEST);
 
         $container = [];
         $this->registry = new Psr18SyncRegistry($this->clientWithMockResponses($responses, $container));

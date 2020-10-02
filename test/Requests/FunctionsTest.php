@@ -11,7 +11,6 @@ use const FlixTech\SchemaRegistryApi\Constants\ACCEPT;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
-use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
@@ -104,7 +103,7 @@ class FunctionsTest extends TestCase
         $request = checkSchemaCompatibilityAgainstVersionRequest(
             '{"type":"test"}',
             'test',
-            VERSION_LATEST
+            Constants::VERSION_LATEST
         );
 
         self::assertEquals('POST', $request->getMethod());
@@ -336,7 +335,7 @@ class FunctionsTest extends TestCase
      */
     public function it_should_validate_valid_version_id(): void
     {
-        self::assertSame(VERSION_LATEST, validateVersionId(VERSION_LATEST));
+        self::assertSame(Constants::VERSION_LATEST, validateVersionId(Constants::VERSION_LATEST));
         self::assertSame('3', validateVersionId(3));
         self::assertSame('3', validateVersionId('3'));
     }
@@ -367,7 +366,7 @@ class FunctionsTest extends TestCase
      */
     public function it_should_produce_a_valid_subject_version_deletion_request(): void
     {
-        $request = deleteSubjectVersionRequest('test', VERSION_LATEST);
+        $request = deleteSubjectVersionRequest('test', Constants::VERSION_LATEST);
 
         self::assertEquals('DELETE', $request->getMethod());
         self::assertEquals('/subjects/test/versions/latest', $request->getUri());

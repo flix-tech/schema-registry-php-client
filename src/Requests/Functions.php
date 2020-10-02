@@ -12,7 +12,6 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
-use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function implode;
 use function json_decode;
 
@@ -171,7 +170,7 @@ function changeSubjectCompatibilityLevelRequest(string $subjectName, string $lev
  */
 function validateVersionId($versionId): string
 {
-    if (VERSION_LATEST !== $versionId) {
+    if (Constants::VERSION_LATEST !== $versionId) {
         Assert::that($versionId)
             ->integerish('$versionId must be an integer of type int or string')
             ->between(1, 2 ** 31 - 1, '$versionId must be between 1 and 2^31 - 1');

@@ -18,7 +18,6 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
@@ -158,7 +157,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(singleSubjectVersionRequest(self::SUBJECT_NAME, VERSION_LATEST))
+            ->sendAsync(singleSubjectVersionRequest(self::SUBJECT_NAME, Constants::VERSION_LATEST))
             ->then(
                 function (ResponseInterface $request) {
                     $decodedBody = jsonDecode($request->getBody()->getContents());
@@ -174,7 +173,7 @@ INCOMPATIBLE;
             ->sendAsync(checkSchemaCompatibilityAgainstVersionRequest(
                 $this->compatibleSchemaEvolution,
                 self::SUBJECT_NAME,
-                VERSION_LATEST
+                Constants::VERSION_LATEST
             ))->then(
                 function (ResponseInterface $request) {
                     $decodedBody = jsonDecode($request->getBody()->getContents());
@@ -187,7 +186,7 @@ INCOMPATIBLE;
             ->sendAsync(checkSchemaCompatibilityAgainstVersionRequest(
                 $this->incompatibleSchemaEvolution,
                 self::SUBJECT_NAME,
-                VERSION_LATEST
+                Constants::VERSION_LATEST
             ))->otherwise(
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
@@ -209,7 +208,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(singleSubjectVersionRequest('INVALID', VERSION_LATEST))
+            ->sendAsync(singleSubjectVersionRequest('INVALID', Constants::VERSION_LATEST))
             ->otherwise(
                 function (RequestException $exception) {
                     $this->assertInstanceOf(

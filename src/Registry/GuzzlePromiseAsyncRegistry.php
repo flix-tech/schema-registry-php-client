@@ -7,6 +7,7 @@ namespace FlixTech\SchemaRegistryApi\Registry;
 use AvroSchema;
 use Closure;
 use FlixTech\SchemaRegistryApi\AsynchronousRegistry;
+use FlixTech\SchemaRegistryApi\Constants;
 use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
 use FlixTech\SchemaRegistryApi\Exception\RuntimeException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
@@ -15,7 +16,6 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\decodeResponse;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
@@ -154,7 +154,7 @@ class GuzzlePromiseAsyncRegistry implements AsynchronousRegistry
      */
     public function latestVersion(string $subject): PromiseInterface
     {
-        $request = singleSubjectVersionRequest($subject, VERSION_LATEST);
+        $request = singleSubjectVersionRequest($subject, Constants::VERSION_LATEST);
 
         $onFulfilled = function (ResponseInterface $response) {
             return AvroSchema::parse(
