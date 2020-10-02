@@ -18,7 +18,6 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
@@ -203,7 +202,7 @@ class Psr18SyncRegistryTest extends TestCase
         return function (RequestInterface  $actual) use ($expectedRequest) {
             $this->assertEquals($expectedRequest->getUri(), $actual->getUri());
             $this->assertEquals($expectedRequest->getHeader(Constants::ACCEPT), $actual->getHeader(Constants::ACCEPT));
-            $this->assertEquals($expectedRequest->getHeader(CONTENT_TYPE), $actual->getHeader(CONTENT_TYPE));
+            $this->assertEquals($expectedRequest->getHeader(Constants::CONTENT_TYPE), $actual->getHeader(Constants::CONTENT_TYPE));
             $this->assertEquals($expectedRequest->getMethod(), $actual->getMethod());
             $this->assertEquals($expectedRequest->getBody()->getContents(), $actual->getBody()->getContents());
 

@@ -17,6 +17,7 @@ final class Constants
     public const ACCEPT = 'Accept';
     public const ACCEPT_HEADER = [Constants::ACCEPT => 'application/vnd.schemaregistry.v1+json'];
     public const CONTENT_TYPE_HEADER = [CONTENT_TYPE => 'application/vnd.schemaregistry.v1+json'];
+    public const CONTENT_TYPE = 'Content-Type';
 
     private function __construct()
     {
