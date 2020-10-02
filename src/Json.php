@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi;
 
 use Assert\Assert;
+use InvalidArgumentException;
 use JsonException;
+use Psr\Http\Message\ResponseInterface;
 
 final class Json
 {
@@ -43,6 +45,26 @@ final class Json
     public static function jsonEncode($data): string
     {
         return json_encode($data, JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * @param ResponseInterface $response
+     *
+     * @return array<mixed, mixed>
+     */
+    public static function decodeResponse(ResponseInterface $response): array
+    {
+        $body = (string)$response->getBody();
+
+        try {
+            return Json::jsonDecode($body);
+        } catch (JsonException $e) {
+            throw new InvalidArgumentException(
+                sprintf('%s - with content "%s"', $e->getMessage(), $body),
+                $e->getCode(),
+                $e
+            );
+        }
     }
 
     private function __clone()

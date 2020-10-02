@@ -8,31 +8,8 @@ use FlixTech\SchemaRegistryApi\Json;
 use FlixTech\SchemaRegistryApi\Requests;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
-use InvalidArgumentException;
-use JsonException;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use function implode;
-
-/**
- * @param ResponseInterface $response
- *
- * @return array<mixed, mixed>
- */
-function decodeResponse(ResponseInterface $response): array
-{
-    $body = (string) $response->getBody();
-
-    try {
-        return Json::jsonDecode($body);
-    } catch (JsonException $e) {
-        throw new InvalidArgumentException(
-            sprintf('%s - with content "%s"', $e->getMessage(), $body),
-            $e->getCode(),
-            $e
-        );
-    }
-}
 
 function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subjectName): RequestInterface
 {

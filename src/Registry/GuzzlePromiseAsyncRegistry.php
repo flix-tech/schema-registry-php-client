@@ -11,6 +11,7 @@ use FlixTech\SchemaRegistryApi\Constants;
 use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
 use FlixTech\SchemaRegistryApi\Exception\RuntimeException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
+use FlixTech\SchemaRegistryApi\Json;
 use FlixTech\SchemaRegistryApi\Requests;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
@@ -18,7 +19,6 @@ use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
-use function FlixTech\SchemaRegistryApi\Requests\decodeResponse;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
@@ -73,7 +73,7 @@ class GuzzlePromiseAsyncRegistry implements AsynchronousRegistry
         $request = registerNewSchemaVersionWithSubjectRequest((string) $schema, $subject);
 
         $onFulfilled = function (ResponseInterface $response) {
-            return decodeResponse($response)['id'];
+            return Json::decodeResponse($response)['id'];
         };
 
         return $this->makeRequest($request, $onFulfilled);
@@ -89,7 +89,7 @@ class GuzzlePromiseAsyncRegistry implements AsynchronousRegistry
         $request = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
 
         $onFulfilled = function (ResponseInterface $response) {
-            return decodeResponse($response)['id'];
+            return Json::decodeResponse($response)['id'];
         };
 
         return $this->makeRequest($request, $onFulfilled);
@@ -106,7 +106,7 @@ class GuzzlePromiseAsyncRegistry implements AsynchronousRegistry
 
         $onFulfilled = function (ResponseInterface $response) {
             return AvroSchema::parse(
-                decodeResponse($response)['schema']
+                Json::decodeResponse($response)['schema']
             );
         };
 
@@ -124,7 +124,7 @@ class GuzzlePromiseAsyncRegistry implements AsynchronousRegistry
 
         $onFulfilled = function (ResponseInterface $response) {
             return AvroSchema::parse(
-                decodeResponse($response)['schema']
+                Json::decodeResponse($response)['schema']
             );
         };
 
@@ -141,7 +141,7 @@ class GuzzlePromiseAsyncRegistry implements AsynchronousRegistry
         $request = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
 
         $onFulfilled = function (ResponseInterface $response) {
-            return decodeResponse($response)['version'];
+            return Json::decodeResponse($response)['version'];
         };
 
         return $this->makeRequest($request, $onFulfilled);
@@ -158,7 +158,7 @@ class GuzzlePromiseAsyncRegistry implements AsynchronousRegistry
 
         $onFulfilled = function (ResponseInterface $response) {
             return AvroSchema::parse(
-                decodeResponse($response)['schema']
+                Json::decodeResponse($response)['schema']
             );
         };
 
