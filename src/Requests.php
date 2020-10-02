@@ -136,6 +136,15 @@ final class Requests
         );
     }
 
+    public static function subjectCompatibilityLevelRequest(string $subjectName): RequestInterface
+    {
+        return new Request(
+            'GET',
+            Utils::uriFor("/config/$subjectName"),
+            Constants::ACCEPT_HEADER
+        );
+    }
+
     private function __clone()
     {
     }

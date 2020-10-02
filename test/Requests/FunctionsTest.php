@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
 use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectVersionRequest;
-use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 
@@ -158,7 +157,7 @@ class FunctionsTest extends TestCase
      */
     public function it_should_produce_a_request_to_get_the_subject_compatibility_level(): void
     {
-        $request = subjectCompatibilityLevelRequest('test');
+        $request = Requests::subjectCompatibilityLevelRequest('test');
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('/config/test', $request->getUri());

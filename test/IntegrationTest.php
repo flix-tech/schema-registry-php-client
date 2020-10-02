@@ -21,7 +21,6 @@ use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
-use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
 
 /**
  * @group integration
@@ -305,7 +304,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(subjectCompatibilityLevelRequest(self::SUBJECT_NAME))
+            ->sendAsync(Requests::subjectCompatibilityLevelRequest(self::SUBJECT_NAME))
             ->then(
                 function (ResponseInterface $request) {
                     $decodedBody = Json::jsonDecode($request->getBody()->getContents());
