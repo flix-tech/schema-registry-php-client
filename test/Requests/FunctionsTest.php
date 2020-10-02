@@ -13,7 +13,6 @@ use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevel
 use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectVersionRequest;
-use function FlixTech\SchemaRegistryApi\Requests\prepareCompatibilityLevelForTransport;
 use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
@@ -256,31 +255,31 @@ class FunctionsTest extends TestCase
     {
         self::assertEquals(
             '{"compatibility":"NONE"}',
-            prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_NONE)
+            Requests::prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_NONE)
         );
         self::assertEquals(
             '{"compatibility":"BACKWARD"}',
-            prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_BACKWARD)
+            Requests::prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_BACKWARD)
         );
         self::assertEquals(
             '{"compatibility":"BACKWARD_TRANSITIVE"}',
-            prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_BACKWARD_TRANSITIVE)
+            Requests::prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_BACKWARD_TRANSITIVE)
         );
         self::assertEquals(
             '{"compatibility":"FORWARD"}',
-            prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_FORWARD)
+            Requests::prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_FORWARD)
         );
         self::assertEquals(
             '{"compatibility":"FORWARD_TRANSITIVE"}',
-            prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_FORWARD_TRANSITIVE)
+            Requests::prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_FORWARD_TRANSITIVE)
         );
         self::assertEquals(
             '{"compatibility":"FULL"}',
-            prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_FULL)
+            Requests::prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_FULL)
         );
         self::assertEquals(
             '{"compatibility":"FULL_TRANSITIVE"}',
-            prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_FULL_TRANSITIVE)
+            Requests::prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_FULL_TRANSITIVE)
         );
     }
 

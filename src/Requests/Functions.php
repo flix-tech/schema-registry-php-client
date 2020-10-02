@@ -4,7 +4,6 @@ namespace FlixTech\SchemaRegistryApi\Requests;
 
 use Assert\Assert;
 use FlixTech\SchemaRegistryApi\Constants;
-use FlixTech\SchemaRegistryApi\Json;
 use FlixTech\SchemaRegistryApi\Requests;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
@@ -16,7 +15,7 @@ function changeDefaultCompatibilityLevelRequest(string $level): RequestInterface
         'PUT',
         '/config',
         Constants::ACCEPT_HEADER,
-        prepareCompatibilityLevelForTransport(Requests::validateCompatibilityLevel($level))
+        Requests::prepareCompatibilityLevelForTransport(Requests::validateCompatibilityLevel($level))
     );
 }
 
@@ -35,7 +34,7 @@ function changeSubjectCompatibilityLevelRequest(string $subjectName, string $lev
         'PUT',
         Utils::uriFor("/config/$subjectName"),
         Constants::ACCEPT_HEADER,
-        prepareCompatibilityLevelForTransport(Requests::validateCompatibilityLevel($level))
+        Requests::prepareCompatibilityLevelForTransport(Requests::validateCompatibilityLevel($level))
     );
 }
 
@@ -52,11 +51,6 @@ function validateVersionId($versionId): string
     }
 
     return (string) $versionId;
-}
-
-function prepareCompatibilityLevelForTransport(string $compatibilityLevel): string
-{
-    return Json::jsonEncode(['compatibility' => $compatibilityLevel]);
 }
 
 /**

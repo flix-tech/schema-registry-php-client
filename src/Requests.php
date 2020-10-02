@@ -121,6 +121,11 @@ final class Requests
         return $compatibilityVersion;
     }
 
+    public static function prepareCompatibilityLevelForTransport(string $compatibilityLevel): string
+    {
+        return Json::jsonEncode(['compatibility' => $compatibilityLevel]);
+    }
+
     private function __clone()
     {
     }
