@@ -155,6 +155,21 @@ final class Requests
         );
     }
 
+    /**
+     * @param int|string $versionId
+     * @return string
+     */
+    public static function validateVersionId($versionId): string
+    {
+        if (Constants::VERSION_LATEST !== $versionId) {
+            Assert::that($versionId)
+                ->integerish('$versionId must be an integer of type int or string')
+                ->between(1, 2 ** 31 - 1, '$versionId must be between 1 and 2^31 - 1');
+        }
+
+        return (string)$versionId;
+    }
+
     private function __clone()
     {
     }

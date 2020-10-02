@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
-use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 
 class FunctionsTest extends TestCase
 {
@@ -288,7 +287,7 @@ class FunctionsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$versionId must be an integer of type int or string');
 
-        validateVersionId([3]);
+        Requests::validateVersionId([3]);
     }
 
     /**
@@ -299,7 +298,7 @@ class FunctionsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$versionId must be between 1 and 2^31 - 1');
 
-        validateVersionId(2 ** 31);
+        Requests::validateVersionId(2 ** 31);
     }
 
     /**
@@ -310,7 +309,7 @@ class FunctionsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$versionId must be between 1 and 2^31 - 1');
 
-        validateVersionId(0);
+        Requests::validateVersionId(0);
     }
 
     /**
@@ -318,9 +317,9 @@ class FunctionsTest extends TestCase
      */
     public function it_should_validate_valid_version_id(): void
     {
-        self::assertSame(Constants::VERSION_LATEST, validateVersionId(Constants::VERSION_LATEST));
-        self::assertSame('3', validateVersionId(3));
-        self::assertSame('3', validateVersionId('3'));
+        self::assertSame(Constants::VERSION_LATEST, Requests::validateVersionId(Constants::VERSION_LATEST));
+        self::assertSame('3', Requests::validateVersionId(3));
+        self::assertSame('3', Requests::validateVersionId('3'));
     }
 
     /**

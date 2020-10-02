@@ -20,7 +20,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
-use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 
 class Psr18SyncRegistryTest extends TestCase
 {
@@ -104,7 +103,7 @@ class Psr18SyncRegistryTest extends TestCase
         $subject = 'test';
         $version = 2;
         $schema = AvroSchema::parse('{"type": "string"}');
-        $expectedRequest = Requests::singleSubjectVersionRequest($subject, validateVersionId($version));
+        $expectedRequest = Requests::singleSubjectVersionRequest($subject, Requests::validateVersionId($version));
 
         $container = [];
         $this->registry = new Psr18SyncRegistry($this->clientWithMockResponses($responses, $container));

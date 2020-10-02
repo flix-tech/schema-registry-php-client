@@ -19,7 +19,6 @@ use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
-use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 
 class GuzzlePromiseAsyncRegistry implements AsynchronousRegistry
 {
@@ -117,7 +116,7 @@ class GuzzlePromiseAsyncRegistry implements AsynchronousRegistry
      */
     public function schemaForSubjectAndVersion(string $subject, int $version): PromiseInterface
     {
-        $request = Requests::singleSubjectVersionRequest($subject, validateVersionId($version));
+        $request = Requests::singleSubjectVersionRequest($subject, Requests::validateVersionId($version));
 
         $onFulfilled = function (ResponseInterface $response) {
             return AvroSchema::parse(
