@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Exception;
 
-use LogicException;
-use RuntimeException;
+use RuntimeException as PHPRuntimeException;
 
-abstract class AbstractSchemaRegistryException extends RuntimeException implements SchemaRegistryException
+abstract class AbstractSchemaRegistryException extends PHPRuntimeException implements SchemaRegistryException
 {
     public const ERROR_CODE = 0;
 

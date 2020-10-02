@@ -6,9 +6,6 @@ namespace FlixTech\SchemaRegistryApi;
 
 use AvroSchema;
 
-/**
- * {@inheritdoc}
- */
 interface SynchronousRegistry extends Registry
 {
     /**

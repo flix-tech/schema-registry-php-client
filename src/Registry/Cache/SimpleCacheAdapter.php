@@ -6,7 +6,6 @@ namespace FlixTech\SchemaRegistryApi\Registry\Cache;
 
 use AvroSchema;
 use AvroSchemaParseException;
-use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Exception\InvalidArgumentException;
 

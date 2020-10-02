@@ -6,7 +6,7 @@ namespace FlixTech\SchemaRegistryApi\Test\Registry\Cache;
 
 use AvroSchema;
 use AvroSchemaParseException;
-use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
+use FlixTech\SchemaRegistryApi\Registry\Cache\CacheAdapter;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractCacheAdapterTestCase extends TestCase

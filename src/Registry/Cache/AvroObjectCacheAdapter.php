@@ -5,11 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Registry\Cache;
 
 use AvroSchema;
-use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
 
-/**
- * {@inheritdoc}
- */
 class AvroObjectCacheAdapter implements CacheAdapter
 {
     /**

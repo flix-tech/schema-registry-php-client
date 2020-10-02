@@ -1,11 +1,14 @@
-<?php
+<?php /** @noinspection AdditionOperationOnArraysInspection */
 
 namespace FlixTech\SchemaRegistryApi\Requests;
 
 use Assert\Assert;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\UriTemplate;
+use GuzzleHttp\Psr7\Utils;
+use InvalidArgumentException;
+use JsonException;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD_TRANSITIVE;
@@ -17,13 +20,59 @@ use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function implode;
+use function json_decode;
+
+/**
+ * @param string $jsonString
+ * @param int $depth
+ *
+ * @return mixed
+ *
+ * @throws JsonException
+ */
+function jsonDecode(string $jsonString, int $depth = 512)
+{
+    return json_decode($jsonString, true, $depth, JSON_THROW_ON_ERROR);
+}
+
+/**
+ * @param mixed $data
+ *
+ * @return string
+ *
+ * @throws JsonException
+ */
+function jsonEncode($data): string
+{
+    return json_encode($data, JSON_THROW_ON_ERROR);
+}
+
+/**
+ * @param ResponseInterface $response
+ *
+ * @return array<mixed, mixed>
+ */
+function decodeResponse(ResponseInterface $response): array
+{
+    $body = (string) $response->getBody();
+
+    try {
+        return jsonDecode($body);
+    } catch (JsonException $e) {
+        throw new InvalidArgumentException(
+            sprintf('%s - with content "%s"', $e->getMessage(), $body),
+            $e->getCode(),
+            $e
+        );
+    }
+}
 
 function allSubjectsRequest(): RequestInterface
 {
     return new Request(
         'GET',
         '/subjects',
-        [ACCEPT_HEADER]
+        ACCEPT_HEADER
     );
 }
 
@@ -31,8 +80,8 @@ function allSubjectVersionsRequest(string $subjectName): RequestInterface
 {
     return new Request(
         'GET',
-        (new UriTemplate())->expand('/subjects/{name}/versions', ['name' => $subjectName]),
-        [ACCEPT_HEADER]
+        Utils::uriFor("/subjects/$subjectName/versions"),
+        ACCEPT_HEADER
     );
 }
 
@@ -40,11 +89,8 @@ function singleSubjectVersionRequest(string $subjectName, string $versionId): Re
 {
     return new Request(
         'GET',
-        (new UriTemplate())->expand(
-            '/subjects/{name}/versions/{id}',
-            ['name' => $subjectName, 'id' => $versionId]
-        ),
-        [ACCEPT_HEADER]
+        Utils::uriFor("/subjects/$subjectName/versions/$versionId"),
+        ACCEPT_HEADER
     );
 }
 
@@ -52,8 +98,8 @@ function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subj
 {
     return new Request(
         'POST',
-        (new UriTemplate())->expand('/subjects/{name}/versions', ['name' => $subjectName]),
-        [CONTENT_TYPE_HEADER, ACCEPT_HEADER],
+        Utils::uriFor("/subjects/$subjectName/versions"),
+        CONTENT_TYPE_HEADER + ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
@@ -62,11 +108,8 @@ function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $s
 {
     return new Request(
         'POST',
-        (new UriTemplate())->expand(
-            '/compatibility/subjects/{name}/versions/{version}',
-            ['name' => $subjectName, 'version' => $versionId]
-        ),
-        [CONTENT_TYPE_HEADER, ACCEPT_HEADER],
+        Utils::uriFor("/compatibility/subjects/$subjectName/versions/$versionId"),
+        CONTENT_TYPE_HEADER + ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
@@ -75,8 +118,8 @@ function checkIfSubjectHasSchemaRegisteredRequest(string $subjectName, string $s
 {
     return new Request(
         'POST',
-        (new UriTemplate())->expand('/subjects/{name}', ['name' => $subjectName]),
-        [CONTENT_TYPE_HEADER, ACCEPT_HEADER],
+        Utils::uriFor("/subjects/$subjectName"),
+        CONTENT_TYPE_HEADER + ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
@@ -85,8 +128,8 @@ function schemaRequest(string $id): RequestInterface
 {
     return new Request(
         'GET',
-        (new UriTemplate())->expand('/schemas/ids/{id}', ['id' => $id]),
-        [ACCEPT_HEADER]
+        Utils::uriFor("/schemas/ids/$id"),
+        ACCEPT_HEADER
     );
 }
 
@@ -95,7 +138,7 @@ function defaultCompatibilityLevelRequest(): RequestInterface
     return new Request(
         'GET',
         '/config',
-        [ACCEPT_HEADER]
+        ACCEPT_HEADER
     );
 }
 
@@ -104,7 +147,7 @@ function changeDefaultCompatibilityLevelRequest(string $level): RequestInterface
     return new Request(
         'PUT',
         '/config',
-        [ACCEPT_HEADER],
+        ACCEPT_HEADER,
         prepareCompatibilityLevelForTransport(validateCompatibilityLevel($level))
     );
 }
@@ -113,8 +156,8 @@ function subjectCompatibilityLevelRequest(string $subjectName): RequestInterface
 {
     return new Request(
         'GET',
-        (new UriTemplate())->expand('/config/{subject}', ['subject' => $subjectName]),
-        [ACCEPT_HEADER]
+        Utils::uriFor("/config/$subjectName"),
+        ACCEPT_HEADER
     );
 }
 
@@ -122,8 +165,8 @@ function changeSubjectCompatibilityLevelRequest(string $subjectName, string $lev
 {
     return new Request(
         'PUT',
-        (new UriTemplate())->expand('/config/{subject}', ['subject' => $subjectName]),
-        [ACCEPT_HEADER],
+        Utils::uriFor("/config/$subjectName"),
+        ACCEPT_HEADER,
         prepareCompatibilityLevelForTransport(validateCompatibilityLevel($level))
     );
 }
@@ -152,13 +195,13 @@ function validateSchemaStringAsJson(string $schema): string
 
 function prepareJsonSchemaForTransfer(string $schema): string
 {
-    $decoded = \GuzzleHttp\json_decode($schema, true);
+    $decoded = jsonDecode($schema);
 
     if (is_array($decoded) && array_key_exists('schema', $decoded)) {
-        return \GuzzleHttp\json_encode($decoded);
+        return jsonEncode($decoded);
     }
 
-    return \GuzzleHttp\json_encode(['schema' => \GuzzleHttp\json_encode($decoded)]);
+    return jsonEncode(['schema' => jsonEncode($decoded)]);
 }
 
 function validateCompatibilityLevel(string $compatibilityVersion): string
@@ -183,7 +226,7 @@ function validateCompatibilityLevel(string $compatibilityVersion): string
 
 function prepareCompatibilityLevelForTransport(string $compatibilityLevel): string
 {
-    return \GuzzleHttp\json_encode(['compatibility' => $compatibilityLevel]);
+    return jsonEncode(['compatibility' => $compatibilityLevel]);
 }
 
 /**
@@ -207,8 +250,8 @@ function deleteSubjectRequest(string $subjectName): RequestInterface
 {
     return new Request(
         'DELETE',
-        (new UriTemplate())->expand('/subjects/{name}', ['name' => $subjectName]),
-        [ACCEPT_HEADER]
+        Utils::uriFor("/subjects/$subjectName"),
+        ACCEPT_HEADER
     );
 }
 
@@ -221,7 +264,7 @@ function deleteSubjectVersionRequest(string $subjectName, string $versionId): Re
 {
     return new Request(
         'DELETE',
-        (new UriTemplate())->expand('/subjects/{name}/versions/{version}', ['name' => $subjectName, 'version' => $versionId]),
-        [ACCEPT_HEADER]
+        Utils::uriFor("/subjects/$subjectName/versions/$versionId"),
+        ACCEPT_HEADER
     );
 }
