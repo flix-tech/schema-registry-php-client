@@ -145,6 +145,16 @@ final class Requests
         );
     }
 
+    public static function changeSubjectCompatibilityLevelRequest(string $subjectName, string $level): RequestInterface
+    {
+        return new Request(
+            'PUT',
+            Utils::uriFor("/config/$subjectName"),
+            Constants::ACCEPT_HEADER,
+            Requests::prepareCompatibilityLevelForTransport(Requests::validateCompatibilityLevel($level))
+        );
+    }
+
     private function __clone()
     {
     }

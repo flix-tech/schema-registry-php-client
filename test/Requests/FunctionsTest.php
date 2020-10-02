@@ -9,7 +9,6 @@ use FlixTech\SchemaRegistryApi\Json;
 use FlixTech\SchemaRegistryApi\Requests;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
@@ -169,7 +168,7 @@ class FunctionsTest extends TestCase
      */
     public function it_should_produce_a_request_to_change_the_subject_compatibility_level(): void
     {
-        $request = changeSubjectCompatibilityLevelRequest('test', Constants::COMPATIBILITY_FORWARD);
+        $request = Requests::changeSubjectCompatibilityLevelRequest('test', Constants::COMPATIBILITY_FORWARD);
 
         self::assertEquals('PUT', $request->getMethod());
         self::assertEquals('/config/test', $request->getUri());

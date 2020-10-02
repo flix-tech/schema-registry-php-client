@@ -4,20 +4,9 @@ namespace FlixTech\SchemaRegistryApi\Requests;
 
 use Assert\Assert;
 use FlixTech\SchemaRegistryApi\Constants;
-use FlixTech\SchemaRegistryApi\Requests;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\RequestInterface;
-
-function changeSubjectCompatibilityLevelRequest(string $subjectName, string $level): RequestInterface
-{
-    return new Request(
-        'PUT',
-        Utils::uriFor("/config/$subjectName"),
-        Constants::ACCEPT_HEADER,
-        Requests::prepareCompatibilityLevelForTransport(Requests::validateCompatibilityLevel($level))
-    );
-}
 
 /**
  * @param int|string $versionId

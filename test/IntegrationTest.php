@@ -20,7 +20,6 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
 
 /**
  * @group integration
@@ -291,7 +290,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(changeSubjectCompatibilityLevelRequest(self::SUBJECT_NAME, Constants::COMPATIBILITY_FORWARD))
+            ->sendAsync(Requests::changeSubjectCompatibilityLevelRequest(self::SUBJECT_NAME, Constants::COMPATIBILITY_FORWARD))
             ->then(
                 function (ResponseInterface $request) {
                     $decodedBody = Json::jsonDecode($request->getBody()->getContents());
