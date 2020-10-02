@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Test;
 
+use FlixTech\SchemaRegistryApi\Constants;
 use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
 use FlixTech\SchemaRegistryApi\Exception\IncompatibleAvroSchemaException;
 use FlixTech\SchemaRegistryApi\Exception\InvalidAvroSchemaException;
@@ -17,7 +18,6 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
@@ -283,7 +283,7 @@ INCOMPATIBLE;
                     $decodedBody = jsonDecode($request->getBody()->getContents());
 
                     $this->assertEquals(
-                        COMPATIBILITY_BACKWARD,
+                        Constants::COMPATIBILITY_BACKWARD,
                         $decodedBody['compatibilityLevel']
                     );
                 }
