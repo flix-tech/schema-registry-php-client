@@ -58,15 +58,6 @@ function decodeResponse(ResponseInterface $response): array
     }
 }
 
-function allSubjectVersionsRequest(string $subjectName): RequestInterface
-{
-    return new Request(
-        'GET',
-        Utils::uriFor("/subjects/$subjectName/versions"),
-        Constants::ACCEPT_HEADER
-    );
-}
-
 function singleSubjectVersionRequest(string $subjectName, string $versionId): RequestInterface
 {
     return new Request(

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi;
 
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\RequestInterface;
 
 final class Requests
@@ -18,6 +19,15 @@ final class Requests
         return new Request(
             'GET',
             '/subjects',
+            Constants::ACCEPT_HEADER
+        );
+    }
+
+    public static function allSubjectVersionsRequest(string $subjectName): RequestInterface
+    {
+        return new Request(
+            'GET',
+            Utils::uriFor("/subjects/$subjectName/versions"),
             Constants::ACCEPT_HEADER
         );
     }

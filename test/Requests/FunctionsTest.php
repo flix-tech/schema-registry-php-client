@@ -8,7 +8,6 @@ use FlixTech\SchemaRegistryApi\Constants;
 use FlixTech\SchemaRegistryApi\Requests;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
@@ -46,7 +45,7 @@ class FunctionsTest extends TestCase
      */
     public function it_should_produce_a_Request_to_get_all_subject_versions(): void
     {
-        $request = allSubjectVersionsRequest('test');
+        $request = Requests::allSubjectVersionsRequest('test');
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('/subjects/test/versions', $request->getUri());

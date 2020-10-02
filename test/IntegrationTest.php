@@ -19,7 +19,6 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
@@ -260,7 +259,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(allSubjectVersionsRequest(self::SUBJECT_NAME))
+            ->sendAsync(Requests::allSubjectVersionsRequest(self::SUBJECT_NAME))
             ->then(
                 function (ResponseInterface $request) {
                     $this->assertEquals([1, 2], jsonDecode($request->getBody()->getContents()));
