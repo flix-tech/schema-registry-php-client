@@ -9,19 +9,6 @@ use Psr\Http\Message\RequestInterface;
 
 /**
  * @param string $subjectName
- * @return RequestInterface
- */
-function deleteSubjectRequest(string $subjectName): RequestInterface
-{
-    return new Request(
-        'DELETE',
-        Utils::uriFor("/subjects/$subjectName"),
-        Constants::ACCEPT_HEADER
-    );
-}
-
-/**
- * @param string $subjectName
  * @param string $versionId
  * @return RequestInterface
  */

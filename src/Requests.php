@@ -183,6 +183,19 @@ final class Requests
         return (string)$schemaId;
     }
 
+    /**
+     * @param string $subjectName
+     * @return RequestInterface
+     */
+    public static function deleteSubjectRequest(string $subjectName): RequestInterface
+    {
+        return new Request(
+            'DELETE',
+            Utils::uriFor("/subjects/$subjectName"),
+            Constants::ACCEPT_HEADER
+        );
+    }
+
     private function __clone()
     {
     }
