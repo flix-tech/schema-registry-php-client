@@ -9,16 +9,6 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\RequestInterface;
 
-function changeDefaultCompatibilityLevelRequest(string $level): RequestInterface
-{
-    return new Request(
-        'PUT',
-        '/config',
-        Constants::ACCEPT_HEADER,
-        Requests::prepareCompatibilityLevelForTransport(Requests::validateCompatibilityLevel($level))
-    );
-}
-
 function subjectCompatibilityLevelRequest(string $subjectName): RequestInterface
 {
     return new Request(

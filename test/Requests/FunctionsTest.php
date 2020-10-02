@@ -9,7 +9,6 @@ use FlixTech\SchemaRegistryApi\Json;
 use FlixTech\SchemaRegistryApi\Requests;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectVersionRequest;
@@ -146,7 +145,7 @@ class FunctionsTest extends TestCase
      */
     public function it_should_produce_a_request_to_change_the_global_compatibility_level(): void
     {
-        $request = changeDefaultCompatibilityLevelRequest(Constants::COMPATIBILITY_FULL);
+        $request = Requests::changeDefaultCompatibilityLevelRequest(Constants::COMPATIBILITY_FULL);
 
         self::assertEquals('PUT', $request->getMethod());
         self::assertEquals('/config', $request->getUri());

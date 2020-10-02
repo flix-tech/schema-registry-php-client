@@ -126,6 +126,16 @@ final class Requests
         return Json::jsonEncode(['compatibility' => $compatibilityLevel]);
     }
 
+    public static function changeDefaultCompatibilityLevelRequest(string $level): RequestInterface
+    {
+        return new Request(
+            'PUT',
+            '/config',
+            Constants::ACCEPT_HEADER,
+            Requests::prepareCompatibilityLevelForTransport(Requests::validateCompatibilityLevel($level))
+        );
+    }
+
     private function __clone()
     {
     }
