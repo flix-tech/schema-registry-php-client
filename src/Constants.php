@@ -6,6 +6,8 @@ namespace FlixTech\SchemaRegistryApi;
 
 final class Constants
 {
+    public const COMPATIBILITY_NONE = 'NONE';
+
     private function __construct()
     {
     }

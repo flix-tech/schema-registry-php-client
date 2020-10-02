@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Test\Requests;
 
+use FlixTech\SchemaRegistryApi\Constants;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT;
@@ -14,7 +15,6 @@ use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL_TRANSITIVE;
-use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
@@ -238,8 +238,8 @@ class FunctionsTest extends TestCase
         $this->expectExceptionMessage('$level must be one of NONE, BACKWARD, BACKWARD_TRANSITIVE, FORWARD, FORWARD_TRANSITIVE, FULL, FULL_TRANSITIVE');
 
         self::assertEquals(
-            COMPATIBILITY_NONE,
-            validateCompatibilityLevel(COMPATIBILITY_NONE)
+            Constants::COMPATIBILITY_NONE,
+            validateCompatibilityLevel(Constants::COMPATIBILITY_NONE)
         );
         self::assertEquals(
             COMPATIBILITY_FULL,
@@ -276,7 +276,7 @@ class FunctionsTest extends TestCase
     {
         self::assertEquals(
             '{"compatibility":"NONE"}',
-            prepareCompatibilityLevelForTransport(COMPATIBILITY_NONE)
+            prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_NONE)
         );
         self::assertEquals(
             '{"compatibility":"BACKWARD"}',

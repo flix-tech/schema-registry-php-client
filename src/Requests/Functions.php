@@ -3,6 +3,7 @@
 namespace FlixTech\SchemaRegistryApi\Requests;
 
 use Assert\Assert;
+use FlixTech\SchemaRegistryApi\Constants;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
 use InvalidArgumentException;
@@ -16,7 +17,6 @@ use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL_TRANSITIVE;
-use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function implode;
@@ -207,7 +207,7 @@ function prepareJsonSchemaForTransfer(string $schema): string
 function validateCompatibilityLevel(string $compatibilityVersion): string
 {
     $compatibilities = [
-        COMPATIBILITY_NONE,
+        Constants::COMPATIBILITY_NONE,
         COMPATIBILITY_BACKWARD,
         COMPATIBILITY_BACKWARD_TRANSITIVE,
         COMPATIBILITY_FORWARD,
