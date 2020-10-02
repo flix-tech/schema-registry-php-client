@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Exception;
 
 use Exception;
+use FlixTech\SchemaRegistryApi\Json;
 use Psr\Http\Message\ResponseInterface;
 use function array_key_exists;
-use function FlixTech\SchemaRegistryApi\Requests\jsonDecode;
 use function sprintf;
 
 final class ExceptionMap
@@ -89,7 +89,7 @@ final class ExceptionMap
     private function guardAgainstMissingErrorCode(ResponseInterface $response): array
     {
         try {
-            $decodedBody = jsonDecode((string) $response->getBody());
+            $decodedBody = Json::jsonDecode((string)$response->getBody());
 
             if (!array_key_exists(self::ERROR_CODE_FIELD_NAME, $decodedBody)) {
                 throw new RuntimeException(
