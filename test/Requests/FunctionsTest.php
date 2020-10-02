@@ -9,7 +9,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
-use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
@@ -241,8 +240,8 @@ class FunctionsTest extends TestCase
             validateCompatibilityLevel(Constants::COMPATIBILITY_FULL)
         );
         self::assertEquals(
-            COMPATIBILITY_FULL_TRANSITIVE,
-            validateCompatibilityLevel(COMPATIBILITY_FULL_TRANSITIVE)
+            Constants::COMPATIBILITY_FULL_TRANSITIVE,
+            validateCompatibilityLevel(Constants::COMPATIBILITY_FULL_TRANSITIVE)
         );
         self::assertEquals(
             Constants::COMPATIBILITY_BACKWARD,
@@ -295,7 +294,7 @@ class FunctionsTest extends TestCase
         );
         self::assertEquals(
             '{"compatibility":"FULL_TRANSITIVE"}',
-            prepareCompatibilityLevelForTransport(COMPATIBILITY_FULL_TRANSITIVE)
+            prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_FULL_TRANSITIVE)
         );
     }
 

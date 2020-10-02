@@ -2,7 +2,6 @@
 
 namespace FlixTech\SchemaRegistryApi\Constants;
 
-const COMPATIBILITY_FULL_TRANSITIVE = 'FULL_TRANSITIVE';
 const VERSION_LATEST = 'latest';
 const ACCEPT = 'Accept';
 const ACCEPT_HEADER = [ACCEPT => 'application/vnd.schemaregistry.v1+json'];
