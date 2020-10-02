@@ -10,7 +10,6 @@ use InvalidArgumentException;
 use JsonException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
 use function implode;
 use function json_decode;
@@ -65,7 +64,7 @@ function allSubjectsRequest(): RequestInterface
     return new Request(
         'GET',
         '/subjects',
-        ACCEPT_HEADER
+        Constants::ACCEPT_HEADER
     );
 }
 
@@ -74,7 +73,7 @@ function allSubjectVersionsRequest(string $subjectName): RequestInterface
     return new Request(
         'GET',
         Utils::uriFor("/subjects/$subjectName/versions"),
-        ACCEPT_HEADER
+        Constants::ACCEPT_HEADER
     );
 }
 
@@ -83,7 +82,7 @@ function singleSubjectVersionRequest(string $subjectName, string $versionId): Re
     return new Request(
         'GET',
         Utils::uriFor("/subjects/$subjectName/versions/$versionId"),
-        ACCEPT_HEADER
+        Constants::ACCEPT_HEADER
     );
 }
 
@@ -92,7 +91,7 @@ function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subj
     return new Request(
         'POST',
         Utils::uriFor("/subjects/$subjectName/versions"),
-        CONTENT_TYPE_HEADER + ACCEPT_HEADER,
+        CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
@@ -102,7 +101,7 @@ function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $s
     return new Request(
         'POST',
         Utils::uriFor("/compatibility/subjects/$subjectName/versions/$versionId"),
-        CONTENT_TYPE_HEADER + ACCEPT_HEADER,
+        CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
@@ -112,7 +111,7 @@ function checkIfSubjectHasSchemaRegisteredRequest(string $subjectName, string $s
     return new Request(
         'POST',
         Utils::uriFor("/subjects/$subjectName"),
-        CONTENT_TYPE_HEADER + ACCEPT_HEADER,
+        CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
@@ -122,7 +121,7 @@ function schemaRequest(string $id): RequestInterface
     return new Request(
         'GET',
         Utils::uriFor("/schemas/ids/$id"),
-        ACCEPT_HEADER
+        Constants::ACCEPT_HEADER
     );
 }
 
@@ -131,7 +130,7 @@ function defaultCompatibilityLevelRequest(): RequestInterface
     return new Request(
         'GET',
         '/config',
-        ACCEPT_HEADER
+        Constants::ACCEPT_HEADER
     );
 }
 
@@ -140,7 +139,7 @@ function changeDefaultCompatibilityLevelRequest(string $level): RequestInterface
     return new Request(
         'PUT',
         '/config',
-        ACCEPT_HEADER,
+        Constants::ACCEPT_HEADER,
         prepareCompatibilityLevelForTransport(validateCompatibilityLevel($level))
     );
 }
@@ -150,7 +149,7 @@ function subjectCompatibilityLevelRequest(string $subjectName): RequestInterface
     return new Request(
         'GET',
         Utils::uriFor("/config/$subjectName"),
-        ACCEPT_HEADER
+        Constants::ACCEPT_HEADER
     );
 }
 
@@ -159,7 +158,7 @@ function changeSubjectCompatibilityLevelRequest(string $subjectName, string $lev
     return new Request(
         'PUT',
         Utils::uriFor("/config/$subjectName"),
-        ACCEPT_HEADER,
+        Constants::ACCEPT_HEADER,
         prepareCompatibilityLevelForTransport(validateCompatibilityLevel($level))
     );
 }
@@ -244,7 +243,7 @@ function deleteSubjectRequest(string $subjectName): RequestInterface
     return new Request(
         'DELETE',
         Utils::uriFor("/subjects/$subjectName"),
-        ACCEPT_HEADER
+        Constants::ACCEPT_HEADER
     );
 }
 
@@ -258,6 +257,6 @@ function deleteSubjectVersionRequest(string $subjectName, string $versionId): Re
     return new Request(
         'DELETE',
         Utils::uriFor("/subjects/$subjectName/versions/$versionId"),
-        ACCEPT_HEADER
+        Constants::ACCEPT_HEADER
     );
 }

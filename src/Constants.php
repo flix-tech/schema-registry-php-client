@@ -15,6 +15,7 @@ final class Constants
     public const COMPATIBILITY_FULL_TRANSITIVE = 'FULL_TRANSITIVE';
     public const VERSION_LATEST = 'latest';
     public const ACCEPT = 'Accept';
+    public const ACCEPT_HEADER = [Constants::ACCEPT => 'application/vnd.schemaregistry.v1+json'];
 
     private function __construct()
     {
