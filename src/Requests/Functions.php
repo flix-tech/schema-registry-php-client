@@ -4,6 +4,7 @@ namespace FlixTech\SchemaRegistryApi\Requests;
 
 use Assert\Assert;
 use FlixTech\SchemaRegistryApi\Constants;
+use FlixTech\SchemaRegistryApi\Requests;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
 use InvalidArgumentException;
@@ -64,7 +65,7 @@ function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subj
         'POST',
         Utils::uriFor("/subjects/$subjectName/versions"),
         Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
-        prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
+        Requests::prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
 
@@ -74,7 +75,7 @@ function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $s
         'POST',
         Utils::uriFor("/compatibility/subjects/$subjectName/versions/$versionId"),
         Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
-        prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
+        Requests::prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
 
@@ -84,7 +85,7 @@ function checkIfSubjectHasSchemaRegisteredRequest(string $subjectName, string $s
         'POST',
         Utils::uriFor("/subjects/$subjectName"),
         Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
-        prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
+        Requests::prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
 
@@ -155,17 +156,6 @@ function validateSchemaStringAsJson(string $schema): string
     Assert::that($schema)->isJsonString('$schema must be a valid JSON string');
 
     return $schema;
-}
-
-function prepareJsonSchemaForTransfer(string $schema): string
-{
-    $decoded = jsonDecode($schema);
-
-    if (is_array($decoded) && array_key_exists('schema', $decoded)) {
-        return jsonEncode($decoded);
-    }
-
-    return jsonEncode(['schema' => jsonEncode($decoded)]);
 }
 
 function validateCompatibilityLevel(string $compatibilityVersion): string

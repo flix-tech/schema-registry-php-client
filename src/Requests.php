@@ -7,6 +7,8 @@ namespace FlixTech\SchemaRegistryApi;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\RequestInterface;
+use function FlixTech\SchemaRegistryApi\Requests\jsonDecode;
+use function FlixTech\SchemaRegistryApi\Requests\jsonEncode;
 
 final class Requests
 {
@@ -39,6 +41,17 @@ final class Requests
             Utils::uriFor("/subjects/$subjectName/versions/$versionId"),
             Constants::ACCEPT_HEADER
         );
+    }
+
+    public static function prepareJsonSchemaForTransfer(string $schema): string
+    {
+        $decoded = jsonDecode($schema);
+
+        if (is_array($decoded) && array_key_exists('schema', $decoded)) {
+            return jsonEncode($decoded);
+        }
+
+        return jsonEncode(['schema' => jsonEncode($decoded)]);
     }
 
     private function __clone()

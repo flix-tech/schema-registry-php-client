@@ -16,7 +16,6 @@ use function FlixTech\SchemaRegistryApi\Requests\defaultCompatibilityLevelReques
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\prepareCompatibilityLevelForTransport;
-use function FlixTech\SchemaRegistryApi\Requests\prepareJsonSchemaForTransfer;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
@@ -207,12 +206,12 @@ class FunctionsTest extends TestCase
     {
         self::assertJsonStringEqualsJsonString(
             '{"schema":"{\"type\":\"string\"}"}',
-            prepareJsonSchemaForTransfer('{"type": "string"}')
+            Requests::prepareJsonSchemaForTransfer('{"type": "string"}')
         );
 
         self::assertJsonStringEqualsJsonString(
             '{"schema":"{\"type\": \"string\"}"}',
-            prepareJsonSchemaForTransfer('{"schema":"{\"type\": \"string\"}"}')
+            Requests::prepareJsonSchemaForTransfer('{"schema":"{\"type\": \"string\"}"}')
         );
     }
 
