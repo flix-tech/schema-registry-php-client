@@ -8,7 +8,6 @@ use FlixTech\SchemaRegistryApi\Constants;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE;
-use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
@@ -77,7 +76,7 @@ class FunctionsTest extends TestCase
         self::assertEquals('POST', $request->getMethod());
         self::assertEquals('/subjects/test/versions', $request->getUri());
         self::assertEquals(
-            [CONTENT_TYPE => [CONTENT_TYPE_HEADER[CONTENT_TYPE]]] + [Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]],
+            [CONTENT_TYPE => [Constants::CONTENT_TYPE_HEADER[CONTENT_TYPE]]] + [Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]],
             $request->getHeaders()
         );
         self::assertEquals('{"schema":"{\"type\":\"string\"}"}', $request->getBody()->getContents());
@@ -87,7 +86,7 @@ class FunctionsTest extends TestCase
         self::assertEquals('POST', $request->getMethod());
         self::assertEquals('/subjects/test/versions', $request->getUri());
         self::assertEquals(
-            [CONTENT_TYPE => [CONTENT_TYPE_HEADER[CONTENT_TYPE]]] + [Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]],
+            [CONTENT_TYPE => [Constants::CONTENT_TYPE_HEADER[CONTENT_TYPE]]] + [Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]],
             $request->getHeaders()
         );
         self::assertEquals('{"schema":"{\"type\": \"string\"}"}', $request->getBody()->getContents());
@@ -108,7 +107,7 @@ class FunctionsTest extends TestCase
         self::assertEquals('/compatibility/subjects/test/versions/latest', $request->getUri());
         self::assertEquals('{"schema":"{\"type\":\"test\"}"}', $request->getBody()->getContents());
         self::assertEquals(
-            [CONTENT_TYPE => [CONTENT_TYPE_HEADER[CONTENT_TYPE]]] + [Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]],
+            [CONTENT_TYPE => [Constants::CONTENT_TYPE_HEADER[CONTENT_TYPE]]] + [Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]],
             $request->getHeaders()
         );
     }
@@ -124,7 +123,7 @@ class FunctionsTest extends TestCase
         self::assertEquals('/subjects/test', $request->getUri());
         self::assertEquals('{"schema":"{\"type\":\"test\"}"}', $request->getBody()->getContents());
         self::assertEquals(
-            [CONTENT_TYPE => [CONTENT_TYPE_HEADER[CONTENT_TYPE]]] + [Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]],
+            [CONTENT_TYPE => [Constants::CONTENT_TYPE_HEADER[CONTENT_TYPE]]] + [Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]],
             $request->getHeaders()
         );
     }

@@ -10,7 +10,6 @@ use InvalidArgumentException;
 use JsonException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
 use function implode;
 use function json_decode;
 
@@ -91,7 +90,7 @@ function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subj
     return new Request(
         'POST',
         Utils::uriFor("/subjects/$subjectName/versions"),
-        CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
+        Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
@@ -101,7 +100,7 @@ function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $s
     return new Request(
         'POST',
         Utils::uriFor("/compatibility/subjects/$subjectName/versions/$versionId"),
-        CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
+        Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
@@ -111,7 +110,7 @@ function checkIfSubjectHasSchemaRegisteredRequest(string $subjectName, string $s
     return new Request(
         'POST',
         Utils::uriFor("/subjects/$subjectName"),
-        CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
+        Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
 }
