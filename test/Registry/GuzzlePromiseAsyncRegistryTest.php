@@ -11,6 +11,7 @@ use FlixTech\SchemaRegistryApi\Constants;
 use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Registry\GuzzlePromiseAsyncRegistry;
+use FlixTech\SchemaRegistryApi\Requests;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -22,7 +23,6 @@ use Psr\Http\Message\ResponseInterface;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
-use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 
@@ -117,7 +117,7 @@ class GuzzlePromiseAsyncRegistryTest extends TestCase
         $subject = 'test';
         $version = 2;
         $schema = AvroSchema::parse('{"type": "string"}');
-        $expectedRequest = singleSubjectVersionRequest($subject, validateVersionId($version));
+        $expectedRequest = Requests::singleSubjectVersionRequest($subject, validateVersionId($version));
 
         $container = [];
         $this->registry = new GuzzlePromiseAsyncRegistry($this->clientWithMockResponses($responses, $container));
@@ -164,7 +164,7 @@ class GuzzlePromiseAsyncRegistryTest extends TestCase
 
         $subject = 'test';
         $schema = AvroSchema::parse('{"type": "string"}');
-        $expectedRequest = singleSubjectVersionRequest($subject, Constants::VERSION_LATEST);
+        $expectedRequest = Requests::singleSubjectVersionRequest($subject, Constants::VERSION_LATEST);
 
         $container = [];
         $this->registry = new GuzzlePromiseAsyncRegistry($this->clientWithMockResponses($responses, $container));

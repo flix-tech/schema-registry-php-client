@@ -11,6 +11,7 @@ use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
 use FlixTech\SchemaRegistryApi\Exception\InvalidAvroSchemaException;
 use FlixTech\SchemaRegistryApi\Exception\RuntimeException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
+use FlixTech\SchemaRegistryApi\Requests;
 use FlixTech\SchemaRegistryApi\SynchronousRegistry;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
@@ -20,7 +21,6 @@ use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegister
 use function FlixTech\SchemaRegistryApi\Requests\decodeResponse;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
-use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 
@@ -64,7 +64,7 @@ class Psr18SyncRegistry implements SynchronousRegistry
 
     public function latestVersion(string $subject): AvroSchema
     {
-        $request = singleSubjectVersionRequest($subject, Constants::VERSION_LATEST);
+        $request = Requests::singleSubjectVersionRequest($subject, Constants::VERSION_LATEST);
 
         $response = $this->makeRequest($request);
         $this->guardAgainstErrorResponse($response);
@@ -94,7 +94,7 @@ class Psr18SyncRegistry implements SynchronousRegistry
 
     public function schemaForSubjectAndVersion(string $subject, int $version): AvroSchema
     {
-        $request = singleSubjectVersionRequest($subject, validateVersionId($version));
+        $request = Requests::singleSubjectVersionRequest($subject, validateVersionId($version));
 
         $response = $this->makeRequest($request);
         $this->guardAgainstErrorResponse($response);

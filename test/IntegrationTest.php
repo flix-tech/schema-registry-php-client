@@ -27,7 +27,6 @@ use function FlixTech\SchemaRegistryApi\Requests\defaultCompatibilityLevelReques
 use function FlixTech\SchemaRegistryApi\Requests\jsonDecode;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
-use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
 
 /**
@@ -156,7 +155,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(singleSubjectVersionRequest(self::SUBJECT_NAME, Constants::VERSION_LATEST))
+            ->sendAsync(Requests::singleSubjectVersionRequest(self::SUBJECT_NAME, Constants::VERSION_LATEST))
             ->then(
                 function (ResponseInterface $request) {
                     $decodedBody = jsonDecode($request->getBody()->getContents());
@@ -207,7 +206,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(singleSubjectVersionRequest('INVALID', Constants::VERSION_LATEST))
+            ->sendAsync(Requests::singleSubjectVersionRequest('INVALID', Constants::VERSION_LATEST))
             ->otherwise(
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
@@ -218,7 +217,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(singleSubjectVersionRequest(self::SUBJECT_NAME, 'INVALID'))
+            ->sendAsync(Requests::singleSubjectVersionRequest(self::SUBJECT_NAME, 'INVALID'))
             ->otherwise(
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
@@ -229,7 +228,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(singleSubjectVersionRequest(self::SUBJECT_NAME, '5'))
+            ->sendAsync(Requests::singleSubjectVersionRequest(self::SUBJECT_NAME, '5'))
             ->otherwise(
                 function (RequestException $exception) {
                     $this->assertInstanceOf(

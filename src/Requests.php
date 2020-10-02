@@ -32,6 +32,15 @@ final class Requests
         );
     }
 
+    public static function singleSubjectVersionRequest(string $subjectName, string $versionId): RequestInterface
+    {
+        return new Request(
+            'GET',
+            Utils::uriFor("/subjects/$subjectName/versions/$versionId"),
+            Constants::ACCEPT_HEADER
+        );
+    }
+
     private function __clone()
     {
     }

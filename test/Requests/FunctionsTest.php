@@ -19,7 +19,6 @@ use function FlixTech\SchemaRegistryApi\Requests\prepareCompatibilityLevelForTra
 use function FlixTech\SchemaRegistryApi\Requests\prepareJsonSchemaForTransfer;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
-use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateCompatibilityLevel;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
@@ -57,7 +56,7 @@ class FunctionsTest extends TestCase
      */
     public function it_should_produce_a_Request_to_get_a_specific_subject_version(): void
     {
-        $request = singleSubjectVersionRequest('test', '3');
+        $request = Requests::singleSubjectVersionRequest('test', '3');
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('/subjects/test/versions/3', $request->getUri());
