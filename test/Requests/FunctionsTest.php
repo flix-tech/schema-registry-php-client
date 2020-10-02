@@ -9,7 +9,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
-use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
@@ -253,8 +252,8 @@ class FunctionsTest extends TestCase
             validateCompatibilityLevel(Constants::COMPATIBILITY_BACKWARD)
         );
         self::assertEquals(
-            COMPATIBILITY_BACKWARD_TRANSITIVE,
-            validateCompatibilityLevel(COMPATIBILITY_BACKWARD_TRANSITIVE)
+            Constants::COMPATIBILITY_BACKWARD_TRANSITIVE,
+            validateCompatibilityLevel(Constants::COMPATIBILITY_BACKWARD_TRANSITIVE)
         );
         self::assertEquals(
             COMPATIBILITY_FORWARD,
@@ -283,7 +282,7 @@ class FunctionsTest extends TestCase
         );
         self::assertEquals(
             '{"compatibility":"BACKWARD_TRANSITIVE"}',
-            prepareCompatibilityLevelForTransport(COMPATIBILITY_BACKWARD_TRANSITIVE)
+            prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_BACKWARD_TRANSITIVE)
         );
         self::assertEquals(
             '{"compatibility":"FORWARD"}',
