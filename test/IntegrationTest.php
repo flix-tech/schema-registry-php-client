@@ -23,7 +23,6 @@ use Psr\Http\Message\ResponseInterface;
 use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\defaultCompatibilityLevelRequest;
-use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
 
 /**
@@ -129,7 +128,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(schemaRequest('1'))
+            ->sendAsync(Requests::schemaRequest('1'))
             ->then(
                 function (ResponseInterface $request) {
                     $decodedBody = Json::jsonDecode($request->getBody()->getContents());
@@ -236,7 +235,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(schemaRequest('6'))
+            ->sendAsync(Requests::schemaRequest('6'))
             ->otherwise(
                 function (RequestException $exception) {
                     $this->assertInstanceOf(

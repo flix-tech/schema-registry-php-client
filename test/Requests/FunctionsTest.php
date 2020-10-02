@@ -15,7 +15,6 @@ use function FlixTech\SchemaRegistryApi\Requests\defaultCompatibilityLevelReques
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\prepareCompatibilityLevelForTransport;
-use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateCompatibilityLevel;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
@@ -126,7 +125,7 @@ class FunctionsTest extends TestCase
      */
     public function it_should_produce_a_request_to_get_a_specific_schema_by_id(): void
     {
-        $request = schemaRequest('3');
+        $request = Requests::schemaRequest('3');
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('/schemas/ids/3', $request->getUri());

@@ -18,7 +18,6 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 
@@ -100,7 +99,7 @@ class GuzzlePromiseAsyncRegistry implements AsynchronousRegistry
      */
     public function schemaForId(int $schemaId): PromiseInterface
     {
-        $request = schemaRequest(validateSchemaId($schemaId));
+        $request = Requests::schemaRequest(validateSchemaId($schemaId));
 
         $onFulfilled = function (ResponseInterface $response) {
             return AvroSchema::parse(

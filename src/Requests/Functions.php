@@ -10,15 +10,6 @@ use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\RequestInterface;
 use function implode;
 
-function schemaRequest(string $id): RequestInterface
-{
-    return new Request(
-        'GET',
-        Utils::uriFor("/schemas/ids/$id"),
-        Constants::ACCEPT_HEADER
-    );
-}
-
 function defaultCompatibilityLevelRequest(): RequestInterface
 {
     return new Request(

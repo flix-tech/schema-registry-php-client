@@ -82,6 +82,15 @@ final class Requests
         );
     }
 
+    public static function schemaRequest(string $id): RequestInterface
+    {
+        return new Request(
+            'GET',
+            Utils::uriFor("/schemas/ids/$id"),
+            Constants::ACCEPT_HEADER
+        );
+    }
+
     private function __clone()
     {
     }
