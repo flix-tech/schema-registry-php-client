@@ -5,21 +5,10 @@ namespace FlixTech\SchemaRegistryApi\Requests;
 use Assert\Assert;
 use FlixTech\SchemaRegistryApi\Constants;
 use FlixTech\SchemaRegistryApi\Json;
-use FlixTech\SchemaRegistryApi\Requests;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\RequestInterface;
 use function implode;
-
-function checkIfSubjectHasSchemaRegisteredRequest(string $subjectName, string $schema): RequestInterface
-{
-    return new Request(
-        'POST',
-        Utils::uriFor("/subjects/$subjectName"),
-        Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
-        Requests::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
-    );
-}
 
 function schemaRequest(string $id): RequestInterface
 {

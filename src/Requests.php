@@ -72,6 +72,16 @@ final class Requests
         );
     }
 
+    public static function checkIfSubjectHasSchemaRegisteredRequest(string $subjectName, string $schema): RequestInterface
+    {
+        return new Request(
+            'POST',
+            Utils::uriFor("/subjects/$subjectName"),
+            Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
+            Requests::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
+        );
+    }
+
     private function __clone()
     {
     }

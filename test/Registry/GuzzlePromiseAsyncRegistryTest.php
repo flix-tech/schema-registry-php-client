@@ -20,7 +20,6 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
@@ -70,7 +69,7 @@ class GuzzlePromiseAsyncRegistryTest extends TestCase
         ];
         $subject = 'test';
         $schema = AvroSchema::parse('{"type": "string"}');
-        $expectedRequest = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
+        $expectedRequest = Requests::checkIfSubjectHasSchemaRegisteredRequest($subject, (string)$schema);
 
         $container = [];
         $this->registry = new GuzzlePromiseAsyncRegistry($this->clientWithMockResponses($responses, $container));
@@ -139,7 +138,7 @@ class GuzzlePromiseAsyncRegistryTest extends TestCase
         ];
         $subject = 'test';
         $schema = AvroSchema::parse('{"type": "string"}');
-        $expectedRequest = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
+        $expectedRequest = Requests::checkIfSubjectHasSchemaRegisteredRequest($subject, (string)$schema);
 
         $container = [];
         $this->registry = new GuzzlePromiseAsyncRegistry($this->clientWithMockResponses($responses, $container));

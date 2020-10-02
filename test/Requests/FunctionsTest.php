@@ -11,7 +11,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
-use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\defaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectVersionRequest;
@@ -111,7 +110,7 @@ class FunctionsTest extends TestCase
      */
     public function it_should_produce_a_request_to_check_if_a_subject_already_has_a_schema(): void
     {
-        $request = checkIfSubjectHasSchemaRegisteredRequest('test', '{"type":"test"}');
+        $request = Requests::checkIfSubjectHasSchemaRegisteredRequest('test', '{"type":"test"}');
 
         self::assertEquals('POST', $request->getMethod());
         self::assertEquals('/subjects/test', $request->getUri());

@@ -22,7 +22,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
-use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\defaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
@@ -140,7 +139,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(checkIfSubjectHasSchemaRegisteredRequest(self::SUBJECT_NAME, $this->baseSchema))
+            ->sendAsync(Requests::checkIfSubjectHasSchemaRegisteredRequest(self::SUBJECT_NAME, $this->baseSchema))
             ->then(
                 function (ResponseInterface $request) {
                     $decodedBody = Json::jsonDecode($request->getBody()->getContents());
