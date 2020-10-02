@@ -11,16 +11,6 @@ use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\RequestInterface;
 use function implode;
 
-function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subjectName): RequestInterface
-{
-    return new Request(
-        'POST',
-        Utils::uriFor("/subjects/$subjectName/versions"),
-        Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
-        Requests::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
-    );
-}
-
 function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $subjectName, string $versionId): RequestInterface
 {
     return new Request(

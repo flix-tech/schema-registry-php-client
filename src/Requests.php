@@ -52,6 +52,16 @@ final class Requests
         return Json::jsonEncode(['schema' => Json::jsonEncode($decoded)]);
     }
 
+    public static function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subjectName): RequestInterface
+    {
+        return new Request(
+            'POST',
+            Utils::uriFor("/subjects/$subjectName/versions"),
+            Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
+            Requests::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
+        );
+    }
+
     private function __clone()
     {
     }

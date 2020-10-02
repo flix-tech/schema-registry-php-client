@@ -25,7 +25,6 @@ use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevel
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\checkSchemaCompatibilityAgainstVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\defaultCompatibilityLevelRequest;
-use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
 
@@ -124,7 +123,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(registerNewSchemaVersionWithSubjectRequest($this->baseSchema, self::SUBJECT_NAME))
+            ->sendAsync(Requests::registerNewSchemaVersionWithSubjectRequest($this->baseSchema, self::SUBJECT_NAME))
             ->then(
                 function (ResponseInterface $request) {
                     $this->assertEquals(1, Json::jsonDecode($request->getBody()->getContents())['id']);
@@ -195,7 +194,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(registerNewSchemaVersionWithSubjectRequest($this->invalidSchema, self::SUBJECT_NAME))
+            ->sendAsync(Requests::registerNewSchemaVersionWithSubjectRequest($this->invalidSchema, self::SUBJECT_NAME))
             ->otherwise(
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
@@ -250,7 +249,7 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(registerNewSchemaVersionWithSubjectRequest($this->compatibleSchemaEvolution, self::SUBJECT_NAME))
+            ->sendAsync(Requests::registerNewSchemaVersionWithSubjectRequest($this->compatibleSchemaEvolution, self::SUBJECT_NAME))
             ->then(
                 function (ResponseInterface $request) {
                     $this->assertEquals(2, Json::jsonDecode($request->getBody()->getContents())['id']);

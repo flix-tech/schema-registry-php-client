@@ -17,7 +17,6 @@ use function FlixTech\SchemaRegistryApi\Requests\defaultCompatibilityLevelReques
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\prepareCompatibilityLevelForTransport;
-use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateCompatibilityLevel;
@@ -67,7 +66,7 @@ class FunctionsTest extends TestCase
      */
     public function it_should_produce_a_request_to_register_a_new_schema_version(): void
     {
-        $request = registerNewSchemaVersionWithSubjectRequest('{"type": "string"}', 'test');
+        $request = Requests::registerNewSchemaVersionWithSubjectRequest('{"type": "string"}', 'test');
 
         self::assertEquals('POST', $request->getMethod());
         self::assertEquals('/subjects/test/versions', $request->getUri());
@@ -77,7 +76,7 @@ class FunctionsTest extends TestCase
         );
         self::assertEquals('{"schema":"{\"type\":\"string\"}"}', $request->getBody()->getContents());
 
-        $request = registerNewSchemaVersionWithSubjectRequest('{"schema": "{\"type\": \"string\"}"}', 'test');
+        $request = Requests::registerNewSchemaVersionWithSubjectRequest('{"schema": "{\"type\": \"string\"}"}', 'test');
 
         self::assertEquals('POST', $request->getMethod());
         self::assertEquals('/subjects/test/versions', $request->getUri());

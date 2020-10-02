@@ -21,7 +21,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
-use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
@@ -46,7 +45,7 @@ class GuzzlePromiseAsyncRegistryTest extends TestCase
         ];
         $subject = 'test';
         $schema = AvroSchema::parse('{"type": "string"}');
-        $expectedRequest = registerNewSchemaVersionWithSubjectRequest((string) $schema, $subject);
+        $expectedRequest = Requests::registerNewSchemaVersionWithSubjectRequest((string)$schema, $subject);
 
         $container = [];
         $client = $this->clientWithMockResponses($responses, $container);

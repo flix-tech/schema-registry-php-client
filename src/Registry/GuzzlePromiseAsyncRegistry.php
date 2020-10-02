@@ -19,7 +19,6 @@ use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
-use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
@@ -70,7 +69,7 @@ class GuzzlePromiseAsyncRegistry implements AsynchronousRegistry
      */
     public function register(string $subject, AvroSchema $schema): PromiseInterface
     {
-        $request = registerNewSchemaVersionWithSubjectRequest((string) $schema, $subject);
+        $request = Requests::registerNewSchemaVersionWithSubjectRequest((string)$schema, $subject);
 
         $onFulfilled = function (ResponseInterface $response) {
             return Json::decodeResponse($response)['id'];
