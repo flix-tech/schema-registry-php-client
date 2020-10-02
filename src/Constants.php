@@ -11,6 +11,7 @@ final class Constants
     public const COMPATIBILITY_BACKWARD_TRANSITIVE = 'BACKWARD_TRANSITIVE';
     public const COMPATIBILITY_FORWARD = 'FORWARD';
     public const COMPATIBILITY_FORWARD_TRANSITIVE = 'FORWARD_TRANSITIVE';
+    public const COMPATIBILITY_FULL = 'FULL';
 
     private function __construct()
     {

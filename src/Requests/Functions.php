@@ -11,7 +11,6 @@ use JsonException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
-use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
@@ -208,7 +207,7 @@ function validateCompatibilityLevel(string $compatibilityVersion): string
         Constants::COMPATIBILITY_BACKWARD_TRANSITIVE,
         Constants::COMPATIBILITY_FORWARD,
         Constants::COMPATIBILITY_FORWARD_TRANSITIVE,
-        COMPATIBILITY_FULL,
+        Constants::COMPATIBILITY_FULL,
         COMPATIBILITY_FULL_TRANSITIVE,
 
     ];

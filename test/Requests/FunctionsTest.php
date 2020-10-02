@@ -9,7 +9,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
-use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
@@ -163,7 +162,7 @@ class FunctionsTest extends TestCase
      */
     public function it_should_produce_a_request_to_change_the_global_compatibility_level(): void
     {
-        $request = changeDefaultCompatibilityLevelRequest(COMPATIBILITY_FULL);
+        $request = changeDefaultCompatibilityLevelRequest(Constants::COMPATIBILITY_FULL);
 
         self::assertEquals('PUT', $request->getMethod());
         self::assertEquals('/config', $request->getUri());
@@ -238,8 +237,8 @@ class FunctionsTest extends TestCase
             validateCompatibilityLevel(Constants::COMPATIBILITY_NONE)
         );
         self::assertEquals(
-            COMPATIBILITY_FULL,
-            validateCompatibilityLevel(COMPATIBILITY_FULL)
+            Constants::COMPATIBILITY_FULL,
+            validateCompatibilityLevel(Constants::COMPATIBILITY_FULL)
         );
         self::assertEquals(
             COMPATIBILITY_FULL_TRANSITIVE,
@@ -292,7 +291,7 @@ class FunctionsTest extends TestCase
         );
         self::assertEquals(
             '{"compatibility":"FULL"}',
-            prepareCompatibilityLevelForTransport(COMPATIBILITY_FULL)
+            prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_FULL)
         );
         self::assertEquals(
             '{"compatibility":"FULL_TRANSITIVE"}',
