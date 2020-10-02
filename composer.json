@@ -39,8 +39,7 @@
       "FlixTech\\SchemaRegistryApi\\": "src/"
     },
     "files": [
-      "src/Requests/Functions.php",
-      "src/Constants/Constants.php"
+      "src/Requests/Functions.php"
     ]
   },
   "autoload-dev": {
