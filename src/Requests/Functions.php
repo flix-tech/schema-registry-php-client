@@ -13,20 +13,6 @@ use JsonException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use function implode;
-use function json_decode;
-
-/**
- * @param string $jsonString
- * @param int $depth
- *
- * @return mixed
- *
- * @throws JsonException
- */
-function jsonDecode(string $jsonString, int $depth = 512)
-{
-    return json_decode($jsonString, true, $depth, JSON_THROW_ON_ERROR);
-}
 
 /**
  * @param mixed $data
@@ -50,7 +36,7 @@ function decodeResponse(ResponseInterface $response): array
     $body = (string) $response->getBody();
 
     try {
-        return jsonDecode($body);
+        return Json::jsonDecode($body);
     } catch (JsonException $e) {
         throw new InvalidArgumentException(
             sprintf('%s - with content "%s"', $e->getMessage(), $body),
