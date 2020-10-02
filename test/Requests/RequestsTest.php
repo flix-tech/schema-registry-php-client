@@ -10,7 +10,7 @@ use FlixTech\SchemaRegistryApi\Requests;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-class FunctionsTest extends TestCase
+class RequestsTest extends TestCase
 {
     /**
      * @test
