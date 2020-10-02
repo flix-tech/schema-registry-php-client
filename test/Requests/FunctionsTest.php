@@ -15,7 +15,6 @@ use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\prepareCompatibilityLevelForTransport;
 use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
-use function FlixTech\SchemaRegistryApi\Requests\validateCompatibilityLevel;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 
@@ -220,34 +219,34 @@ class FunctionsTest extends TestCase
 
         self::assertEquals(
             Constants::COMPATIBILITY_NONE,
-            validateCompatibilityLevel(Constants::COMPATIBILITY_NONE)
+            Requests::validateCompatibilityLevel(Constants::COMPATIBILITY_NONE)
         );
         self::assertEquals(
             Constants::COMPATIBILITY_FULL,
-            validateCompatibilityLevel(Constants::COMPATIBILITY_FULL)
+            Requests::validateCompatibilityLevel(Constants::COMPATIBILITY_FULL)
         );
         self::assertEquals(
             Constants::COMPATIBILITY_FULL_TRANSITIVE,
-            validateCompatibilityLevel(Constants::COMPATIBILITY_FULL_TRANSITIVE)
+            Requests::validateCompatibilityLevel(Constants::COMPATIBILITY_FULL_TRANSITIVE)
         );
         self::assertEquals(
             Constants::COMPATIBILITY_BACKWARD,
-            validateCompatibilityLevel(Constants::COMPATIBILITY_BACKWARD)
+            Requests::validateCompatibilityLevel(Constants::COMPATIBILITY_BACKWARD)
         );
         self::assertEquals(
             Constants::COMPATIBILITY_BACKWARD_TRANSITIVE,
-            validateCompatibilityLevel(Constants::COMPATIBILITY_BACKWARD_TRANSITIVE)
+            Requests::validateCompatibilityLevel(Constants::COMPATIBILITY_BACKWARD_TRANSITIVE)
         );
         self::assertEquals(
             Constants::COMPATIBILITY_FORWARD,
-            validateCompatibilityLevel(Constants::COMPATIBILITY_FORWARD)
+            Requests::validateCompatibilityLevel(Constants::COMPATIBILITY_FORWARD)
         );
         self::assertEquals(
             Constants::COMPATIBILITY_FORWARD_TRANSITIVE,
-            validateCompatibilityLevel(Constants::COMPATIBILITY_FORWARD_TRANSITIVE)
+            Requests::validateCompatibilityLevel(Constants::COMPATIBILITY_FORWARD_TRANSITIVE)
         );
 
-        validateCompatibilityLevel('INVALID');
+        Requests::validateCompatibilityLevel('INVALID');
     }
 
     /**

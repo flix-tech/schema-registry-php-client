@@ -5,10 +5,10 @@ namespace FlixTech\SchemaRegistryApi\Requests;
 use Assert\Assert;
 use FlixTech\SchemaRegistryApi\Constants;
 use FlixTech\SchemaRegistryApi\Json;
+use FlixTech\SchemaRegistryApi\Requests;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\RequestInterface;
-use function implode;
 
 function changeDefaultCompatibilityLevelRequest(string $level): RequestInterface
 {
@@ -16,7 +16,7 @@ function changeDefaultCompatibilityLevelRequest(string $level): RequestInterface
         'PUT',
         '/config',
         Constants::ACCEPT_HEADER,
-        prepareCompatibilityLevelForTransport(validateCompatibilityLevel($level))
+        prepareCompatibilityLevelForTransport(Requests::validateCompatibilityLevel($level))
     );
 }
 
@@ -35,7 +35,7 @@ function changeSubjectCompatibilityLevelRequest(string $subjectName, string $lev
         'PUT',
         Utils::uriFor("/config/$subjectName"),
         Constants::ACCEPT_HEADER,
-        prepareCompatibilityLevelForTransport(validateCompatibilityLevel($level))
+        prepareCompatibilityLevelForTransport(Requests::validateCompatibilityLevel($level))
     );
 }
 
@@ -52,26 +52,6 @@ function validateVersionId($versionId): string
     }
 
     return (string) $versionId;
-}
-
-function validateCompatibilityLevel(string $compatibilityVersion): string
-{
-    $compatibilities = [
-        Constants::COMPATIBILITY_NONE,
-        Constants::COMPATIBILITY_BACKWARD,
-        Constants::COMPATIBILITY_BACKWARD_TRANSITIVE,
-        Constants::COMPATIBILITY_FORWARD,
-        Constants::COMPATIBILITY_FORWARD_TRANSITIVE,
-        Constants::COMPATIBILITY_FULL,
-        Constants::COMPATIBILITY_FULL_TRANSITIVE,
-
-    ];
-    Assert::that($compatibilityVersion)->inArray(
-        $compatibilities,
-        '$level must be one of ' . implode(', ', $compatibilities)
-    );
-
-    return $compatibilityVersion;
 }
 
 function prepareCompatibilityLevelForTransport(string $compatibilityLevel): string

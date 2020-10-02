@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi;
 
+use Assert\Assert;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\RequestInterface;
@@ -98,6 +99,26 @@ final class Requests
             '/config',
             Constants::ACCEPT_HEADER
         );
+    }
+
+    public static function validateCompatibilityLevel(string $compatibilityVersion): string
+    {
+        $compatibilities = [
+            Constants::COMPATIBILITY_NONE,
+            Constants::COMPATIBILITY_BACKWARD,
+            Constants::COMPATIBILITY_BACKWARD_TRANSITIVE,
+            Constants::COMPATIBILITY_FORWARD,
+            Constants::COMPATIBILITY_FORWARD_TRANSITIVE,
+            Constants::COMPATIBILITY_FULL,
+            Constants::COMPATIBILITY_FULL_TRANSITIVE,
+
+        ];
+        Assert::that($compatibilityVersion)->inArray(
+            $compatibilities,
+            '$level must be one of ' . implode(', ', $compatibilities)
+        );
+
+        return $compatibilityVersion;
     }
 
     private function __clone()
