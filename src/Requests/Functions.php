@@ -58,15 +58,6 @@ function decodeResponse(ResponseInterface $response): array
     }
 }
 
-function allSubjectsRequest(): RequestInterface
-{
-    return new Request(
-        'GET',
-        '/subjects',
-        Constants::ACCEPT_HEADER
-    );
-}
-
 function allSubjectVersionsRequest(string $subjectName): RequestInterface
 {
     return new Request(

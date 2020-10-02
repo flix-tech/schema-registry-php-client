@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Test\Requests;
 
 use FlixTech\SchemaRegistryApi\Constants;
+use FlixTech\SchemaRegistryApi\Requests;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
@@ -34,7 +34,7 @@ class FunctionsTest extends TestCase
      */
     public function it_should_produce_a_Request_to_get_all_subjects(): void
     {
-        $request = allSubjectsRequest();
+        $request = Requests::allSubjectsRequest();
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('/subjects', $request->getUri());

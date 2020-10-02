@@ -12,13 +12,13 @@ use FlixTech\SchemaRegistryApi\Exception\InvalidVersionException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\SubjectNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\VersionNotFoundException;
+use FlixTech\SchemaRegistryApi\Requests;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
@@ -118,7 +118,7 @@ INCOMPATIBLE;
     public function managing_subjects_and_versions(): void
     {
         $this->client
-            ->sendAsync(allSubjectsRequest())
+            ->sendAsync(Requests::allSubjectsRequest())
             ->then(
                 function (ResponseInterface $request) {
                     $this->assertEmpty(jsonDecode($request->getBody()->getContents()));
