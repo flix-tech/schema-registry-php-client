@@ -196,6 +196,20 @@ final class Requests
         );
     }
 
+    /**
+     * @param string $subjectName
+     * @param string $versionId
+     * @return RequestInterface
+     */
+    public static function deleteSubjectVersionRequest(string $subjectName, string $versionId): RequestInterface
+    {
+        return new Request(
+            'DELETE',
+            Utils::uriFor("/subjects/$subjectName/versions/$versionId"),
+            Constants::ACCEPT_HEADER
+        );
+    }
+
     private function __clone()
     {
     }

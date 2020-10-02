@@ -9,7 +9,6 @@ use FlixTech\SchemaRegistryApi\Json;
 use FlixTech\SchemaRegistryApi\Requests;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use function FlixTech\SchemaRegistryApi\Requests\deleteSubjectVersionRequest;
 
 class FunctionsTest extends TestCase
 {
@@ -346,13 +345,13 @@ class FunctionsTest extends TestCase
      */
     public function it_should_produce_a_valid_subject_version_deletion_request(): void
     {
-        $request = deleteSubjectVersionRequest('test', Constants::VERSION_LATEST);
+        $request = Requests::deleteSubjectVersionRequest('test', Constants::VERSION_LATEST);
 
         self::assertEquals('DELETE', $request->getMethod());
         self::assertEquals('/subjects/test/versions/latest', $request->getUri());
         self::assertEquals([Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]], $request->getHeaders());
 
-        $request = deleteSubjectVersionRequest('test', '5');
+        $request = Requests::deleteSubjectVersionRequest('test', '5');
 
         self::assertEquals('DELETE', $request->getMethod());
         self::assertEquals('/subjects/test/versions/5', $request->getUri());
