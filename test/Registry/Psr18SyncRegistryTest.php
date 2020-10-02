@@ -6,9 +6,11 @@ namespace FlixTech\SchemaRegistryApi\Test\Registry;
 
 use AvroSchema;
 use AvroSchemaParseException;
+use FlixTech\SchemaRegistryApi\Constants;
 use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Registry\Psr18SyncRegistry;
+use FlixTech\SchemaRegistryApi\Requests;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -17,15 +19,6 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use const FlixTech\SchemaRegistryApi\Constants\ACCEPT;
-use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE;
-use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
-use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
-use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
-use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
-use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
-use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
-use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 
 class Psr18SyncRegistryTest extends TestCase
 {
@@ -46,7 +39,7 @@ class Psr18SyncRegistryTest extends TestCase
         ];
         $subject = 'test';
         $schema = AvroSchema::parse('{"type": "string"}');
-        $expectedRequest = registerNewSchemaVersionWithSubjectRequest((string) $schema, $subject);
+        $expectedRequest = Requests::registerNewSchemaVersionWithSubjectRequest((string)$schema, $subject);
 
         $container = [];
         $this->registry = new Psr18SyncRegistry($this->clientWithMockResponses($responses, $container));
@@ -67,7 +60,7 @@ class Psr18SyncRegistryTest extends TestCase
         ];
         $subject = 'test';
         $schema = AvroSchema::parse('{"type": "string"}');
-        $expectedRequest = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
+        $expectedRequest = Requests::checkIfSubjectHasSchemaRegisteredRequest($subject, (string)$schema);
 
         $container = [];
         $this->registry = new Psr18SyncRegistry($this->clientWithMockResponses($responses, $container));
@@ -87,7 +80,7 @@ class Psr18SyncRegistryTest extends TestCase
             new Response(200, [], '{"schema": "\"string\""}')
         ];
         $schema = AvroSchema::parse('"string"');
-        $expectedRequest = schemaRequest(validateSchemaId(1));
+        $expectedRequest = Requests::schemaRequest(Requests::validateSchemaId(1));
 
         $container = [];
         $this->registry = new Psr18SyncRegistry($this->clientWithMockResponses($responses, $container));
@@ -109,7 +102,7 @@ class Psr18SyncRegistryTest extends TestCase
         $subject = 'test';
         $version = 2;
         $schema = AvroSchema::parse('{"type": "string"}');
-        $expectedRequest = singleSubjectVersionRequest($subject, validateVersionId($version));
+        $expectedRequest = Requests::singleSubjectVersionRequest($subject, Requests::validateVersionId($version));
 
         $container = [];
         $this->registry = new Psr18SyncRegistry($this->clientWithMockResponses($responses, $container));
@@ -130,7 +123,7 @@ class Psr18SyncRegistryTest extends TestCase
         ];
         $subject = 'test';
         $schema = AvroSchema::parse('{"type": "string"}');
-        $expectedRequest = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
+        $expectedRequest = Requests::checkIfSubjectHasSchemaRegisteredRequest($subject, (string)$schema);
 
         $container = [];
         $this->registry = new Psr18SyncRegistry($this->clientWithMockResponses($responses, $container));
@@ -152,7 +145,7 @@ class Psr18SyncRegistryTest extends TestCase
 
         $subject = 'test';
         $schema = AvroSchema::parse('{"type": "string"}');
-        $expectedRequest = singleSubjectVersionRequest($subject, VERSION_LATEST);
+        $expectedRequest = Requests::singleSubjectVersionRequest($subject, Constants::VERSION_LATEST);
 
         $container = [];
         $this->registry = new Psr18SyncRegistry($this->clientWithMockResponses($responses, $container));
@@ -203,8 +196,8 @@ class Psr18SyncRegistryTest extends TestCase
     {
         return function (RequestInterface  $actual) use ($expectedRequest) {
             $this->assertEquals($expectedRequest->getUri(), $actual->getUri());
-            $this->assertEquals($expectedRequest->getHeader(ACCEPT), $actual->getHeader(ACCEPT));
-            $this->assertEquals($expectedRequest->getHeader(CONTENT_TYPE), $actual->getHeader(CONTENT_TYPE));
+            $this->assertEquals($expectedRequest->getHeader(Constants::ACCEPT), $actual->getHeader(Constants::ACCEPT));
+            $this->assertEquals($expectedRequest->getHeader(Constants::CONTENT_TYPE), $actual->getHeader(Constants::CONTENT_TYPE));
             $this->assertEquals($expectedRequest->getMethod(), $actual->getMethod());
             $this->assertEquals($expectedRequest->getBody()->getContents(), $actual->getBody()->getContents());
 

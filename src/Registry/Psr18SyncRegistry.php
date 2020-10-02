@@ -6,23 +6,18 @@ namespace FlixTech\SchemaRegistryApi\Registry;
 
 use AvroSchema;
 use AvroSchemaParseException;
+use FlixTech\SchemaRegistryApi\Constants;
 use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
 use FlixTech\SchemaRegistryApi\Exception\InvalidAvroSchemaException;
 use FlixTech\SchemaRegistryApi\Exception\RuntimeException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
+use FlixTech\SchemaRegistryApi\Json;
+use FlixTech\SchemaRegistryApi\Requests;
 use FlixTech\SchemaRegistryApi\SynchronousRegistry;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
-use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
-use function FlixTech\SchemaRegistryApi\Requests\decodeResponse;
-use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
-use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
-use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
-use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
-use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 
 class Psr18SyncRegistry implements SynchronousRegistry
 {
@@ -44,62 +39,62 @@ class Psr18SyncRegistry implements SynchronousRegistry
 
     public function register(string $subject, AvroSchema $schema): int
     {
-        $request = registerNewSchemaVersionWithSubjectRequest((string) $schema, $subject);
+        $request = Requests::registerNewSchemaVersionWithSubjectRequest((string)$schema, $subject);
 
         $response = $this->makeRequest($request);
         $this->guardAgainstErrorResponse($response);
 
-        return decodeResponse($response)['id'];
+        return Json::decodeResponse($response)['id'];
     }
 
     public function schemaVersion(string $subject, AvroSchema $schema): int
     {
-        $request = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
+        $request = Requests::checkIfSubjectHasSchemaRegisteredRequest($subject, (string)$schema);
 
         $response = $this->makeRequest($request);
         $this->guardAgainstErrorResponse($response);
 
-        return decodeResponse($response)['version'];
+        return Json::decodeResponse($response)['version'];
     }
 
     public function latestVersion(string $subject): AvroSchema
     {
-        $request = singleSubjectVersionRequest($subject, VERSION_LATEST);
+        $request = Requests::singleSubjectVersionRequest($subject, Constants::VERSION_LATEST);
 
         $response = $this->makeRequest($request);
         $this->guardAgainstErrorResponse($response);
 
-        return $this->parseAvroSchema(decodeResponse($response)['schema']);
+        return $this->parseAvroSchema(Json::decodeResponse($response)['schema']);
     }
 
     public function schemaId(string $subject, AvroSchema $schema): int
     {
-        $request = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
+        $request = Requests::checkIfSubjectHasSchemaRegisteredRequest($subject, (string)$schema);
 
         $response = $this->makeRequest($request);
         $this->guardAgainstErrorResponse($response);
 
-        return decodeResponse($response)['id'];
+        return Json::decodeResponse($response)['id'];
     }
 
     public function schemaForId(int $schemaId): AvroSchema
     {
-        $request = schemaRequest(validateSchemaId($schemaId));
+        $request = Requests::schemaRequest(Requests::validateSchemaId($schemaId));
 
         $response = $this->makeRequest($request);
         $this->guardAgainstErrorResponse($response);
 
-        return $this->parseAvroSchema(decodeResponse($response)['schema']);
+        return $this->parseAvroSchema(Json::decodeResponse($response)['schema']);
     }
 
     public function schemaForSubjectAndVersion(string $subject, int $version): AvroSchema
     {
-        $request = singleSubjectVersionRequest($subject, validateVersionId($version));
+        $request = Requests::singleSubjectVersionRequest($subject, Requests::validateVersionId($version));
 
         $response = $this->makeRequest($request);
         $this->guardAgainstErrorResponse($response);
 
-        return $this->parseAvroSchema(decodeResponse($response)['schema']);
+        return $this->parseAvroSchema(Json::decodeResponse($response)['schema']);
     }
 
     /**
