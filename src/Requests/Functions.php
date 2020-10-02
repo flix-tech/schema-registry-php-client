@@ -4,6 +4,7 @@ namespace FlixTech\SchemaRegistryApi\Requests;
 
 use Assert\Assert;
 use FlixTech\SchemaRegistryApi\Constants;
+use FlixTech\SchemaRegistryApi\Json;
 use FlixTech\SchemaRegistryApi\Requests;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
@@ -65,7 +66,7 @@ function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subj
         'POST',
         Utils::uriFor("/subjects/$subjectName/versions"),
         Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
-        Requests::prepareJsonSchemaForTransfer(validateStringAsJson($schema))
+        Requests::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
     );
 }
 
@@ -75,7 +76,7 @@ function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $s
         'POST',
         Utils::uriFor("/compatibility/subjects/$subjectName/versions/$versionId"),
         Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
-        Requests::prepareJsonSchemaForTransfer(validateStringAsJson($schema))
+        Requests::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
     );
 }
 
@@ -85,7 +86,7 @@ function checkIfSubjectHasSchemaRegisteredRequest(string $subjectName, string $s
         'POST',
         Utils::uriFor("/subjects/$subjectName"),
         Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
-        Requests::prepareJsonSchemaForTransfer(validateStringAsJson($schema))
+        Requests::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
     );
 }
 
@@ -149,13 +150,6 @@ function validateVersionId($versionId): string
     }
 
     return (string) $versionId;
-}
-
-function validateStringAsJson(string $schema): string
-{
-    Assert::that($schema)->isJsonString('$schema must be a valid JSON string');
-
-    return $schema;
 }
 
 function validateCompatibilityLevel(string $compatibilityVersion): string
