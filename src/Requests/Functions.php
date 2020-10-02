@@ -15,18 +15,6 @@ use Psr\Http\Message\ResponseInterface;
 use function implode;
 
 /**
- * @param mixed $data
- *
- * @return string
- *
- * @throws JsonException
- */
-function jsonEncode($data): string
-{
-    return json_encode($data, JSON_THROW_ON_ERROR);
-}
-
-/**
  * @param ResponseInterface $response
  *
  * @return array<mixed, mixed>
@@ -160,7 +148,7 @@ function validateCompatibilityLevel(string $compatibilityVersion): string
 
 function prepareCompatibilityLevelForTransport(string $compatibilityLevel): string
 {
-    return jsonEncode(['compatibility' => $compatibilityLevel]);
+    return Json::jsonEncode(['compatibility' => $compatibilityLevel]);
 }
 
 /**

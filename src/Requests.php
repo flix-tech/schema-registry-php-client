@@ -7,7 +7,6 @@ namespace FlixTech\SchemaRegistryApi;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\RequestInterface;
-use function FlixTech\SchemaRegistryApi\Requests\jsonEncode;
 
 final class Requests
 {
@@ -47,10 +46,10 @@ final class Requests
         $decoded = Json::jsonDecode($schema);
 
         if (is_array($decoded) && array_key_exists('schema', $decoded)) {
-            return jsonEncode($decoded);
+            return Json::jsonEncode($decoded);
         }
 
-        return jsonEncode(['schema' => jsonEncode($decoded)]);
+        return Json::jsonEncode(['schema' => Json::jsonEncode($decoded)]);
     }
 
     private function __clone()

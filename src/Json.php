@@ -33,6 +33,18 @@ final class Json
         return json_decode($jsonString, true, $depth, JSON_THROW_ON_ERROR);
     }
 
+    /**
+     * @param mixed $data
+     *
+     * @return string
+     *
+     * @throws JsonException
+     */
+    public static function jsonEncode($data): string
+    {
+        return json_encode($data, JSON_THROW_ON_ERROR);
+    }
+
     private function __clone()
     {
     }
