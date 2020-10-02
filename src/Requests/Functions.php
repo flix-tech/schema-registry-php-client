@@ -10,15 +10,6 @@ use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\RequestInterface;
 use function implode;
 
-function defaultCompatibilityLevelRequest(): RequestInterface
-{
-    return new Request(
-        'GET',
-        '/config',
-        Constants::ACCEPT_HEADER
-    );
-}
-
 function changeDefaultCompatibilityLevelRequest(string $level): RequestInterface
 {
     return new Request(

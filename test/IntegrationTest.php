@@ -22,7 +22,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use function FlixTech\SchemaRegistryApi\Requests\changeDefaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\changeSubjectCompatibilityLevelRequest;
-use function FlixTech\SchemaRegistryApi\Requests\defaultCompatibilityLevelRequest;
 use function FlixTech\SchemaRegistryApi\Requests\subjectCompatibilityLevelRequest;
 
 /**
@@ -268,7 +267,7 @@ INCOMPATIBLE;
     public function managing_compatibility_levels(): void
     {
         $this->client
-            ->sendAsync(defaultCompatibilityLevelRequest())
+            ->sendAsync(Requests::defaultCompatibilityLevelRequest())
             ->then(
                 function (ResponseInterface $request) {
                     $decodedBody = Json::jsonDecode($request->getBody()->getContents());

@@ -91,6 +91,15 @@ final class Requests
         );
     }
 
+    public static function defaultCompatibilityLevelRequest(): RequestInterface
+    {
+        return new Request(
+            'GET',
+            '/config',
+            Constants::ACCEPT_HEADER
+        );
+    }
+
     private function __clone()
     {
     }
