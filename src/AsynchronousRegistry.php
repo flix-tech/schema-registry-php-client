@@ -7,9 +7,6 @@ namespace FlixTech\SchemaRegistryApi;
 use AvroSchema;
 use GuzzleHttp\Promise\PromiseInterface;
 
-/**
- * {@inheritdoc}
- */
 interface AsynchronousRegistry extends Registry
 {
     /**

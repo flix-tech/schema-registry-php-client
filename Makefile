@@ -8,6 +8,8 @@ CONFLUENT_NETWORK_SUBNET ?= 172.68.0.0/24
 SCHEMA_REGISTRY_IPV4 ?= 172.68.0.103
 KAFKA_BROKER_IPV4 ?= 172.68.0.102
 ZOOKEEPER_IPV4 ?= 172.68.0.101
+CONFLUENT_PLATFORM_WARMUP_SECONDS ?= 30
+CONFLUENT_PLATFORM_SHUTDOWN_GRACE_SECONDS ?= 5
 COMPOSER ?= bin/composer.phar
 COMPOSER_VERSION ?= 1.10.13
 PHP ?= bin/php
@@ -71,8 +73,9 @@ install-phars:
 
 platform:
 	docker-compose down
+	sleep $(CONFLUENT_PLATFORM_SHUTDOWN_GRACE_SECONDS)
 	docker-compose up -d
-	sleep 25
+	sleep $(CONFLUENT_PLATFORM_WARMUP_SECONDS)
 
 clean:
 	rm -rf build
@@ -81,6 +84,6 @@ clean:
 benchmark:
 	docker-compose down
 	docker-compose up -d
-	sleep 15
+	sleep $(CONFLUENT_PLATFORM_WARMUP_SECONDS)
 	PHP_VERSION=$(PHP_VERSION) $(PHP) ./vendor/bin/phpbench run benchmarks/AvroEncodingBench.php --report=aggregate --retry-threshold=5
 	docker-compose down

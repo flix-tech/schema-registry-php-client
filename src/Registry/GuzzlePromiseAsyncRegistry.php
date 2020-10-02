@@ -8,26 +8,23 @@ use AvroSchema;
 use Closure;
 use FlixTech\SchemaRegistryApi\AsynchronousRegistry;
 use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
+use FlixTech\SchemaRegistryApi\Exception\RuntimeException;
+use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\PromiseInterface;
-use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
+use function FlixTech\SchemaRegistryApi\Requests\decodeResponse;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
 use function FlixTech\SchemaRegistryApi\Requests\schemaRequest;
 use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
-use function sprintf;
 
-/**
- * {@inheritdoc}
- */
-class PromisingRegistry implements AsynchronousRegistry
+class GuzzlePromiseAsyncRegistry implements AsynchronousRegistry
 {
     /**
      * @var ClientInterface
@@ -44,8 +41,25 @@ class PromisingRegistry implements AsynchronousRegistry
         $this->client = $client;
         $exceptionMap = ExceptionMap::instance();
 
-        $this->rejectedCallback = static function (RequestException $exception) use ($exceptionMap) {
-            return $exceptionMap($exception);
+        $responseExistenceGuard = static function (RequestException $exception): ResponseInterface {
+            $response = $exception->getResponse();
+
+            if (!$response) {
+                throw new RuntimeException(
+                    "RequestException does not provide a response to inspect.",
+                    $exception->getCode(),
+                    $exception
+                );
+            }
+
+            return $response;
+        };
+
+        $this->rejectedCallback = static function (RequestException $exception) use (
+            $exceptionMap,
+            $responseExistenceGuard
+        ): SchemaRegistryException {
+            return $exceptionMap->exceptionFor($responseExistenceGuard($exception));
         };
     }
 
@@ -59,7 +73,7 @@ class PromisingRegistry implements AsynchronousRegistry
         $request = registerNewSchemaVersionWithSubjectRequest((string) $schema, $subject);
 
         $onFulfilled = function (ResponseInterface $response) {
-            return $this->getJsonFromResponseBody($response)['id'];
+            return decodeResponse($response)['id'];
         };
 
         return $this->makeRequest($request, $onFulfilled);
@@ -75,7 +89,7 @@ class PromisingRegistry implements AsynchronousRegistry
         $request = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
 
         $onFulfilled = function (ResponseInterface $response) {
-            return $this->getJsonFromResponseBody($response)['id'];
+            return decodeResponse($response)['id'];
         };
 
         return $this->makeRequest($request, $onFulfilled);
@@ -92,7 +106,7 @@ class PromisingRegistry implements AsynchronousRegistry
 
         $onFulfilled = function (ResponseInterface $response) {
             return AvroSchema::parse(
-                $this->getJsonFromResponseBody($response)['schema']
+                decodeResponse($response)['schema']
             );
         };
 
@@ -110,7 +124,7 @@ class PromisingRegistry implements AsynchronousRegistry
 
         $onFulfilled = function (ResponseInterface $response) {
             return AvroSchema::parse(
-                $this->getJsonFromResponseBody($response)['schema']
+                decodeResponse($response)['schema']
             );
         };
 
@@ -127,7 +141,7 @@ class PromisingRegistry implements AsynchronousRegistry
         $request = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
 
         $onFulfilled = function (ResponseInterface $response) {
-            return $this->getJsonFromResponseBody($response)['version'];
+            return decodeResponse($response)['version'];
         };
 
         return $this->makeRequest($request, $onFulfilled);
@@ -144,7 +158,7 @@ class PromisingRegistry implements AsynchronousRegistry
 
         $onFulfilled = function (ResponseInterface $response) {
             return AvroSchema::parse(
-                $this->getJsonFromResponseBody($response)['schema']
+                decodeResponse($response)['schema']
             );
         };
 
@@ -162,24 +176,5 @@ class PromisingRegistry implements AsynchronousRegistry
         return $this->client
             ->sendAsync($request)
             ->then($onFulfilled, $this->rejectedCallback);
-    }
-
-    /**
-     * @param ResponseInterface $response
-     * @return array<mixed, mixed>
-     */
-    private function getJsonFromResponseBody(ResponseInterface $response): array
-    {
-        $body = (string) $response->getBody();
-
-        try {
-            return \GuzzleHttp\json_decode($body, true);
-        } catch (InvalidArgumentException $e) {
-            throw new InvalidArgumentException(
-                sprintf('%s - with content "%s"', $e->getMessage(), $body),
-                $e->getCode(),
-                $e
-            );
-        }
     }
 }

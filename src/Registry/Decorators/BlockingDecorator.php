@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FlixTech\SchemaRegistryApi\Registry;
+namespace FlixTech\SchemaRegistryApi\Registry\Decorators;
 
 use AvroSchema;
 use Exception;
@@ -11,10 +11,7 @@ use FlixTech\SchemaRegistryApi\SynchronousRegistry;
 use GuzzleHttp\Promise\PromiseInterface;
 use LogicException;
 
-/**
- * {@inheritdoc}
- */
-class BlockingRegistry implements SynchronousRegistry
+class BlockingDecorator implements SynchronousRegistry
 {
     /**
      * @var AsynchronousRegistry
