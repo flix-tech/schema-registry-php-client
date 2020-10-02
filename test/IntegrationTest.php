@@ -18,7 +18,6 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
@@ -303,13 +302,13 @@ INCOMPATIBLE;
             )->wait();
 
         $this->client
-            ->sendAsync(changeSubjectCompatibilityLevelRequest(self::SUBJECT_NAME, COMPATIBILITY_FORWARD))
+            ->sendAsync(changeSubjectCompatibilityLevelRequest(self::SUBJECT_NAME, Constants::COMPATIBILITY_FORWARD))
             ->then(
                 function (ResponseInterface $request) {
                     $decodedBody = jsonDecode($request->getBody()->getContents());
 
                     $this->assertEquals(
-                        COMPATIBILITY_FORWARD,
+                        Constants::COMPATIBILITY_FORWARD,
                         $decodedBody['compatibility']
                     );
                 }
@@ -322,7 +321,7 @@ INCOMPATIBLE;
                     $decodedBody = jsonDecode($request->getBody()->getContents());
 
                     $this->assertEquals(
-                        COMPATIBILITY_FORWARD,
+                        Constants::COMPATIBILITY_FORWARD,
                         $decodedBody['compatibilityLevel']
                     );
                 }

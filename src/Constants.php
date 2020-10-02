@@ -9,6 +9,7 @@ final class Constants
     public const COMPATIBILITY_NONE = 'NONE';
     public const COMPATIBILITY_BACKWARD = 'BACKWARD';
     public const COMPATIBILITY_BACKWARD_TRANSITIVE = 'BACKWARD_TRANSITIVE';
+    public const COMPATIBILITY_FORWARD = 'FORWARD';
 
     private function __construct()
     {

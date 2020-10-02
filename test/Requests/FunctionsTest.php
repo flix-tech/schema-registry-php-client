@@ -9,7 +9,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
-use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL_TRANSITIVE;
@@ -190,7 +189,7 @@ class FunctionsTest extends TestCase
      */
     public function it_should_produce_a_request_to_change_the_subject_compatibility_level(): void
     {
-        $request = changeSubjectCompatibilityLevelRequest('test', COMPATIBILITY_FORWARD);
+        $request = changeSubjectCompatibilityLevelRequest('test', Constants::COMPATIBILITY_FORWARD);
 
         self::assertEquals('PUT', $request->getMethod());
         self::assertEquals('/config/test', $request->getUri());
@@ -256,8 +255,8 @@ class FunctionsTest extends TestCase
             validateCompatibilityLevel(Constants::COMPATIBILITY_BACKWARD_TRANSITIVE)
         );
         self::assertEquals(
-            COMPATIBILITY_FORWARD,
-            validateCompatibilityLevel(COMPATIBILITY_FORWARD)
+            Constants::COMPATIBILITY_FORWARD,
+            validateCompatibilityLevel(Constants::COMPATIBILITY_FORWARD)
         );
         self::assertEquals(
             COMPATIBILITY_FORWARD_TRANSITIVE,
@@ -286,7 +285,7 @@ class FunctionsTest extends TestCase
         );
         self::assertEquals(
             '{"compatibility":"FORWARD"}',
-            prepareCompatibilityLevelForTransport(COMPATIBILITY_FORWARD)
+            prepareCompatibilityLevelForTransport(Constants::COMPATIBILITY_FORWARD)
         );
         self::assertEquals(
             '{"compatibility":"FORWARD_TRANSITIVE"}',
