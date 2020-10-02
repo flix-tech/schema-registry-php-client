@@ -14,8 +14,9 @@
     "php": "^7.3",
     "ext-curl": "*",
     "ext-json": "*",
-    "guzzlehttp/guzzle": "~6.3",
-    "guzzlehttp/psr7": "<1.7",
+    "psr/http-client": "~1.0",
+    "guzzlehttp/guzzle": "~7.0",
+    "guzzlehttp/psr7": "^1.7",
     "beberlei/assert": "~2.7|~3.0",
     "flix-tech/avro-php": "^4.1"
   },

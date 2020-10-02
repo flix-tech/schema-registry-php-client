@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace FlixTech\SchemaRegistryApi\Test\Registry;
+namespace FlixTech\SchemaRegistryApi\Test\Registry\Decorators;
 
 use AvroSchema;
 use AvroSchemaParseException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Exception\SubjectNotFoundException;
 use FlixTech\SchemaRegistryApi\Registry;
-use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
-use FlixTech\SchemaRegistryApi\Registry\CachedRegistry;
+use FlixTech\SchemaRegistryApi\Registry\Cache\CacheAdapter;
+use FlixTech\SchemaRegistryApi\Registry\Decorators\CachingDecorator;
 use GuzzleHttp\Promise\FulfilledPromise;
 use GuzzleHttp\Promise\PromiseInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class CachedRegistryTest extends TestCase
+class CachingDecoratorTest extends TestCase
 {
     /**
      * @var Registry|MockObject
@@ -29,7 +29,7 @@ class CachedRegistryTest extends TestCase
     private $cacheAdapter;
 
     /**
-     * @var CachedRegistry
+     * @var CachingDecorator
      */
     private $cachedRegistry;
 
@@ -61,7 +61,7 @@ class CachedRegistryTest extends TestCase
             return md5((string) $schema);
         };
 
-        $this->cachedRegistry = new CachedRegistry($this->registryMock, $this->cacheAdapter);
+        $this->cachedRegistry = new CachingDecorator($this->registryMock, $this->cacheAdapter);
     }
 
     /**
@@ -234,7 +234,7 @@ class CachedRegistryTest extends TestCase
             return sha1((string) $schema);
         };
 
-        $this->cachedRegistry = new CachedRegistry($this->registryMock, $this->cacheAdapter, $sha1HashFunction);
+        $this->cachedRegistry = new CachingDecorator($this->registryMock, $this->cacheAdapter, $sha1HashFunction);
 
         $this->registryMock
             ->expects(self::never())
