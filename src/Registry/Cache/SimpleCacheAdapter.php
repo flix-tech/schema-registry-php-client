@@ -76,11 +76,11 @@ class SimpleCacheAdapter implements CacheAdapter
     public function getIdWithHash(string $hash): ?int
     {
         $rawId = $this->cache->get($hash);
-        
+
         if (null === $rawId) {
             return null;
         }
-        
+
         return (int) $rawId;
     }
 

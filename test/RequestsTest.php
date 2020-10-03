@@ -1,8 +1,8 @@
-<?php /** @noinspection AdditionOperationOnArraysInspection */
+<?php
 
 declare(strict_types=1);
 
-namespace FlixTech\SchemaRegistryApi\Test\Requests;
+namespace FlixTech\SchemaRegistryApi\Test;
 
 use FlixTech\SchemaRegistryApi\Constants;
 use FlixTech\SchemaRegistryApi\Json;
