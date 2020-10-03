@@ -1,4 +1,4 @@
-<?php /** @noinspection AdditionOperationOnArraysInspection */
+<?php
 
 namespace FlixTech\SchemaRegistryApi\Requests;
 
