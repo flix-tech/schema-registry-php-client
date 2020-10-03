@@ -281,8 +281,7 @@ class ExceptionMapTest extends TestCase
         string $expectedMessage,
         int $errorCode,
         SchemaRegistryException $exception
-    ): void
-    {
+    ): void {
         self::assertInstanceOf($exceptionClass, $exception);
         self::assertEquals($errorCode, $exception->getCode());
         self::assertEquals($expectedMessage, $exception->getMessage());
