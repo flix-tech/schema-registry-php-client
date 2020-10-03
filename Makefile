@@ -37,7 +37,7 @@ phpstan:
 
 cs-fixer:
 	PHP_VERSION=$(PHP_VERSION) $(PHP) bin/php-cs-fixer.phar fix --config=.php_cs.dist -v --dry-run \
-	  --path-mode=intersection --allow-risky=yes src test
+	  --path-mode=intersection --diff --allow-risky=yes src test
 
 cs-fixer-modify:
 	PHP_VERSION=$(PHP_VERSION) $(PHP) bin/php-cs-fixer.phar fix --config=.php_cs.dist -v \
