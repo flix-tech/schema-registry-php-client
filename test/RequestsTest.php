@@ -376,16 +376,28 @@ JSON,
      */
     public function it_should_produce_a_valid_subject_version_deletion_request(): void
     {
+        $request = Requests::deleteSubjectVersionRequest('test', Constants::VERSION_LATEST, false);
+
+        self::assertEquals('DELETE', $request->getMethod());
+        self::assertEquals('/subjects/test/versions/latest?permanent=false', $request->getUri());
+        self::assertEquals([Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]], $request->getHeaders());
+
         $request = Requests::deleteSubjectVersionRequest('test', Constants::VERSION_LATEST);
 
         self::assertEquals('DELETE', $request->getMethod());
-        self::assertEquals('subjects/test/versions/latest', $request->getUri());
+        self::assertEquals('subjects/test/versions/latest?permanent=false', $request->getUri());
         self::assertEquals([Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]], $request->getHeaders());
 
-        $request = Requests::deleteSubjectVersionRequest('test', '5');
+        $request = Requests::deleteSubjectVersionRequest('test', '5', false);
 
         self::assertEquals('DELETE', $request->getMethod());
-        self::assertEquals('subjects/test/versions/5', $request->getUri());
+        self::assertEquals('/subjects/test/versions/5?permanent=false', $request->getUri());
+        self::assertEquals([Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]], $request->getHeaders());
+
+        $request = Requests::deleteSubjectVersionRequest('test', '5', true);
+
+        self::assertEquals('DELETE', $request->getMethod());
+        self::assertEquals('subjects/test/versions/5?permanent=true', $request->getUri());
         self::assertEquals([Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]], $request->getHeaders());
     }
 }
