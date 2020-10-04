@@ -185,13 +185,16 @@ final class Requests
 
     /**
      * @param string $subjectName
+     * @param bool $permanent
      * @return RequestInterface
      */
-    public static function deleteSubjectRequest(string $subjectName): RequestInterface
+    public static function deleteSubjectRequest(string $subjectName, bool $permanent): RequestInterface
     {
+        $query = $permanent ? "true" : "false";
+
         return new Request(
             'DELETE',
-            Utils::uriFor("/subjects/$subjectName"),
+            Utils::uriFor("/subjects/$subjectName?permanent=$query"),
             Constants::ACCEPT_HEADER
         );
     }
