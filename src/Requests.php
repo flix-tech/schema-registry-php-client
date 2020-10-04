@@ -188,7 +188,7 @@ final class Requests
      * @param bool $permanent
      * @return RequestInterface
      */
-    public static function deleteSubjectRequest(string $subjectName, bool $permanent): RequestInterface
+    public static function deleteSubjectRequest(string $subjectName, bool $permanent = false): RequestInterface
     {
         $query = $permanent ? "true" : "false";
 
