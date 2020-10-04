@@ -47,10 +47,10 @@ final class Requests
         $decoded = Json::decode($schema);
 
         if (is_array($decoded) && array_key_exists('schema', $decoded)) {
-            return Json::jsonEncode($decoded);
+            return Json::encode($decoded);
         }
 
-        return Json::jsonEncode(['schema' => Json::jsonEncode($decoded)]);
+        return Json::encode(['schema' => Json::encode($decoded)]);
     }
 
     public static function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subjectName): RequestInterface
@@ -123,7 +123,7 @@ final class Requests
 
     public static function prepareCompatibilityLevelForTransport(string $compatibilityLevel): string
     {
-        return Json::jsonEncode(['compatibility' => $compatibilityLevel]);
+        return Json::encode(['compatibility' => $compatibilityLevel]);
     }
 
     public static function changeDefaultCompatibilityLevelRequest(string $level): RequestInterface
