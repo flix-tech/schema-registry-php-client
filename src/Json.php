@@ -30,7 +30,7 @@ final class Json
      *
      * @throws JsonException
      */
-    public static function jsonDecode(string $jsonString, int $depth = 512)
+    public static function decode(string $jsonString, int $depth = 512)
     {
         return json_decode($jsonString, true, $depth, JSON_THROW_ON_ERROR);
     }
@@ -57,7 +57,7 @@ final class Json
         $body = (string)$response->getBody();
 
         try {
-            return Json::jsonDecode($body);
+            return Json::decode($body);
         } catch (JsonException $e) {
             throw new InvalidArgumentException(
                 sprintf('%s - with content "%s"', $e->getMessage(), $body),

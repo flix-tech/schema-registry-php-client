@@ -89,7 +89,7 @@ final class ExceptionMap
     private function guardAgainstMissingErrorCode(ResponseInterface $response): array
     {
         try {
-            $decodedBody = Json::jsonDecode((string)$response->getBody());
+            $decodedBody = Json::decode((string)$response->getBody());
 
             if (!is_array($decodedBody) || !array_key_exists(self::ERROR_CODE_FIELD_NAME, $decodedBody)) {
                 throw new RuntimeException(

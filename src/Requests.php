@@ -44,7 +44,7 @@ final class Requests
 
     public static function prepareJsonSchemaForTransfer(string $schema): string
     {
-        $decoded = Json::jsonDecode($schema);
+        $decoded = Json::decode($schema);
 
         if (is_array($decoded) && array_key_exists('schema', $decoded)) {
             return Json::jsonEncode($decoded);
