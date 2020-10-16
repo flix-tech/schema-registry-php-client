@@ -9,7 +9,7 @@ use FlixTech\SchemaRegistryApi\Constants;
 /**
  * @implements SchemaType<ProtobufSchemaType>
  */
-final class ProtobufSchemaType extends ValueObject implements SchemaType
+final class ProtobufSchemaType extends SchemaTypes implements SchemaType
 {
     /**
      * @var ProtobufSchemaType

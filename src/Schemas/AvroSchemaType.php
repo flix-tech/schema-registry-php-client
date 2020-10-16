@@ -9,7 +9,7 @@ use FlixTech\SchemaRegistryApi\Constants;
 /**
  * @implements SchemaType<AvroSchemaType>
  */
-final class AvroSchemaType extends ValueObject implements SchemaType
+final class AvroSchemaType extends SchemaTypes implements SchemaType
 {
     /**
      * @var AvroSchemaType

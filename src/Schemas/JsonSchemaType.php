@@ -9,7 +9,7 @@ use FlixTech\SchemaRegistryApi\Constants;
 /**
  * @implements SchemaType<JsonSchemaType>
  */
-final class JsonSchemaType extends ValueObject implements SchemaType
+final class JsonSchemaType extends SchemaTypes implements SchemaType
 {
     /**
      * @var JsonSchemaType
