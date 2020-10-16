@@ -18,6 +18,9 @@ final class Constants
     public const ACCEPT_HEADER = [self::ACCEPT => 'application/vnd.schemaregistry.v1+json'];
     public const CONTENT_TYPE_HEADER = [self::CONTENT_TYPE => 'application/vnd.schemaregistry.v1+json'];
     public const CONTENT_TYPE = 'Content-Type';
+    public const AVRO_TYPE = 'AVRO';
+    public const JSON_TYPE = 'JSON';
+    public const PROTOBUF_TYPE = 'PROTOBUF';
 
     private function __construct()
     {

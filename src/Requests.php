@@ -44,13 +44,13 @@ final class Requests
 
     public static function prepareJsonSchemaForTransfer(string $schema): string
     {
-        $decoded = Json::jsonDecode($schema);
+        $decoded = Json::decode($schema);
 
         if (is_array($decoded) && array_key_exists('schema', $decoded)) {
-            return Json::jsonEncode($decoded);
+            return Json::encode($decoded);
         }
 
-        return Json::jsonEncode(['schema' => Json::jsonEncode($decoded)]);
+        return Json::encode(['schema' => Json::encode($decoded)]);
     }
 
     public static function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subjectName): RequestInterface
@@ -123,7 +123,7 @@ final class Requests
 
     public static function prepareCompatibilityLevelForTransport(string $compatibilityLevel): string
     {
-        return Json::jsonEncode(['compatibility' => $compatibilityLevel]);
+        return Json::encode(['compatibility' => $compatibilityLevel]);
     }
 
     public static function changeDefaultCompatibilityLevelRequest(string $level): RequestInterface
@@ -185,13 +185,16 @@ final class Requests
 
     /**
      * @param string $subjectName
+     * @param bool $permanent
      * @return RequestInterface
      */
-    public static function deleteSubjectRequest(string $subjectName): RequestInterface
+    public static function deleteSubjectRequest(string $subjectName, bool $permanent = false): RequestInterface
     {
+        $query = $permanent ? "true" : "false";
+
         return new Request(
             'DELETE',
-            Utils::uriFor("/subjects/$subjectName"),
+            Utils::uriFor("/subjects/$subjectName?permanent=$query"),
             Constants::ACCEPT_HEADER
         );
     }
@@ -199,13 +202,16 @@ final class Requests
     /**
      * @param string $subjectName
      * @param string $versionId
+     * @param bool $permanent
      * @return RequestInterface
      */
-    public static function deleteSubjectVersionRequest(string $subjectName, string $versionId): RequestInterface
+    public static function deleteSubjectVersionRequest(string $subjectName, string $versionId, bool $permanent = false): RequestInterface
     {
+        $query = $permanent ? "true" : "false";
+
         return new Request(
             'DELETE',
-            Utils::uriFor("/subjects/$subjectName/versions/$versionId"),
+            Utils::uriFor("/subjects/$subjectName/versions/$versionId?permanent=$query"),
             Constants::ACCEPT_HEADER
         );
     }

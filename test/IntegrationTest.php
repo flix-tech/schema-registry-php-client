@@ -111,7 +111,7 @@ INCOMPATIBLE;
             ->sendAsync(Requests::allSubjectsRequest())
             ->then(
                 function (ResponseInterface $request) {
-                    $this->assertEmpty(Json::jsonDecode($request->getBody()->getContents()));
+                    $this->assertEmpty(Json::decode($request->getBody()->getContents()));
                 }
             )->wait();
 
@@ -119,7 +119,7 @@ INCOMPATIBLE;
             ->sendAsync(Requests::registerNewSchemaVersionWithSubjectRequest($this->baseSchema, self::SUBJECT_NAME))
             ->then(
                 function (ResponseInterface $request) {
-                    $this->assertEquals(1, Json::jsonDecode($request->getBody()->getContents())['id']);
+                    $this->assertEquals(1, Json::decode($request->getBody()->getContents())['id']);
                 }
             )->wait();
 
@@ -127,7 +127,7 @@ INCOMPATIBLE;
             ->sendAsync(Requests::schemaRequest('1'))
             ->then(
                 function (ResponseInterface $request) {
-                    $decodedBody = Json::jsonDecode($request->getBody()->getContents());
+                    $decodedBody = Json::decode($request->getBody()->getContents());
 
                     $this->assertJsonStringEqualsJsonString($this->baseSchema, $decodedBody['schema']);
                 }
@@ -137,7 +137,7 @@ INCOMPATIBLE;
             ->sendAsync(Requests::checkIfSubjectHasSchemaRegisteredRequest(self::SUBJECT_NAME, $this->baseSchema))
             ->then(
                 function (ResponseInterface $request) {
-                    $decodedBody = Json::jsonDecode($request->getBody()->getContents());
+                    $decodedBody = Json::decode($request->getBody()->getContents());
 
                     $this->assertEquals(1, $decodedBody['id']);
                     $this->assertEquals(1, $decodedBody['version']);
@@ -150,7 +150,7 @@ INCOMPATIBLE;
             ->sendAsync(Requests::singleSubjectVersionRequest(self::SUBJECT_NAME, Constants::VERSION_LATEST))
             ->then(
                 function (ResponseInterface $request) {
-                    $decodedBody = Json::jsonDecode($request->getBody()->getContents());
+                    $decodedBody = Json::decode($request->getBody()->getContents());
 
                     $this->assertEquals(self::SUBJECT_NAME, $decodedBody['subject']);
                     $this->assertEquals(1, $decodedBody['version']);
@@ -166,7 +166,7 @@ INCOMPATIBLE;
                 Constants::VERSION_LATEST
             ))->then(
                 function (ResponseInterface $request) {
-                    $decodedBody = Json::jsonDecode($request->getBody()->getContents());
+                    $decodedBody = Json::decode($request->getBody()->getContents());
 
                     $this->assertTrue($decodedBody['is_compatible']);
                 }
@@ -245,7 +245,7 @@ INCOMPATIBLE;
             ->sendAsync(Requests::registerNewSchemaVersionWithSubjectRequest($this->compatibleSchemaEvolution, self::SUBJECT_NAME))
             ->then(
                 function (ResponseInterface $request) {
-                    $this->assertEquals(2, Json::jsonDecode($request->getBody()->getContents())['id']);
+                    $this->assertEquals(2, Json::decode($request->getBody()->getContents())['id']);
                 }
             )->wait();
 
@@ -253,7 +253,7 @@ INCOMPATIBLE;
             ->sendAsync(Requests::allSubjectVersionsRequest(self::SUBJECT_NAME))
             ->then(
                 function (ResponseInterface $request) {
-                    $this->assertEquals([1, 2], Json::jsonDecode($request->getBody()->getContents()));
+                    $this->assertEquals([1, 2], Json::decode($request->getBody()->getContents()));
                 }
             )->wait();
     }
@@ -267,7 +267,7 @@ INCOMPATIBLE;
             ->sendAsync(Requests::defaultCompatibilityLevelRequest())
             ->then(
                 function (ResponseInterface $request) {
-                    $decodedBody = Json::jsonDecode($request->getBody()->getContents());
+                    $decodedBody = Json::decode($request->getBody()->getContents());
 
                     $this->assertEquals(
                         Constants::COMPATIBILITY_BACKWARD,
@@ -280,7 +280,7 @@ INCOMPATIBLE;
             ->sendAsync(Requests::changeDefaultCompatibilityLevelRequest(Constants::COMPATIBILITY_FULL))
             ->then(
                 function (ResponseInterface $request) {
-                    $decodedBody = Json::jsonDecode($request->getBody()->getContents());
+                    $decodedBody = Json::decode($request->getBody()->getContents());
 
                     $this->assertEquals(
                         Constants::COMPATIBILITY_FULL,
@@ -293,7 +293,7 @@ INCOMPATIBLE;
             ->sendAsync(Requests::changeSubjectCompatibilityLevelRequest(self::SUBJECT_NAME, Constants::COMPATIBILITY_FORWARD))
             ->then(
                 function (ResponseInterface $request) {
-                    $decodedBody = Json::jsonDecode($request->getBody()->getContents());
+                    $decodedBody = Json::decode($request->getBody()->getContents());
 
                     $this->assertEquals(
                         Constants::COMPATIBILITY_FORWARD,
@@ -306,7 +306,7 @@ INCOMPATIBLE;
             ->sendAsync(Requests::subjectCompatibilityLevelRequest(self::SUBJECT_NAME))
             ->then(
                 function (ResponseInterface $request) {
-                    $decodedBody = Json::jsonDecode($request->getBody()->getContents());
+                    $decodedBody = Json::decode($request->getBody()->getContents());
 
                     $this->assertEquals(
                         Constants::COMPATIBILITY_FORWARD,
