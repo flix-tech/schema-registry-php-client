@@ -8,7 +8,6 @@ services:
 php:
 - '7.3'
 - '7.4'
-- 'nightly'
 
 env:
   global:
@@ -38,6 +37,12 @@ jobs:
     - DEPENDENCIES="stable"
     script:
     - PHP=php make coverage
+  - stage: coverage
+    php: 'nightly'
+    env:
+      - DEPENDENCIES="stable"
+    script:
+      - PHP=php make coverage
   - stage: integration
     php: '7.4'
     env:
@@ -119,6 +124,15 @@ jobs:
     script:
     - make platform
     - PHP=php make phpunit-integration
+  - stage: integration
+    php: 'nightly'
+    env:
+      - DEPENDENCIES="stable"
+      - INTEGRATION_TEST="enabled"
+      - CONFLUENT_VERSION=6.0.0
+    script:
+      - make platform
+      - PHP=php make phpunit-integration
 after_script:
 - make clean
 
