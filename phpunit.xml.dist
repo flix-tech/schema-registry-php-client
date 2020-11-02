@@ -1,25 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/7.0/phpunit.xsd"
-        bootstrap="test/bootstrap.php"
-        colors="true"
->
-
-    <testsuites>
-        <testsuite name="FlixTech Schema Registry API Test Suite">
-            <directory>test/</directory>
-        </testsuite>
-    </testsuites>
-
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src/</directory>
-        </whitelist>
-    </filter>
-
-    <php>
-        <env name="ENABLE_INTEGRATION_TEST" value="0" />
-    </php>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" bootstrap="test/bootstrap.php" colors="true">
+  <coverage processUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">src/</directory>
+    </include>
+  </coverage>
+  <testsuites>
+    <testsuite name="FlixTech Schema Registry API Test Suite">
+      <directory>test/</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <env name="ENABLE_INTEGRATION_TEST" value="0"/>
+  </php>
 </phpunit>
