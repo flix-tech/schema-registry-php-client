@@ -20,7 +20,7 @@
     "flix-tech/avro-php": "^4.1"
   },
   "require-dev": {
-    "phpunit/phpunit": "^8.2.3|^9.0",
+    "phpunit/phpunit": "^9.4",
     "raphhh/trex-reflection": "~1.0",
     "doctrine/cache": "~1.3",
     "psr/cache": "^1.0",
