@@ -1,7 +1,7 @@
 # no buildin rules and variables
 MAKEFLAGS =+ -rR --warn-undefined-variables
 
-.PHONY: composer-install composer-update phpstan cs-fixer cs-fixer-modify examples coverage docker run ci-local platform
+.PHONY: composer-install composer-update phpstan cs-fixer examples docker run
 
 CONFLUENT_VERSION ?= latest
 CONFLUENT_NETWORK_SUBNET ?= 172.68.0.0/24
@@ -10,10 +10,14 @@ KAFKA_BROKER_IPV4 ?= 172.68.0.102
 ZOOKEEPER_IPV4 ?= 172.68.0.101
 COMPOSER ?= bin/composer.phar
 COMPOSER_VERSION ?= 2.0.4
+PHP_STAN ?= bin/phpstan.phar
+PHP_STAN_VERSION ?= 0.12.53
+PHP_CS_FIXER ?= bin/php-cs-fixer.phar
+PHPUNIT ?= vendor/bin/phpunit
 PHP ?= bin/php
-PHP_VERSION ?= 7.4
+PHP_VERSION ?= 7.3
 XDEBUG_VERSION ?= 2.9.8
-
+XDEBUG_OPTIONS ?= -d xdebug.mode=off -d xdebug.coverage_enable=0
 export
 
 docker:
@@ -25,36 +29,32 @@ docker:
 	  .
 
 composer-install:
-	PHP_VERSION=$(PHP_VERSION) $(PHP) $(COMPOSER) install --no-interaction --no-progress --no-scripts
+	PHP_VERSION=$(PHP_VERSION) $(PHP) $(XDEBUG_OPTIONS) $(COMPOSER) install --no-interaction --no-progress --no-scripts --prefer-stable
 
 composer-update:
-	PHP_VERSION=$(PHP_VERSION) $(PHP) $(COMPOSER) update --no-interaction --no-progress --no-scripts
+	PHP_VERSION=$(PHP_VERSION) $(PHP) $(XDEBUG_OPTIONS) $(COMPOSER) update --no-interaction --no-progress --no-scripts --prefer-stable
 
 phpstan:
-	PHP_VERSION=$(PHP_VERSION) $(PHP) vendor/bin/phpstan.phar analyse
+	PHP_VERSION=$(PHP_VERSION) $(PHP) $(XDEBUG_OPTIONS) $(PHP_STAN) analyse
 
 cs-fixer:
-	PHP_VERSION=$(PHP_VERSION) $(PHP) bin/php-cs-fixer.phar fix --config=.php_cs.dist -v --dry-run \
+	PHP_VERSION=$(PHP_VERSION) $(PHP) $(XDEBUG_OPTIONS) $(PHP_CS_FIXER) fix --config=.php_cs.dist --diff -v --dry-run \
 	  --path-mode=intersection --allow-risky=yes src test
 
 cs-fixer-modify:
-	PHP_VERSION=$(PHP_VERSION) $(PHP) bin/php-cs-fixer.phar fix --config=.php_cs.dist -v \
+	PHP_VERSION=$(PHP_VERSION) $(PHP) $(XDEBUG_OPTIONS) $(PHP_CS_FIXER) fix --config=.php_cs.dist --diff -v \
 	  --path-mode=intersection --allow-risky=yes src test
 
 phpunit:
-	PHP_VERSION=$(PHP_VERSION) $(PHP) vendor/bin/phpunit --exclude-group integration
+	PHP_VERSION=$(PHP_VERSION) $(PHP) $(XDEBUG_OPTIONS) $(PHPUNIT) --exclude-group integration
 
 phpunit-integration:
-	PHP_VERSION=$(PHP_VERSION) $(PHP) vendor/bin/phpunit -c phpunit.xml.integration.dist --group integration
+	PHP_VERSION=$(PHP_VERSION) $(PHP) $(XDEBUG_OPTIONS) $(PHPUNIT) --group integration
 
 coverage:
 	mkdir -p build
-	PHP_VERSION=$(PHP_VERSION) $(PHP) vendor/bin/phpunit --coverage-clover=build/coverage.clover --coverage-text
-	PHP_VERSION=$(PHP_VERSION) $(PHP) bin/ocular.phar code-coverage:upload --format=php-clover \
-	  --repository=g/flix-tech/schema-registry-php-client build/coverage.clover
-
-run:
-	PHP_VERSION=$(PHP_VERSION) $(PHP) $(ARGS)
+	PHP_VERSION=$(PHP_VERSION) $(PHP) -d xdebug.mode=coverage -d xdebug.coverage_enable=1 vendor/bin/phpunit --exclude-group integration \
+	  --coverage-clover=build/coverage.clover --coverage-text
 
 ci-local: cs-fixer phpstan phpunit
 
@@ -64,23 +64,20 @@ examples:
 install-phars:
 	curl http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar -o bin/php-cs-fixer.phar -LR -z bin/php-cs-fixer.phar
 	chmod a+x bin/php-cs-fixer.phar
-	curl https://scrutinizer-ci.com/ocular.phar -o bin/ocular.phar -LR -z bin/ocular.phar
-	chmod a+x bin/ocular.phar
 	curl https://getcomposer.org/download/$(COMPOSER_VERSION)/composer.phar -o bin/composer.phar -LR -z bin/composer.phar
 	chmod a+x bin/composer.phar
+	curl https://github.com/phpstan/phpstan/releases/download/$(PHP_STAN_VERSION)/phpstan.phar -o bin/phpstan.phar -LR -z bin/phpstan.phar
+	chmod a+x bin/phpstan.phar
 
 platform:
 	docker-compose down
 	docker-compose up -d
-	sleep 25
+	bin/wait-for-all.sh
 
 clean:
 	rm -rf build
 	docker-compose down
 
-benchmark:
-	docker-compose down
-	docker-compose up -d
-	sleep 15
-	PHP_VERSION=$(PHP_VERSION) $(PHP) ./vendor/bin/phpbench run benchmarks/AvroEncodingBench.php --report=aggregate --retry-threshold=5
+benchmark: platform
+	PHP_VERSION=$(PHP_VERSION) $(PHP) $(XDEBUG_OPTIONS) ./vendor/bin/phpbench run benchmarks/AvroEncodingBench.php --report=aggregate --retry-threshold=5
 	docker-compose down
