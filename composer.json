@@ -1,6 +1,6 @@
 {
   "name": "flix-tech/confluent-schema-registry-api",
-  "description": "A PHP 7.2+ library to consume the Confluent Schema Registry REST API.",
+  "description": "A PHP 7.3+ library to consume the Confluent Schema Registry REST API.",
   "minimum-stability": "stable",
   "type": "library",
   "license": "MIT",
@@ -15,13 +15,13 @@
     "ext-curl": "*",
     "ext-json": "*",
     "guzzlehttp/guzzle": "~6.3",
+    "guzzlehttp/promises": "^1.4.0",
     "guzzlehttp/psr7": "<1.7",
     "beberlei/assert": "~2.7|~3.0",
     "flix-tech/avro-php": "^4.1"
   },
   "require-dev": {
-    "phpunit/phpunit": "^8.2.3|^9.0",
-    "phpstan/phpstan": "^0.12",
+    "phpunit/phpunit": "^8.2.3|^9.4.2",
     "raphhh/trex-reflection": "~1.0",
     "doctrine/cache": "~1.3",
     "psr/cache": "^1.0",

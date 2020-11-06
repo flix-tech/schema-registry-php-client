@@ -1,13 +1,13 @@
 # Confluent Schema Registry PHP API
 
-[![Build Status](https://travis-ci.org/flix-tech/schema-registry-php-client.svg?branch=master)](https://travis-ci.org/flix-tech/schema-registry-php-client)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/flix-tech/schema-registry-php-client/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/flix-tech/schema-registry-php-client/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/flix-tech/schema-registry-php-client/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/flix-tech/schema-registry-php-client/?branch=master)
+[![schema-registry-ci Actions Status](https://github.com/flix-tech/schema-registry-php-client/workflows/schema-registry-ci/badge.svg?branch=master)](https://github.com/flix-tech/schema-registry-php-client/actions)
+[![Maintainability](https://api.codeclimate.com/v1/badges/e62d0c58bb72020eaf3c/maintainability)](https://codeclimate.com/github/flix-tech/schema-registry-php-client/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/e62d0c58bb72020eaf3c/test_coverage)](https://codeclimate.com/github/flix-tech/schema-registry-php-client/test_coverage)
 [![Latest Stable Version](https://poser.pugx.org/flix-tech/confluent-schema-registry-api/v/stable)](https://packagist.org/packages/flix-tech/confluent-schema-registry-api)
 [![Total Downloads](https://poser.pugx.org/flix-tech/confluent-schema-registry-api/downloads)](https://packagist.org/packages/flix-tech/confluent-schema-registry-api)
 [![License](https://poser.pugx.org/flix-tech/confluent-schema-registry-api/license)](https://packagist.org/packages/flix-tech/confluent-schema-registry-api)
 
-A PHP 7.2+ library to consume the Confluent Schema Registry REST API. It provides low level functions to create PSR-7
+A PHP 7.3+ library to consume the Confluent Schema Registry REST API. It provides low level functions to create PSR-7
 compliant requests that can be used as well as high level abstractions to ease developer experience.
 
 #### Contents
@@ -33,10 +33,10 @@ compliant requests that can be used as well as high level abstractions to ease d
 
 | Dependency | Version | Reason |
 |:--- |:---:|:--- |
-| **`php`** | ~7.2 | Anything lower has reached EOL |
+| **`php`** | ~7.3 | Anything lower has reached EOL |
 | **`guzzlephp/guzzle`** | ~6.3 | Using `Request` to build PSR-7 `RequestInterface` |
 | **`beberlei/assert`** | ~2.7\|~3.0 | The de-facto standard assertions library for PHP |
-| **`flix-tech/avro-php`** | ^4.0 | Maintained fork of the only Avro PHP implementation: `rg/avro-php` |
+| **`flix-tech/avro-php`** | ^4.1 | Maintained fork of the only Avro PHP implementation: `rg/avro-php` |
 
 ### Optional dependencies
 
