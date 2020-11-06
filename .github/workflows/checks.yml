@@ -199,6 +199,7 @@ jobs:
         run: |
           chmod a+x bin/wait-for-all.sh bin/wait-for-it.sh
           make platform
-          docker run -i --rm --net=host --sig-proxy=true --pid=host -e ENABLE_INTEGRATION_TEST=1 \
+          docker run -i --rm --net=host --sig-proxy=true --pid=host \
+            -e ENABLE_INTEGRATION_TEST=1 -e TEST_SCHEMA_REGISTRY_HOST=172.68.0.103 -e TEST_SCHEMA_REGISTRY_PORT=8081 \
             -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:7.4 \
             vendor/bin/phpunit --group integration
