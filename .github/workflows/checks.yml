@@ -53,24 +53,24 @@ jobs:
           context: .
           file: ./Dockerfile
           load: true
-          tags: php-avro-serde:${{ matrix.php.version }}
+          tags: schema-registry-client:${{ matrix.php.version }}
           build-args: |
             PHP_VERSION=${{ matrix.php.version }}
             XDEBUG_VERSION=${{ matrix.php.xdebug }}
       -
         name: Inspect docker image
         run: |
-          docker image inspect php-avro-serde:${{ matrix.php.version }}
+          docker image inspect schema-registry-client:${{ matrix.php.version }}
       -
         name: Save docker image
         run: |
-          docker save php-avro-serde:${{ matrix.php.version }} -o php-avro-serde-${{ matrix.php.version }}.tgz
+          docker save schema-registry-client:${{ matrix.php.version }} -o schema-registry-client-${{ matrix.php.version }}.tgz
       -
         name: Upload docker image
         uses: actions/upload-artifact@v2
         with:
-          name: php-avro-serde-${{ matrix.php.version }}
-          path: php-avro-serde-${{ matrix.php.version }}.tgz
+          name: schema-registry-client-${{ matrix.php.version }}
+          path: schema-registry-client-${{ matrix.php.version }}.tgz
   ci-checks:
     runs-on: ubuntu-20.04
     needs:
@@ -109,16 +109,16 @@ jobs:
         name: Download docker image
         uses: actions/download-artifact@v2
         with:
-          name: php-avro-serde-${{ matrix.php.version }}
+          name: schema-registry-client-${{ matrix.php.version }}
       -
         name: Load docker image
         run: |
-          docker load -i php-avro-serde-${{ matrix.php.version }}.tgz
+          docker load -i schema-registry-client-${{ matrix.php.version }}.tgz
       -
         name: Install vendors
         run: |
           docker run -i --rm --net=host --sig-proxy=true --pid=host \
-            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" php-avro-serde:${{ matrix.php.version }} \
+            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:${{ matrix.php.version }} \
             composer update --no-interaction --no-scripts --no-ansi ${{ matrix.php.composer }}
       -
         name: Run Static analysis
@@ -126,10 +126,10 @@ jobs:
         run: |
           chmod a+x bin/phpstan.phar bin/php-cs-fixer.phar
           docker run -i --rm --net=host --sig-proxy=true --pid=host \
-            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" php-avro-serde:${{ matrix.php.version }} \
+            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:${{ matrix.php.version }} \
             bin/phpstan.phar analyse
           docker run -i --rm --net=host --sig-proxy=true --pid=host \
-            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" php-avro-serde:${{ matrix.php.version }} \
+            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:${{ matrix.php.version }} \
             bin/php-cs-fixer.phar fix --config=.php_cs.dist --diff -v --dry-run --path-mode=intersection --allow-risky=yes \
             src test
       -
@@ -137,7 +137,7 @@ jobs:
         if: ${{ !(matrix.php.version == '7.4' && matrix.php.composer == '--prefer-stable') }}
         run: |
           docker run -i --rm --net=host --sig-proxy=true --pid=host \
-            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" php-avro-serde:${{ matrix.php.version }} \
+            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:${{ matrix.php.version }} \
             vendor/bin/phpunit --exclude-group integration
       -
         name: Run PHPUnit with Coverage Report
@@ -145,7 +145,7 @@ jobs:
         run: |
           mkdir -p build
           docker run -i --rm --net=host --sig-proxy=true --pid=host \
-            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" php-avro-serde:${{ matrix.php.version }} \
+            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:${{ matrix.php.version }} \
             vendor/bin/phpunit --exclude-group integration --coverage-clover=build/coverage.clover --coverage-text
       - name: Publish code coverage
         if: ${{ matrix.php.version == '7.4' && matrix.php.composer == '--prefer-stable' }}
@@ -181,16 +181,16 @@ jobs:
         name: Download docker image
         uses: actions/download-artifact@v2
         with:
-          name: php-avro-serde-7.4
+          name: schema-registry-client-7.4
       -
         name: Load docker image
         run: |
-          docker load -i php-avro-serde-7.4.tgz
+          docker load -i schema-registry-client-7.4.tgz
       -
         name: Install vendors
         run: |
           docker run -i --rm --net=host --sig-proxy=true --pid=host \
-            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" php-avro-serde:7.4 \
+            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:7.4 \
             composer update --no-interaction --no-scripts --no-ansi --prefer-stable
       -
         name: Run PHPUnit Integration
@@ -199,6 +199,6 @@ jobs:
         run: |
           chmod a+x bin/wait-for-all.sh bin/wait-for-it.sh
           make platform
-          docker run -i --rm --net=host --sig-proxy=true --pid=host \
-            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" php-avro-serde:7.4 \
+          docker run -i --rm --net=host --sig-proxy=true --pid=host -e ENABLE_INTEGRATION_TEST=1 \
+            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:7.4 \
             vendor/bin/phpunit --group integration
