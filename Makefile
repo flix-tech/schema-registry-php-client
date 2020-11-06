@@ -77,7 +77,3 @@ platform:
 clean:
 	rm -rf build
 	docker-compose down
-
-benchmark: platform
-	PHP_VERSION=$(PHP_VERSION) $(PHP) $(XDEBUG_OPTIONS) ./vendor/bin/phpbench run benchmarks/AvroEncodingBench.php --report=aggregate --retry-threshold=5
-	docker-compose down
