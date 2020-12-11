@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FlixTech\SchemaRegistryApi\Test\Schema;
 
 use FlixTech\SchemaRegistryApi\Schema\AvroName;
