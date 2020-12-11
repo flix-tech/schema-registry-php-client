@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Schema;
 
-class AvroReference implements \JsonSerializable
+final class AvroReference implements \JsonSerializable
 {
     /**
      * @var AvroName
