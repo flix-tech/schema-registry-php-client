@@ -15,4 +15,9 @@ final class AvroReference
     {
         $this->fullName = $fullName;
     }
+
+    public function __toString(): string
+    {
+        return $this->fullName;
+    }
 }
