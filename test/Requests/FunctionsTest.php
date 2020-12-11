@@ -78,28 +78,40 @@ class FunctionsTest extends TestCase
     /**
      * @test
      *
-     * @param string $schema
+     * @param string $initialSchema
+     * @param string $finalSchema
      * @dataProvider dataForRegisteringSchemas
      */
-    public function it_should_produce_a_request_to_register_a_new_schema_version(string $schema): void
+    public function it_should_produce_a_request_to_register_a_new_schema_version(string $initialSchema, string $finalSchema): void
     {
-        $request = registerNewSchemaVersionWithSubjectRequest($schema, 'test');
+        $request = registerNewSchemaVersionWithSubjectRequest($initialSchema, 'test');
 
         self::assertEquals('POST', $request->getMethod());
         self::assertEquals('/subjects/test/versions', $request->getUri());
         self::assertEquals([CONTENT_TYPE_HEADER, ACCEPT_HEADER], $request->getHeaders());
-        self::assertJsonStringEqualsJsonString($schema, $request->getBody()->getContents());
-
-        $request = registerNewSchemaVersionWithSubjectRequest('{"schema": "{\"type\": \"string\"}"}', 'test');
-
-        self::assertEquals('POST', $request->getMethod());
-        self::assertEquals('/subjects/test/versions', $request->getUri());
-        self::assertEquals([CONTENT_TYPE_HEADER, ACCEPT_HEADER], $request->getHeaders());
-        self::assertEquals('{"schema":"{\"type\": \"string\"}"}', $request->getBody()->getContents());
+        self::assertJsonStringEqualsJsonString($finalSchema, $request->getBody()->getContents());
     }
 
     public static function dataForRegisteringSchemas(): Generator {
         yield 'Schema without schema key' => [
+            /** @lang JSON */<<<JSON
+{
+  "type": "string"
+}
+JSON,
+            /** @lang JSON */<<<JSON
+{
+  "schema": "{\"type\":\"string\"}"
+}
+JSON,
+        ];
+
+        yield 'Schema with schema key' => [
+            /** @lang JSON */<<<JSON
+{
+  "schema": "{\"type\":\"string\"}"
+}
+JSON,
             /** @lang JSON */<<<JSON
 {
   "schema": "{\"type\":\"string\"}"
