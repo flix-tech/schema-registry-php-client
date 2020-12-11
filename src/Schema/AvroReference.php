@@ -8,6 +8,8 @@ use Assert\Assertion;
 
 final class AvroReference
 {
+    private const REGEX = '/.*/';
+
     /**
      * @var string
      */
@@ -16,6 +18,7 @@ final class AvroReference
     public function __construct(string $fullName)
     {
         Assertion::notBlank($fullName);
+        Assertion::regex($fullName, self::REGEX);
         $this->fullName = $fullName;
     }
 
