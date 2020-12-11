@@ -97,39 +97,13 @@ class FunctionsTest extends TestCase
 
     public static function dataForRegisteringSchemas(): Generator {
         yield 'Schema without schema key' => [
-            /** @lang JSON */<<<JSON
-{
-  "type": "string"
-}
-JSON,
-            /** @lang JSON */<<<JSON
-{
-  "schema": "{\"type\":\"string\"}"
-}
-JSON,
+            '{"type":"string"}',
+            '{"schema":"{\"type\":\"string\"}"}',
             [],
         ];
 
-        yield 'Schema with schema key' => [
-            /** @lang JSON */<<<JSON
-{
-  "schema": "{\"type\":\"string\"}"
-}
-JSON,
-            /** @lang JSON */<<<JSON
-{
-  "schema": "{\"type\":\"string\"}"
-}
-JSON,
-            [],
-        ];
-
-        yield 'Schema with schema key and references' => [
-            /** @lang JSON */<<<JSON
-{
-  "schema": "{\"type\":\"string\"}"
-}
-JSON,
+        yield 'Schema without schema key and references' => [
+            '{"type":"string"}',
             /** @lang JSON */<<<JSON
 {
   "schema": "{\"type\":\"string\"}",
@@ -266,12 +240,7 @@ JSON,
     {
         self::assertJsonStringEqualsJsonString(
             '{"schema":"{\"type\":\"string\"}"}',
-            prepareJsonSchemaForTransfer('{"type": "string"}')
-        );
-
-        self::assertJsonStringEqualsJsonString(
-            '{"schema":"{\"type\": \"string\"}"}',
-            prepareJsonSchemaForTransfer('{"schema":"{\"type\": \"string\"}"}')
+            prepareJsonSchemaForTransfer('{"type":"string"}')
         );
     }
 

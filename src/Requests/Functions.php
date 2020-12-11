@@ -55,7 +55,7 @@ function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subj
         'POST',
         (new UriTemplate())->expand('/subjects/{name}/versions', ['name' => $subjectName]),
         [CONTENT_TYPE_HEADER, ACCEPT_HEADER],
-        prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
+        prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema), ...$references)
     );
 }
 
@@ -153,13 +153,13 @@ function validateSchemaStringAsJson(string $schema): string
 
 function prepareJsonSchemaForTransfer(string $schema, AvroReference ...$references): string
 {
-    $decoded = \GuzzleHttp\json_decode($schema, true);
+    $return = [
+        'schema' => $schema
+    ];
 
-    if (is_array($decoded) && array_key_exists('schema', $decoded)) {
-        return \GuzzleHttp\json_encode($decoded);
-    }
-
-    return \GuzzleHttp\json_encode(['schema' => \GuzzleHttp\json_encode($decoded)]);
+    return !$references
+        ? \GuzzleHttp\json_encode($return)
+        : \GuzzleHttp\json_encode(array_merge($return, ['references' => $references]));
 }
 
 function validateCompatibilityLevel(string $compatibilityVersion): string
