@@ -21,14 +21,14 @@ class AvroReferenceTest extends TestCase
      * @param bool       $isValid
      * @param string     $expectedJson
      */
-    public function it_should_be_constructable(string $avroName, string $subject, $version, bool $isValid, string $expectedJson): void {
+    public function it_should_be_constructable(string $avroName, string $subject, $version, bool $isValid, ?string $expectedJson): void {
         if (!$isValid) {
             $this->expectException(InvalidArgumentException::class);
         }
 
         $this->assertJsonStringEqualsJsonString(
             \json_encode(new AvroReference(new AvroName($avroName), $subject, $version)),
-            $expectedJson
+            (string) $expectedJson
         );
     }
 
@@ -60,5 +60,14 @@ JSON
 }
 JSON
         ];
+
+        yield 'Empty subject invalid' => [
+            'test.example.MyRecord',
+            '',
+            'latest',
+            false,
+            null,
+        ];
+
     }
 }
