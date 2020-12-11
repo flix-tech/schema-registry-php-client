@@ -80,11 +80,12 @@ class FunctionsTest extends TestCase
      *
      * @param string $initialSchema
      * @param string $finalSchema
+     * @param array  $references
      * @dataProvider dataForRegisteringSchemas
      */
-    public function it_should_produce_a_request_to_register_a_new_schema_version(string $initialSchema, string $finalSchema): void
+    public function it_should_produce_a_request_to_register_a_new_schema_version(string $initialSchema, string $finalSchema, array $references): void
     {
-        $request = registerNewSchemaVersionWithSubjectRequest($initialSchema, 'test');
+        $request = registerNewSchemaVersionWithSubjectRequest($initialSchema, 'test', ...$references);
 
         self::assertEquals('POST', $request->getMethod());
         self::assertEquals('/subjects/test/versions', $request->getUri());
@@ -104,6 +105,7 @@ JSON,
   "schema": "{\"type\":\"string\"}"
 }
 JSON,
+            [],
         ];
 
         yield 'Schema with schema key' => [
@@ -117,6 +119,7 @@ JSON,
   "schema": "{\"type\":\"string\"}"
 }
 JSON,
+            [],
         ];
     }
 
