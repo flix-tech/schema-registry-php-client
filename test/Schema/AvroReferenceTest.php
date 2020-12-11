@@ -2,7 +2,7 @@
 
 namespace FlixTech\SchemaRegistryApi\Test\Schema;
 
-use FlixTech\SchemaRegistryApi\Schema\AvroReference;
+use FlixTech\SchemaRegistryApi\Schema\AvroName;
 use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -18,7 +18,7 @@ class AvroReferenceTest extends TestCase
             $this->expectException(InvalidArgumentException::class);
         }
 
-        $this->assertSame((string) new AvroReference($fullName), $fullName);
+        $this->assertSame((string) new AvroName($fullName), $fullName);
     }
 
     public static function avroReferences(): Generator {

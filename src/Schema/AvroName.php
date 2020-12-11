@@ -6,7 +6,7 @@ namespace FlixTech\SchemaRegistryApi\Schema;
 
 use Assert\Assertion;
 
-final class AvroReference
+final class AvroName
 {
     /**
      * This regex is created according to the Avro specification for names.
