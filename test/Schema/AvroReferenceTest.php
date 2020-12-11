@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Test\Schema;
 
+use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use Generator;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class AvroReferenceTest extends TestCase
@@ -18,7 +20,16 @@ class AvroReferenceTest extends TestCase
      * @param bool       $isValid
      * @param string     $expectedJson
      */
-    public function it_should_be_constructable(string $avroName, string $subject, $version, bool $isValid, string $expectedJson): void {}
+    public function it_should_be_constructable(string $avroName, string $subject, $version, bool $isValid, string $expectedJson): void {
+        if (!$isValid) {
+            $this->expectException(InvalidArgumentException::class);
+        }
+
+        $this->assertJsonStringEqualsJsonString(
+            \json_encode(new AvroReference($avroName, $subject, $version)),
+            $expectedJson
+        );
+    }
 
     public static function references(): Generator {
         yield 'Valid with latest' => [
