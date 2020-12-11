@@ -88,7 +88,7 @@ class FunctionsTest extends TestCase
         self::assertEquals('POST', $request->getMethod());
         self::assertEquals('/subjects/test/versions', $request->getUri());
         self::assertEquals([CONTENT_TYPE_HEADER, ACCEPT_HEADER], $request->getHeaders());
-        self::assertEquals('{"schema":"{\"type\":\"string\"}"}', $request->getBody()->getContents());
+        self::assertJsonStringEqualsJsonString($schema, $request->getBody()->getContents());
 
         $request = registerNewSchemaVersionWithSubjectRequest('{"schema": "{\"type\": \"string\"}"}', 'test');
 
