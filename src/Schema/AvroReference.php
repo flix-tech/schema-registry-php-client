@@ -8,7 +8,11 @@ use Assert\Assertion;
 
 final class AvroReference
 {
-    private const REGEX = '/.*/';
+    /**
+     * This regex is created according to the Avro specification for names.
+     * @link https://avro.apache.org/docs/current/spec.html#names
+     */
+    private const REGEX = '/^[a-zA-Z_]+(\.[a-zA-Z0-9_]+)*?$/';
 
     /**
      * @var string
