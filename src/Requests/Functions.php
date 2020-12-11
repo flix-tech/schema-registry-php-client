@@ -3,6 +3,7 @@
 namespace FlixTech\SchemaRegistryApi\Requests;
 
 use Assert\Assert;
+use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\UriTemplate;
 use Psr\Http\Message\RequestInterface;
@@ -48,7 +49,7 @@ function singleSubjectVersionRequest(string $subjectName, string $versionId): Re
     );
 }
 
-function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subjectName, \FlixTech\SchemaRegistryApi\Schema\AvroReference ...$references): RequestInterface
+function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subjectName, AvroReference ...$references): RequestInterface
 {
     return new Request(
         'POST',
@@ -150,7 +151,7 @@ function validateSchemaStringAsJson(string $schema): string
     return $schema;
 }
 
-function prepareJsonSchemaForTransfer(string $schema): string
+function prepareJsonSchemaForTransfer(string $schema, AvroReference ...$references): string
 {
     $decoded = \GuzzleHttp\json_decode($schema, true);
 
