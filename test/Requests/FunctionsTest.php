@@ -77,10 +77,13 @@ class FunctionsTest extends TestCase
 
     /**
      * @test
+     *
+     * @param string $schema
+     * @dataProvider dataForRegisteringSchemas
      */
-    public function it_should_produce_a_request_to_register_a_new_schema_version(): void
+    public function it_should_produce_a_request_to_register_a_new_schema_version(string $schema): void
     {
-        $request = registerNewSchemaVersionWithSubjectRequest('{"type": "string"}', 'test');
+        $request = registerNewSchemaVersionWithSubjectRequest($schema, 'test');
 
         self::assertEquals('POST', $request->getMethod());
         self::assertEquals('/subjects/test/versions', $request->getUri());
@@ -95,7 +98,15 @@ class FunctionsTest extends TestCase
         self::assertEquals('{"schema":"{\"type\": \"string\"}"}', $request->getBody()->getContents());
     }
 
-    public static function dataForRegisteringSchemas(): Generator {}
+    public static function dataForRegisteringSchemas(): Generator {
+        yield 'Schema without schema key' => [
+            /** @lang JSON */<<<JSON
+{
+  "schema": "{\"type\":\"string\"}"
+}
+JSON,
+        ];
+    }
 
     /**
      * @test
