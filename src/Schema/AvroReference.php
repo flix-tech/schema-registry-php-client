@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Schema;
 
+use Assert\Assertion;
+
 final class AvroReference implements \JsonSerializable
 {
     /**
@@ -29,6 +31,7 @@ final class AvroReference implements \JsonSerializable
      */
     public function __construct(AvroName $name, string $subject, $version)
     {
+        Assertion::notBlank($subject);
         $this->name = $name;
         $this->subject = $subject;
         $this->version = $version;
