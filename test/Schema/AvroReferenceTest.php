@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Test\Schema;
 
+use FlixTech\SchemaRegistryApi\Schema\AvroName;
 use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use Generator;
 use InvalidArgumentException;
@@ -26,7 +27,7 @@ class AvroReferenceTest extends TestCase
         }
 
         $this->assertJsonStringEqualsJsonString(
-            \json_encode(new AvroReference($avroName, $subject, $version)),
+            \json_encode(new AvroReference(new AvroName($avroName), $subject, $version)),
             $expectedJson
         );
     }
