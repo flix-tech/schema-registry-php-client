@@ -48,7 +48,7 @@ function singleSubjectVersionRequest(string $subjectName, string $versionId): Re
     );
 }
 
-function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subjectName): RequestInterface
+function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subjectName, \FlixTech\SchemaRegistryApi\Schema\AvroReference ...$references): RequestInterface
 {
     return new Request(
         'POST',
