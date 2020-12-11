@@ -132,7 +132,19 @@ JSON,
 JSON,
             /** @lang JSON */<<<JSON
 {
-  "schema": "{\"type\":\"string\"}"
+  "schema": "{\"type\":\"string\"}",
+  "references": [
+    {
+      "name": "test.example.MyRecord",
+      "subject": "ref-subject",
+      "version": 12
+    },
+    {
+      "name": "test.example.AnotherRecord",
+      "subject": "another-subject",
+      "version": "latest"
+    }
+  ]
 }
 JSON,
             [
