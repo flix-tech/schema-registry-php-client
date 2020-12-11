@@ -11,8 +11,11 @@ class AvroReferenceTest extends TestCase
 {
     /**
      * @dataProvider references
+     * @param string     $avroName
+     * @param string     $subject
+     * @param string|int $version
      */
-    public function it_should_be_constructable(): void {}
+    public function it_should_be_constructable(string $avroName, string $subject, $version): void {}
 
     public static function references(): Generator {
         yield 'Valid with latest' => [
