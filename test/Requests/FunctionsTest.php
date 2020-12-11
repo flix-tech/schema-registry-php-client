@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Test\Requests;
 
+use FlixTech\SchemaRegistryApi\Schema\AvroName;
+use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -120,6 +122,23 @@ JSON,
 }
 JSON,
             [],
+        ];
+
+        yield 'Schema with schema key and references' => [
+            /** @lang JSON */<<<JSON
+{
+  "schema": "{\"type\":\"string\"}"
+}
+JSON,
+            /** @lang JSON */<<<JSON
+{
+  "schema": "{\"type\":\"string\"}"
+}
+JSON,
+            [
+                new AvroReference(new AvroName('test.example.MyRecord'), 'ref-subject', 12),
+                new AvroReference(new AvroName('test.example.AnotherRecord'), 'another-subject', 'latest'),
+            ],
         ];
     }
 
