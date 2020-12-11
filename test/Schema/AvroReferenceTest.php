@@ -15,14 +15,16 @@ class AvroReferenceTest extends TestCase
      * @param string     $avroName
      * @param string     $subject
      * @param string|int $version
+     * @param bool       $isValid
      */
-    public function it_should_be_constructable(string $avroName, string $subject, $version): void {}
+    public function it_should_be_constructable(string $avroName, string $subject, $version, bool $isValid): void {}
 
     public static function references(): Generator {
         yield 'Valid with latest' => [
             'test.example.MyRecord',
             'example-value',
-            'latest'
+            'latest',
+            true
         ];
     }
 }
