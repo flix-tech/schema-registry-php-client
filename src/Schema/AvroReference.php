@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Schema;
 
+use Assert\Assertion;
+
 final class AvroReference
 {
     /**
@@ -13,6 +15,7 @@ final class AvroReference
 
     public function __construct(string $fullName)
     {
+        Assertion::notBlank($fullName);
         $this->fullName = $fullName;
     }
 
