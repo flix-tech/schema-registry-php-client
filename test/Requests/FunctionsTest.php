@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Test\Requests;
 
+use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
@@ -93,6 +94,8 @@ class FunctionsTest extends TestCase
         self::assertEquals([CONTENT_TYPE_HEADER, ACCEPT_HEADER], $request->getHeaders());
         self::assertEquals('{"schema":"{\"type\": \"string\"}"}', $request->getBody()->getContents());
     }
+
+    public static function dataForRegisteringSchemas(): Generator {}
 
     /**
      * @test
