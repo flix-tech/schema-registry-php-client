@@ -11,5 +11,11 @@ class AvroReferenceTest extends TestCase
 {
     public function it_should_be_constructable(): void {}
 
-    public static function references(): Generator {}
+    public static function references(): Generator {
+        yield 'Valid with latest' => [
+            'test.example.MyRecord',
+            'example-value',
+            'latest'
+        ];
+    }
 }
