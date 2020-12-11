@@ -33,7 +33,7 @@ class AvroReferenceTest extends TestCase
     }
 
     public static function references(): Generator {
-        yield 'Valid with latest' => [
+        yield 'Valid version with latest' => [
             'test.example.MyRecord',
             'example-value',
             'latest',
