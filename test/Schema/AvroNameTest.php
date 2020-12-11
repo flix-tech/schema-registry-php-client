@@ -7,7 +7,7 @@ use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-class AvroReferenceTest extends TestCase
+class AvroNameTest extends TestCase
 {
     /**
      * @dataProvider avroReferences
