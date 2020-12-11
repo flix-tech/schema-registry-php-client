@@ -46,5 +46,19 @@ class AvroReferenceTest extends TestCase
 }
 JSON
         ];
+
+        yield 'Valid version with int' => [
+            'test.example.MyRecord',
+            'example-value',
+            3,
+            true,
+            /** @lang JSON */ <<<JSON
+{
+  "name": "test.example.MyRecord",
+  "subject": "example-value",
+  "version": 3
+}
+JSON
+        ];
     }
 }
