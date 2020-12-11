@@ -82,7 +82,7 @@ class FunctionsTest extends TestCase
      *
      * @param string $initialSchema
      * @param string $finalSchema
-     * @param array  $references
+     * @param AvroReference[] $references
      * @dataProvider dataForRegisteringSchemas
      */
     public function it_should_produce_a_request_to_register_a_new_schema_version(string $initialSchema, string $finalSchema, array $references): void
