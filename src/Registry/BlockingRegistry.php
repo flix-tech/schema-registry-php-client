@@ -7,6 +7,7 @@ namespace FlixTech\SchemaRegistryApi\Registry;
 use AvroSchema;
 use Exception;
 use FlixTech\SchemaRegistryApi\AsynchronousRegistry;
+use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use FlixTech\SchemaRegistryApi\SynchronousRegistry;
 use GuzzleHttp\Promise\PromiseInterface;
 use LogicException;
@@ -32,10 +33,10 @@ class BlockingRegistry implements SynchronousRegistry
      * @throws LogicException
      * @throws Exception
      */
-    public function register(string $subject, AvroSchema $schema): int
+    public function register(string $subject, AvroSchema $schema, AvroReference ...$references): int
     {
         return $this->addExceptionThrowCallableToPromise(
-            $this->asyncRegistry->register($subject, $schema)
+            $this->asyncRegistry->register($subject, $schema, ...$references)
         )->wait();
     }
 

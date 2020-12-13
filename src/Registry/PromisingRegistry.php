@@ -8,6 +8,7 @@ use AvroSchema;
 use Closure;
 use FlixTech\SchemaRegistryApi\AsynchronousRegistry;
 use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
+use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\PromiseInterface;
@@ -54,9 +55,9 @@ class PromisingRegistry implements AsynchronousRegistry
      *
      * @throws RuntimeException
      */
-    public function register(string $subject, AvroSchema $schema): PromiseInterface
+    public function register(string $subject, AvroSchema $schema, AvroReference ...$references): PromiseInterface
     {
-        $request = registerNewSchemaVersionWithSubjectRequest((string) $schema, $subject);
+        $request = registerNewSchemaVersionWithSubjectRequest((string) $schema, $subject, ...$references);
 
         $onFulfilled = function (ResponseInterface $response) {
             return $this->getJsonFromResponseBody($response)['id'];
