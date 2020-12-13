@@ -121,16 +121,22 @@ jobs:
             -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:${{ matrix.php.version }} \
             composer update --no-interaction --no-scripts --no-ansi ${{ matrix.php.composer }}
       -
-        name: Run Static analysis
+        name: Run PHPStan analysis
         if: ${{ matrix.php.version == '7.4' && matrix.php.composer == '--prefer-stable' }}
         run: |
-          chmod a+x bin/phpstan.phar bin/php-cs-fixer.phar
-          docker run -i --rm --net=host --sig-proxy=true --pid=host -m 500m \
+          chmod a+x bin/phpstan.phar
+          docker run -i --rm --net=host --sig-proxy=true --pid=host -m 1000m --entrypoint="php" \
             -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:${{ matrix.php.version }} \
-            bin/phpstan.phar analyse
-          docker run -i --rm --net=host --sig-proxy=true --pid=host -m 500m \
+            -d xdebug.mode=off -d xdebug.coverage_enable=0 bin/phpstan.phar analyse
+      -
+        name: Run CS Fixer
+        if: ${{ matrix.php.version == '7.4' && matrix.php.composer == '--prefer-stable' }}
+        run: |
+          chmod a+x bin/php-cs-fixer.phar
+          docker run -i --rm --net=host --sig-proxy=true --pid=host -m 1000m --entrypoint="php" \
             -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:${{ matrix.php.version }} \
-            bin/php-cs-fixer.phar fix --config=.php_cs.dist --diff -v --dry-run --path-mode=intersection --allow-risky=yes \
+            -d xdebug.mode=off -d xdebug.coverage_enable=0 bin/php-cs-fixer.phar fix --config=.php_cs.dist \
+            --diff -v --dry-run --path-mode=intersection --allow-risky=yes \
             src test
       -
         name: Run PHPUnit
