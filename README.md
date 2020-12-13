@@ -235,19 +235,19 @@ You can set the default variables by copying `variables.mk.dist` to `variables.m
 #### Build the local docker image
 
 ```bash
-PHP_VERSION=7.2 XDEBUG_VERSION=2.7.2 make docker
+PHP_VERSION=7.3 XDEBUG_VERSION=2.9.8 make docker
 ```
 
 #### Unit tests, Coding standards and static analysis
 
 ```bash
-PHP_VERSION=7.2 make ci-local
+PHP_VERSION=7.3 make ci-local
 ```
 
 #### Integration tests
 
 This library uses a `docker-compose` configuration to fire up a schema registry for integration testing, hence
-`docker-compose` from version 1.13.0 is required to run those tests.
+`docker-compose` from version 1.18.x is required to run those tests.
 
 ##### The platform can be controlled with the following environment variables
 
