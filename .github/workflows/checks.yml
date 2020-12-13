@@ -125,10 +125,10 @@ jobs:
         if: ${{ matrix.php.version == '7.4' && matrix.php.composer == '--prefer-stable' }}
         run: |
           chmod a+x bin/phpstan.phar bin/php-cs-fixer.phar
-          docker run -i --rm --net=host --sig-proxy=true --pid=host \
+          docker run -i --rm --net=host --sig-proxy=true --pid=host -m 500m \
             -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:${{ matrix.php.version }} \
             bin/phpstan.phar analyse
-          docker run -i --rm --net=host --sig-proxy=true --pid=host \
+          docker run -i --rm --net=host --sig-proxy=true --pid=host -m 500m \
             -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:${{ matrix.php.version }} \
             bin/php-cs-fixer.phar fix --config=.php_cs.dist --diff -v --dry-run --path-mode=intersection --allow-risky=yes \
             src test
