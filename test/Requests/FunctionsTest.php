@@ -385,7 +385,7 @@ JSON,
 
         self::assertEquals('DELETE', $request->getMethod());
         self::assertEquals('/subjects/test', $request->getUri());
-        self::assertEquals([ACCEPT_HEADER], $request->getHeaders());
+        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
     }
 
     /**
@@ -397,12 +397,12 @@ JSON,
 
         self::assertEquals('DELETE', $request->getMethod());
         self::assertEquals('/subjects/test/versions/latest', $request->getUri());
-        self::assertEquals([ACCEPT_HEADER], $request->getHeaders());
+        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
 
         $request = deleteSubjectVersionRequest('test', '5');
 
         self::assertEquals('DELETE', $request->getMethod());
         self::assertEquals('/subjects/test/versions/5', $request->getUri());
-        self::assertEquals([ACCEPT_HEADER], $request->getHeaders());
+        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
     }
 }
