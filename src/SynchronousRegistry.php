@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi;
 
 use AvroSchema;
+use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 
 /**
  * {@inheritdoc}
@@ -16,7 +17,7 @@ interface SynchronousRegistry extends Registry
      *
      * @return int The schema id of the registered AvroSchema
      */
-    public function register(string $subject, AvroSchema $schema): int;
+    public function register(string $subject, AvroSchema $schema, AvroReference ...$references): int;
 
     /**
      * {@inheritdoc}

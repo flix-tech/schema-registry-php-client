@@ -6,6 +6,7 @@ namespace FlixTech\SchemaRegistryApi;
 
 use AvroSchema;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
+use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 
 /**
  * Client that talk to a schema registry over http
@@ -18,14 +19,15 @@ interface Registry
     /**
      * Registers a given schema with a subject
      *
-     * @param string        $subject
-     * @param AvroSchema    $schema
+     * @param string               $subject
+     * @param AvroSchema           $schema
+     * @param Schema\AvroReference ...$references
      *
      * @return mixed Should either return the schema id as int or a PromiseInterface
      *
      * @throws SchemaRegistryException
      */
-    public function register(string $subject, AvroSchema $schema);
+    public function register(string $subject, AvroSchema $schema, AvroReference ...$references);
 
     /**
      * Look up the version of a schema for a given subject

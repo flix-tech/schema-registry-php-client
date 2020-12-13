@@ -10,6 +10,7 @@ use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
+use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER_KEY;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
@@ -18,6 +19,7 @@ use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
+use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER_KEY;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
@@ -50,7 +52,7 @@ class FunctionsTest extends TestCase
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('/subjects', $request->getUri());
-        self::assertEquals([ACCEPT_HEADER], $request->getHeaders());
+        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
     }
 
     /**
@@ -62,7 +64,7 @@ class FunctionsTest extends TestCase
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('/subjects/test/versions', $request->getUri());
-        self::assertEquals([ACCEPT_HEADER], $request->getHeaders());
+        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
     }
 
     /**
@@ -74,7 +76,7 @@ class FunctionsTest extends TestCase
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('/subjects/test/versions/3', $request->getUri());
-        self::assertEquals([ACCEPT_HEADER], $request->getHeaders());
+        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
     }
 
     /**
@@ -91,7 +93,8 @@ class FunctionsTest extends TestCase
 
         self::assertEquals('POST', $request->getMethod());
         self::assertEquals('/subjects/test/versions', $request->getUri());
-        self::assertEquals([CONTENT_TYPE_HEADER, ACCEPT_HEADER], $request->getHeaders());
+        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
+        self::assertEquals(CONTENT_TYPE_HEADER[CONTENT_TYPE_HEADER_KEY], $request->getHeader(CONTENT_TYPE_HEADER_KEY)[0]);
         self::assertJsonStringEqualsJsonString($finalSchema, $request->getBody()->getContents());
     }
 
@@ -142,7 +145,8 @@ JSON,
         self::assertEquals('POST', $request->getMethod());
         self::assertEquals('/compatibility/subjects/test/versions/latest', $request->getUri());
         self::assertEquals('{"schema":"{\"type\":\"test\"}"}', $request->getBody()->getContents());
-        self::assertEquals([CONTENT_TYPE_HEADER, ACCEPT_HEADER], $request->getHeaders());
+        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
+        self::assertEquals(CONTENT_TYPE_HEADER[CONTENT_TYPE_HEADER_KEY], $request->getHeader(CONTENT_TYPE_HEADER_KEY)[0]);
     }
 
     /**
@@ -155,7 +159,8 @@ JSON,
         self::assertEquals('POST', $request->getMethod());
         self::assertEquals('/subjects/test', $request->getUri());
         self::assertEquals('{"schema":"{\"type\":\"test\"}"}', $request->getBody()->getContents());
-        self::assertEquals([CONTENT_TYPE_HEADER, ACCEPT_HEADER], $request->getHeaders());
+        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
+        self::assertEquals(CONTENT_TYPE_HEADER[CONTENT_TYPE_HEADER_KEY], $request->getHeader(CONTENT_TYPE_HEADER_KEY)[0]);
     }
 
     /**
@@ -167,7 +172,7 @@ JSON,
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('/schemas/ids/3', $request->getUri());
-        self::assertEquals([ACCEPT_HEADER], $request->getHeaders());
+        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
     }
 
     /**
@@ -179,7 +184,7 @@ JSON,
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('/config', $request->getUri());
-        self::assertEquals([ACCEPT_HEADER], $request->getHeaders());
+        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
     }
 
     /**
@@ -192,7 +197,7 @@ JSON,
         self::assertEquals('PUT', $request->getMethod());
         self::assertEquals('/config', $request->getUri());
         self::assertEquals('{"compatibility":"FULL"}', $request->getBody()->getContents());
-        self::assertEquals([ACCEPT_HEADER], $request->getHeaders());
+        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
     }
 
     /**
@@ -204,7 +209,7 @@ JSON,
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('/config/test', $request->getUri());
-        self::assertEquals([ACCEPT_HEADER], $request->getHeaders());
+        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
     }
 
     /**
@@ -217,7 +222,7 @@ JSON,
         self::assertEquals('PUT', $request->getMethod());
         self::assertEquals('/config/test', $request->getUri());
         self::assertEquals('{"compatibility":"FORWARD"}', $request->getBody()->getContents());
-        self::assertEquals([ACCEPT_HEADER], $request->getHeaders());
+        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
     }
 
     /**

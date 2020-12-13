@@ -8,6 +8,7 @@ use AvroSchema;
 use Exception;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Registry;
+use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use GuzzleHttp\Promise\PromiseInterface;
 use function call_user_func;
 
@@ -50,7 +51,7 @@ class CachedRegistry implements Registry
      *
      * @throws Exception
      */
-    public function register(string $subject, AvroSchema $schema)
+    public function register(string $subject, AvroSchema $schema, AvroReference ...$references)
     {
         $closure = function ($schemaId) use ($schema) {
             if ($schemaId instanceof SchemaRegistryException) {
@@ -64,7 +65,7 @@ class CachedRegistry implements Registry
         };
 
         return $this->applyValueHandlers(
-            $this->registry->register($subject, $schema),
+            $this->registry->register($subject, $schema, ...$references),
             static function (PromiseInterface $promise) use ($closure) {
                 return $promise->then($closure);
             },

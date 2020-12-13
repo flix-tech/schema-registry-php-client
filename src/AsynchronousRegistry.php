@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi;
 
 use AvroSchema;
+use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use GuzzleHttp\Promise\PromiseInterface;
 
 /**
@@ -17,7 +18,7 @@ interface AsynchronousRegistry extends Registry
      *
      * @return PromiseInterface Either the schema id as int or a SchemaRegistryException object when fulfilled
      */
-    public function register(string $subject, AvroSchema $schema): PromiseInterface;
+    public function register(string $subject, AvroSchema $schema, AvroReference ...$references): PromiseInterface;
 
     /**
      * {@inheritdoc}
