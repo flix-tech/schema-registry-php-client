@@ -17,6 +17,7 @@
     "guzzlehttp/guzzle": "~6.3|^7.0.1",
     "guzzlehttp/promises": "^1.4.0",
     "guzzlehttp/psr7": "<1.7",
+    "guzzle/uri-template": "~0.2.0",
     "beberlei/assert": "~2.7|~3.0",
     "flix-tech/avro-php": "^4.1"
   },
