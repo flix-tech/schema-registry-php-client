@@ -14,7 +14,7 @@
     "php": "^7.3|^8.0",
     "ext-curl": "*",
     "ext-json": "*",
-    "guzzlehttp/guzzle": "~6.3",
+    "guzzlehttp/guzzle": "~6.3|^7.0.1",
     "guzzlehttp/promises": "^1.4.0",
     "guzzlehttp/psr7": "<1.7",
     "beberlei/assert": "~2.7|~3.0",
