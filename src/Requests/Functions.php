@@ -5,7 +5,7 @@ namespace FlixTech\SchemaRegistryApi\Requests;
 use Assert\Assert;
 use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\UriTemplate;
+use GuzzleHttp\UriTemplate\UriTemplate;
 use Psr\Http\Message\RequestInterface;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
