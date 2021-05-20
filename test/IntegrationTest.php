@@ -14,7 +14,7 @@ use FlixTech\SchemaRegistryApi\Exception\VersionNotFoundException;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\UriTemplate;
+use GuzzleHttp\UriTemplate\UriTemplate;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
