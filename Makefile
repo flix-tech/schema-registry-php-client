@@ -17,7 +17,7 @@ PHPUNIT ?= vendor/bin/phpunit
 PHP ?= bin/php
 PHP_VERSION ?= 7.3
 XDEBUG_VERSION ?= 3.0.4
-XDEBUG_OPTIONS ?= -d xdebug.mode=coverage -d xdebug.coverage_enable=0
+XDEBUG_OPTIONS ?= -d xdebug.mode=off -d xdebug.coverage_enable=0
 export
 
 docker:
