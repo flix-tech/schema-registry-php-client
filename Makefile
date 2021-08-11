@@ -62,7 +62,7 @@ examples:
 	PHP_VERSION=$(PHP_VERSION) $(PHP) examples/*
 
 install-phars:
-	curl http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar -o bin/php-cs-fixer.phar -LR -z bin/php-cs-fixer.phar
+	curl https://cs.symfony.com/download/php-cs-fixer-v2.phar -o bin/php-cs-fixer.phar -LR -z bin/php-cs-fixer.phar
 	chmod a+x bin/php-cs-fixer.phar
 	curl https://getcomposer.org/download/$(COMPOSER_VERSION)/composer.phar -o bin/composer.phar -LR -z bin/composer.phar
 	chmod a+x bin/composer.phar
