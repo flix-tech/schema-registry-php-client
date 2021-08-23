@@ -23,7 +23,7 @@ function allSubjectsRequest(): RequestInterface
 {
     return new Request(
         'GET',
-        '/subjects',
+        'subjects',
         ACCEPT_HEADER
     );
 }
@@ -32,7 +32,7 @@ function allSubjectVersionsRequest(string $subjectName): RequestInterface
 {
     return new Request(
         'GET',
-        (new UriTemplate())->expand('/subjects/{name}/versions', ['name' => $subjectName]),
+        (new UriTemplate())->expand('subjects/{name}/versions', ['name' => $subjectName]),
         ACCEPT_HEADER
     );
 }
@@ -42,7 +42,7 @@ function singleSubjectVersionRequest(string $subjectName, string $versionId): Re
     return new Request(
         'GET',
         (new UriTemplate())->expand(
-            '/subjects/{name}/versions/{id}',
+            'subjects/{name}/versions/{id}',
             ['name' => $subjectName, 'id' => $versionId]
         ),
         ACCEPT_HEADER
@@ -53,7 +53,7 @@ function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subj
 {
     return new Request(
         'POST',
-        (new UriTemplate())->expand('/subjects/{name}/versions', ['name' => $subjectName]),
+        (new UriTemplate())->expand('subjects/{name}/versions', ['name' => $subjectName]),
         CONTENT_TYPE_HEADER + ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema), ...$references)
     );
@@ -64,7 +64,7 @@ function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $s
     return new Request(
         'POST',
         (new UriTemplate())->expand(
-            '/compatibility/subjects/{name}/versions/{version}',
+            'compatibility/subjects/{name}/versions/{version}',
             ['name' => $subjectName, 'version' => $versionId]
         ),
         CONTENT_TYPE_HEADER + ACCEPT_HEADER,
@@ -76,7 +76,7 @@ function checkIfSubjectHasSchemaRegisteredRequest(string $subjectName, string $s
 {
     return new Request(
         'POST',
-        (new UriTemplate())->expand('/subjects/{name}', ['name' => $subjectName]),
+        (new UriTemplate())->expand('subjects/{name}', ['name' => $subjectName]),
         CONTENT_TYPE_HEADER + ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
@@ -86,7 +86,7 @@ function schemaRequest(string $id): RequestInterface
 {
     return new Request(
         'GET',
-        (new UriTemplate())->expand('/schemas/ids/{id}', ['id' => $id]),
+        (new UriTemplate())->expand('schemas/ids/{id}', ['id' => $id]),
         ACCEPT_HEADER
     );
 }
@@ -95,7 +95,7 @@ function defaultCompatibilityLevelRequest(): RequestInterface
 {
     return new Request(
         'GET',
-        '/config',
+        'config',
         ACCEPT_HEADER
     );
 }
@@ -104,7 +104,7 @@ function changeDefaultCompatibilityLevelRequest(string $level): RequestInterface
 {
     return new Request(
         'PUT',
-        '/config',
+        'config',
         ACCEPT_HEADER,
         prepareCompatibilityLevelForTransport(validateCompatibilityLevel($level))
     );
@@ -114,7 +114,7 @@ function subjectCompatibilityLevelRequest(string $subjectName): RequestInterface
 {
     return new Request(
         'GET',
-        (new UriTemplate())->expand('/config/{subject}', ['subject' => $subjectName]),
+        (new UriTemplate())->expand('config/{subject}', ['subject' => $subjectName]),
         ACCEPT_HEADER
     );
 }
@@ -123,7 +123,7 @@ function changeSubjectCompatibilityLevelRequest(string $subjectName, string $lev
 {
     return new Request(
         'PUT',
-        (new UriTemplate())->expand('/config/{subject}', ['subject' => $subjectName]),
+        (new UriTemplate())->expand('config/{subject}', ['subject' => $subjectName]),
         ACCEPT_HEADER,
         prepareCompatibilityLevelForTransport(validateCompatibilityLevel($level))
     );
@@ -208,7 +208,7 @@ function deleteSubjectRequest(string $subjectName): RequestInterface
 {
     return new Request(
         'DELETE',
-        (new UriTemplate())->expand('/subjects/{name}', ['name' => $subjectName]),
+        (new UriTemplate())->expand('subjects/{name}', ['name' => $subjectName]),
         ACCEPT_HEADER
     );
 }
@@ -222,7 +222,7 @@ function deleteSubjectVersionRequest(string $subjectName, string $versionId): Re
 {
     return new Request(
         'DELETE',
-        (new UriTemplate())->expand('/subjects/{name}/versions/{version}', ['name' => $subjectName, 'version' => $versionId]),
+        (new UriTemplate())->expand('subjects/{name}/versions/{version}', ['name' => $subjectName, 'version' => $versionId]),
         ACCEPT_HEADER
     );
 }
