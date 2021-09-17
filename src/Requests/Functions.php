@@ -5,7 +5,6 @@ namespace FlixTech\SchemaRegistryApi\Requests;
 use Assert\Assert;
 use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\UriTemplate;
 use Psr\Http\Message\RequestInterface;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
@@ -32,7 +31,7 @@ function allSubjectVersionsRequest(string $subjectName): RequestInterface
 {
     return new Request(
         'GET',
-        (new UriTemplate())->expand('subjects/{name}/versions', ['name' => $subjectName]),
+        sprintf('subjects/%s/versions', $subjectName),
         ACCEPT_HEADER
     );
 }
@@ -41,9 +40,10 @@ function singleSubjectVersionRequest(string $subjectName, string $versionId): Re
 {
     return new Request(
         'GET',
-        (new UriTemplate())->expand(
-            'subjects/{name}/versions/{id}',
-            ['name' => $subjectName, 'id' => $versionId]
+        sprintf(
+            'subjects/%s/versions/%s',
+            $subjectName,
+            $versionId,
         ),
         ACCEPT_HEADER
     );
@@ -53,7 +53,7 @@ function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subj
 {
     return new Request(
         'POST',
-        (new UriTemplate())->expand('subjects/{name}/versions', ['name' => $subjectName]),
+        sprintf('subjects/%s/versions', $subjectName),
         CONTENT_TYPE_HEADER + ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema), ...$references)
     );
@@ -63,9 +63,10 @@ function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $s
 {
     return new Request(
         'POST',
-        (new UriTemplate())->expand(
-            'compatibility/subjects/{name}/versions/{version}',
-            ['name' => $subjectName, 'version' => $versionId]
+        sprintf(
+            'compatibility/subjects/%s/versions/%s',
+            $subjectName,
+            $versionId,
         ),
         CONTENT_TYPE_HEADER + ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
@@ -76,7 +77,7 @@ function checkIfSubjectHasSchemaRegisteredRequest(string $subjectName, string $s
 {
     return new Request(
         'POST',
-        (new UriTemplate())->expand('subjects/{name}', ['name' => $subjectName]),
+        sprintf('subjects/%s', $subjectName),
         CONTENT_TYPE_HEADER + ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
@@ -86,7 +87,7 @@ function schemaRequest(string $id): RequestInterface
 {
     return new Request(
         'GET',
-        (new UriTemplate())->expand('schemas/ids/{id}', ['id' => $id]),
+        sprintf('schemas/ids/%s', $id),
         ACCEPT_HEADER
     );
 }
@@ -114,7 +115,7 @@ function subjectCompatibilityLevelRequest(string $subjectName): RequestInterface
 {
     return new Request(
         'GET',
-        (new UriTemplate())->expand('config/{subject}', ['subject' => $subjectName]),
+        sprintf('config/%s', $subjectName),
         ACCEPT_HEADER
     );
 }
@@ -123,7 +124,7 @@ function changeSubjectCompatibilityLevelRequest(string $subjectName, string $lev
 {
     return new Request(
         'PUT',
-        (new UriTemplate())->expand('config/{subject}', ['subject' => $subjectName]),
+        sprintf('config/%s', $subjectName),
         ACCEPT_HEADER,
         prepareCompatibilityLevelForTransport(validateCompatibilityLevel($level))
     );
@@ -208,7 +209,7 @@ function deleteSubjectRequest(string $subjectName): RequestInterface
 {
     return new Request(
         'DELETE',
-        (new UriTemplate())->expand('subjects/{name}', ['name' => $subjectName]),
+        sprintf('subjects/%s', $subjectName),
         ACCEPT_HEADER
     );
 }
@@ -222,7 +223,7 @@ function deleteSubjectVersionRequest(string $subjectName, string $versionId): Re
 {
     return new Request(
         'DELETE',
-        (new UriTemplate())->expand('subjects/{name}/versions/{version}', ['name' => $subjectName, 'version' => $versionId]),
+        sprintf('subjects/%s/versions/%s', $subjectName, $versionId),
         ACCEPT_HEADER
     );
 }

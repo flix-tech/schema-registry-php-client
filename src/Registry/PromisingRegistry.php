@@ -174,7 +174,15 @@ class PromisingRegistry implements AsynchronousRegistry
         $body = (string) $response->getBody();
 
         try {
-            return \GuzzleHttp\json_decode($body, true);
+            $decoded = \GuzzleHttp\json_decode($body, true);
+
+            if (!is_array($decoded)) {
+                throw new InvalidArgumentException(
+                    sprintf('response content "%s" is not a valid json object', $body)
+                );
+            }
+
+            return $decoded;
         } catch (InvalidArgumentException $e) {
             throw new InvalidArgumentException(
                 sprintf('%s - with content "%s"', $e->getMessage(), $body),

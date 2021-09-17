@@ -74,7 +74,7 @@ final class ExceptionMap
         try {
             $decodedBody = \GuzzleHttp\json_decode((string) $response->getBody(), true);
 
-            if (!array_key_exists(self::ERROR_CODE_FIELD_NAME, $decodedBody)) {
+            if (!is_array($decodedBody) || !array_key_exists(self::ERROR_CODE_FIELD_NAME, $decodedBody)) {
                 throw new RuntimeException(
                     sprintf(
                         'Invalid message body received - cannot find "error_code" field in response body "%s"',
