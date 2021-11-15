@@ -29,13 +29,13 @@ jobs:
         php:
           -
             version: 7.4
-            xdebug: 2.9.8
+            xdebug: 3.1.1
           -
-            version: 7.3
-            xdebug: 2.9.8
+            version: 8.0
+            xdebug: 3.1.1
           -
-            version: rc
-            xdebug: 3.0.0beta1
+            version: 8.1-rc
+            xdebug: 3.1.1
     runs-on: ubuntu-20.04
     steps:
       -
@@ -79,22 +79,22 @@ jobs:
       matrix:
         php:
           -
-            version: 7.3
-            composer: --prefer-lowest
-          -
             version: 7.4
             composer: --prefer-lowest
           -
-            version: rc
+            version: 8.0
             composer: --prefer-lowest
           -
-            version: 7.3
-            composer: --prefer-stable
+            version: 8.1-rc
+            composer: --prefer-lowest
           -
             version: 7.4
             composer: --prefer-stable
           -
-            version: rc
+            version: 8.0
+            composer: --prefer-stable
+          -
+            version: 8.1-rc
             composer: --prefer-stable
     steps:
       -
@@ -127,7 +127,7 @@ jobs:
           chmod a+x bin/phpstan.phar
           docker run -i --rm --net=host --sig-proxy=true --pid=host -m 4000M --entrypoint="php" \
             -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:${{ matrix.php.version }} \
-            -d memory_limit=4G -d xdebug.mode=off -d xdebug.coverage_enable=0 bin/phpstan.phar analyse
+            -d memory_limit=4G -d xdebug.mode=off bin/phpstan.phar analyse
       -
         name: Run CS Fixer
         if: ${{ matrix.php.version == '7.4' && matrix.php.composer == '--prefer-stable' }}
@@ -135,7 +135,7 @@ jobs:
           chmod a+x bin/php-cs-fixer.phar
           docker run -i --rm --net=host --sig-proxy=true --pid=host -m 1000M --entrypoint="php" \
             -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:${{ matrix.php.version }} \
-            -d xdebug.mode=off -d xdebug.coverage_enable=0 bin/php-cs-fixer.phar fix --config=.php_cs.dist \
+            -d xdebug.mode=off -d xdebug.coverage_enable=0 bin/php-cs-fixer.phar fix --config=.php-cs-fixer.dist.php \
             --diff -v --dry-run --path-mode=intersection --allow-risky=yes \
             src test
       -
