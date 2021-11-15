@@ -11,7 +11,7 @@ composer.phar
 composer.lock
 
 # Custom entries
-.php_cs*.cache
+.php-cs*.cache
 .env
 variables.mk
 /build/

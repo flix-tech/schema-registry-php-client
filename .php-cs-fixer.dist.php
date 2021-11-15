@@ -6,7 +6,7 @@ $finder = PhpCsFixer\Finder::create()
     ->in('src')
     ->in('test');
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setRules(
         [
             'no_unused_imports' => true,
