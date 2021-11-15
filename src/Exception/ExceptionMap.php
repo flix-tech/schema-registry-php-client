@@ -39,7 +39,10 @@ final class ExceptionMap
     {
         $factoryFn = static function (string $exceptionClass): callable {
             return static function (int $errorCode, string $errorMessage) use ($exceptionClass): SchemaRegistryException {
-                return new $exceptionClass($errorMessage, $errorCode);
+                /** @var SchemaRegistryException $e */
+                $e = new $exceptionClass($errorMessage, $errorCode);
+
+                return $e;
             };
         };
 
@@ -84,7 +87,7 @@ final class ExceptionMap
 
     /**
      * @param ResponseInterface $response
-     * @return array<mixed, mixed>
+     * @return array<string, mixed>
      */
     private function guardAgainstMissingErrorCode(ResponseInterface $response): array
     {

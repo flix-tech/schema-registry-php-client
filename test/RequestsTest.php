@@ -72,7 +72,8 @@ class RequestsTest extends TestCase
         self::assertJsonStringEqualsJsonString($finalSchema, $request->getBody()->getContents());
     }
 
-    public static function dataForRegisteringSchemas(): Generator {
+    public static function dataForRegisteringSchemas(): Generator
+    {
         yield 'Schema without schema key' => [
             '{"type":"string"}',
             '{"schema":"{\"type\":\"string\"}"}',
@@ -225,11 +226,6 @@ JSON,
             '{"schema":"{\"type\":\"string\"}"}',
             Requests::prepareJsonSchemaForTransfer('{"type":"string"}')
         );
-
-        self::assertJsonStringEqualsJsonString(
-            '{"schema":"{\"type\": \"string\"}"}',
-            Requests::prepareJsonSchemaForTransfer('{"schema":"{\"type\": \"string\"}"}')
-        );
     }
 
     /**
@@ -367,7 +363,7 @@ JSON,
         $request = Requests::deleteSubjectRequest('test');
 
         self::assertEquals('DELETE', $request->getMethod());
-        self::assertEquals('/subjects/test?permanent=false', $request->getUri());
+        self::assertEquals('subjects/test?permanent=false', $request->getUri());
         self::assertEquals([Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]], $request->getHeaders());
 
         $request = Requests::deleteSubjectRequest('test', false);
@@ -379,7 +375,7 @@ JSON,
         $request = Requests::deleteSubjectRequest('test', true);
 
         self::assertEquals('DELETE', $request->getMethod());
-        self::assertEquals('/subjects/test?permanent=true', $request->getUri());
+        self::assertEquals('subjects/test?permanent=true', $request->getUri());
         self::assertEquals([Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]], $request->getHeaders());
     }
 
@@ -391,7 +387,7 @@ JSON,
         $request = Requests::deleteSubjectVersionRequest('test', Constants::VERSION_LATEST, false);
 
         self::assertEquals('DELETE', $request->getMethod());
-        self::assertEquals('/subjects/test/versions/latest?permanent=false', $request->getUri());
+        self::assertEquals('subjects/test/versions/latest?permanent=false', $request->getUri());
         self::assertEquals([Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]], $request->getHeaders());
 
         $request = Requests::deleteSubjectVersionRequest('test', Constants::VERSION_LATEST);
@@ -403,7 +399,7 @@ JSON,
         $request = Requests::deleteSubjectVersionRequest('test', '5', false);
 
         self::assertEquals('DELETE', $request->getMethod());
-        self::assertEquals('/subjects/test/versions/5?permanent=false', $request->getUri());
+        self::assertEquals('subjects/test/versions/5?permanent=false', $request->getUri());
         self::assertEquals([Constants::ACCEPT => [Constants::ACCEPT_HEADER[Constants::ACCEPT]]], $request->getHeaders());
 
         $request = Requests::deleteSubjectVersionRequest('test', '5', true);

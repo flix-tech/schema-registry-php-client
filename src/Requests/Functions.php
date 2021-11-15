@@ -4,7 +4,6 @@ namespace FlixTech\SchemaRegistryApi\Requests;
 
 use Assert\Assert;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Utils;
 use InvalidArgumentException;
 use JsonException;
 use Psr\Http\Message\RequestInterface;
@@ -21,10 +20,11 @@ use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function implode;
 use function json_decode;
+use function sprintf;
 
 /**
  * @param string $jsonString
- * @param int $depth
+ * @param int<1, max> $depth
  *
  * @return mixed
  *
@@ -82,7 +82,7 @@ function allSubjectsRequest(): RequestInterface
 {
     return new Request(
         'GET',
-        '/subjects',
+        'subjects',
         ACCEPT_HEADER
     );
 }
@@ -98,7 +98,7 @@ function allSubjectVersionsRequest(string $subjectName): RequestInterface
 {
     return new Request(
         'GET',
-        Utils::uriFor("/subjects/$subjectName/versions"),
+        sprintf("subjects/%s/versions", $subjectName),
         ACCEPT_HEADER
     );
 }
@@ -115,7 +115,7 @@ function singleSubjectVersionRequest(string $subjectName, string $versionId): Re
 {
     return new Request(
         'GET',
-        Utils::uriFor("/subjects/$subjectName/versions/$versionId"),
+        sprintf("subjects/%s/versions/%s", $subjectName, $versionId),
         ACCEPT_HEADER
     );
 }
@@ -133,7 +133,7 @@ function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subj
 {
     return new Request(
         'POST',
-        Utils::uriFor("/subjects/$subjectName/versions"),
+        sprintf("subjects/%s/versions", $subjectName),
         CONTENT_TYPE_HEADER + ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
@@ -153,7 +153,7 @@ function checkSchemaCompatibilityAgainstVersionRequest(string $schema, string $s
 {
     return new Request(
         'POST',
-        Utils::uriFor("/compatibility/subjects/$subjectName/versions/$versionId"),
+        sprintf("compatibility/subjects/%s/versions/%s", $subjectName, $versionId),
         CONTENT_TYPE_HEADER + ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
@@ -172,7 +172,7 @@ function checkIfSubjectHasSchemaRegisteredRequest(string $subjectName, string $s
 {
     return new Request(
         'POST',
-        Utils::uriFor("/subjects/$subjectName"),
+        sprintf("subjects/%s", $subjectName),
         CONTENT_TYPE_HEADER + ACCEPT_HEADER,
         prepareJsonSchemaForTransfer(validateSchemaStringAsJson($schema))
     );
@@ -188,7 +188,7 @@ function schemaRequest(string $id): RequestInterface
 {
     return new Request(
         'GET',
-        Utils::uriFor("/schemas/ids/$id"),
+        sprintf("schemas/ids/%s", $id),
         ACCEPT_HEADER
     );
 }
@@ -202,7 +202,7 @@ function defaultCompatibilityLevelRequest(): RequestInterface
 {
     return new Request(
         'GET',
-        '/config',
+        'config',
         ACCEPT_HEADER
     );
 }
@@ -219,7 +219,7 @@ function changeDefaultCompatibilityLevelRequest(string $level): RequestInterface
 {
     return new Request(
         'PUT',
-        '/config',
+        'config',
         ACCEPT_HEADER,
         prepareCompatibilityLevelForTransport(validateCompatibilityLevel($level))
     );
@@ -236,7 +236,7 @@ function subjectCompatibilityLevelRequest(string $subjectName): RequestInterface
 {
     return new Request(
         'GET',
-        Utils::uriFor("/config/$subjectName"),
+        sprintf("config/%s", $subjectName),
         ACCEPT_HEADER
     );
 }
@@ -254,7 +254,7 @@ function changeSubjectCompatibilityLevelRequest(string $subjectName, string $lev
 {
     return new Request(
         'PUT',
-        Utils::uriFor("/config/$subjectName"),
+        sprintf("config/%s", $subjectName),
         ACCEPT_HEADER,
         prepareCompatibilityLevelForTransport(validateCompatibilityLevel($level))
     );
@@ -377,7 +377,7 @@ function deleteSubjectRequest(string $subjectName): RequestInterface
 {
     return new Request(
         'DELETE',
-        Utils::uriFor("/subjects/$subjectName"),
+        sprintf("subjects/%s", $subjectName),
         ACCEPT_HEADER
     );
 }
@@ -394,7 +394,7 @@ function deleteSubjectVersionRequest(string $subjectName, string $versionId): Re
 {
     return new Request(
         'DELETE',
-        Utils::uriFor("/subjects/$subjectName/versions/$versionId"),
+        sprintf("subjects/%s/versions/%s", $subjectName, $versionId),
         ACCEPT_HEADER
     );
 }

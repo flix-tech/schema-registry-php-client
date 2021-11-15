@@ -13,6 +13,7 @@ use FlixTech\SchemaRegistryApi\Exception\RuntimeException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Json;
 use FlixTech\SchemaRegistryApi\Requests;
+use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use FlixTech\SchemaRegistryApi\SynchronousRegistry;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
@@ -37,9 +38,9 @@ class Psr18SyncRegistry implements SynchronousRegistry
         $this->map = ExceptionMap::instance();
     }
 
-    public function register(string $subject, AvroSchema $schema): int
+    public function register(string $subject, AvroSchema $schema, AvroReference ...$references): int
     {
-        $request = Requests::registerNewSchemaVersionWithSubjectRequest((string)$schema, $subject);
+        $request = Requests::registerNewSchemaVersionWithSubjectRequest((string)$schema, $subject, ...$references);
 
         $response = $this->makeRequest($request);
         $this->guardAgainstErrorResponse($response);

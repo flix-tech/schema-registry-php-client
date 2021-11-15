@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi;
 
 use Assert\Assert;
+use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\RequestInterface;
@@ -19,7 +20,7 @@ final class Requests
     {
         return new Request(
             'GET',
-            '/subjects',
+            'subjects',
             Constants::ACCEPT_HEADER
         );
     }
@@ -28,7 +29,7 @@ final class Requests
     {
         return new Request(
             'GET',
-            Utils::uriFor("/subjects/$subjectName/versions"),
+            Utils::uriFor("subjects/$subjectName/versions"),
             Constants::ACCEPT_HEADER
         );
     }
@@ -37,29 +38,29 @@ final class Requests
     {
         return new Request(
             'GET',
-            Utils::uriFor("/subjects/$subjectName/versions/$versionId"),
+            Utils::uriFor("subjects/$subjectName/versions/$versionId"),
             Constants::ACCEPT_HEADER
         );
     }
 
-    public static function prepareJsonSchemaForTransfer(string $schema): string
+    public static function prepareJsonSchemaForTransfer(string $schema, AvroReference ...$references): string
     {
-        $decoded = Json::decode($schema);
+        $return = [
+            'schema' => $schema
+        ];
 
-        if (is_array($decoded) && array_key_exists('schema', $decoded)) {
-            return Json::encode($decoded);
-        }
-
-        return Json::encode(['schema' => Json::encode($decoded)]);
+        return !$references
+            ? Json::encode($return)
+            : Json::encode(array_merge($return, ['references' => $references]));
     }
 
-    public static function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subjectName): RequestInterface
+    public static function registerNewSchemaVersionWithSubjectRequest(string $schema, string $subjectName, AvroReference ...$references): RequestInterface
     {
         return new Request(
             'POST',
-            Utils::uriFor("/subjects/$subjectName/versions"),
+            Utils::uriFor("subjects/$subjectName/versions"),
             Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
-            self::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
+            self::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema), ...$references),
         );
     }
 
@@ -67,7 +68,7 @@ final class Requests
     {
         return new Request(
             'POST',
-            Utils::uriFor("/compatibility/subjects/$subjectName/versions/$versionId"),
+            Utils::uriFor("compatibility/subjects/$subjectName/versions/$versionId"),
             Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
             self::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
         );
@@ -77,7 +78,7 @@ final class Requests
     {
         return new Request(
             'POST',
-            Utils::uriFor("/subjects/$subjectName"),
+            Utils::uriFor("subjects/$subjectName"),
             Constants::CONTENT_TYPE_HEADER + Constants::ACCEPT_HEADER,
             self::prepareJsonSchemaForTransfer(Json::validateStringAsJson($schema))
         );
@@ -87,7 +88,7 @@ final class Requests
     {
         return new Request(
             'GET',
-            Utils::uriFor("/schemas/ids/$id"),
+            Utils::uriFor("schemas/ids/$id"),
             Constants::ACCEPT_HEADER
         );
     }
@@ -96,7 +97,7 @@ final class Requests
     {
         return new Request(
             'GET',
-            '/config',
+            'config',
             Constants::ACCEPT_HEADER
         );
     }
@@ -130,7 +131,7 @@ final class Requests
     {
         return new Request(
             'PUT',
-            '/config',
+            'config',
             Constants::ACCEPT_HEADER,
             self::prepareCompatibilityLevelForTransport(self::validateCompatibilityLevel($level))
         );
@@ -140,7 +141,7 @@ final class Requests
     {
         return new Request(
             'GET',
-            Utils::uriFor("/config/$subjectName"),
+            Utils::uriFor("config/$subjectName"),
             Constants::ACCEPT_HEADER
         );
     }
@@ -149,7 +150,7 @@ final class Requests
     {
         return new Request(
             'PUT',
-            Utils::uriFor("/config/$subjectName"),
+            Utils::uriFor("config/$subjectName"),
             Constants::ACCEPT_HEADER,
             self::prepareCompatibilityLevelForTransport(self::validateCompatibilityLevel($level))
         );
@@ -194,7 +195,7 @@ final class Requests
 
         return new Request(
             'DELETE',
-            Utils::uriFor("/subjects/$subjectName?permanent=$query"),
+            Utils::uriFor("subjects/$subjectName?permanent=$query"),
             Constants::ACCEPT_HEADER
         );
     }
@@ -211,7 +212,7 @@ final class Requests
 
         return new Request(
             'DELETE',
-            Utils::uriFor("/subjects/$subjectName/versions/$versionId?permanent=$query"),
+            Utils::uriFor("subjects/$subjectName/versions/$versionId?permanent=$query"),
             Constants::ACCEPT_HEADER
         );
     }

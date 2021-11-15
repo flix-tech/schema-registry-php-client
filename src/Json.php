@@ -24,9 +24,9 @@ final class Json
 
     /**
      * @param string $jsonString
-     * @param int $depth
+     * @param int<1, max> $depth
      *
-     * @return mixed
+     * @return mixed|array
      *
      * @throws JsonException
      */

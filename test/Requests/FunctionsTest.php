@@ -51,7 +51,7 @@ class FunctionsTest extends TestCase
         $request = allSubjectsRequest();
 
         self::assertEquals('GET', $request->getMethod());
-        self::assertEquals('/subjects', $request->getUri());
+        self::assertEquals('subjects', $request->getUri());
         self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 
@@ -63,7 +63,7 @@ class FunctionsTest extends TestCase
         $request = allSubjectVersionsRequest('test');
 
         self::assertEquals('GET', $request->getMethod());
-        self::assertEquals('/subjects/test/versions', $request->getUri());
+        self::assertEquals('subjects/test/versions', $request->getUri());
         self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 
@@ -75,7 +75,7 @@ class FunctionsTest extends TestCase
         $request = singleSubjectVersionRequest('test', '3');
 
         self::assertEquals('GET', $request->getMethod());
-        self::assertEquals('/subjects/test/versions/3', $request->getUri());
+        self::assertEquals('subjects/test/versions/3', $request->getUri());
         self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 
@@ -87,7 +87,7 @@ class FunctionsTest extends TestCase
         $request = registerNewSchemaVersionWithSubjectRequest('{"type": "string"}', 'test');
 
         self::assertEquals('POST', $request->getMethod());
-        self::assertEquals('/subjects/test/versions', $request->getUri());
+        self::assertEquals('subjects/test/versions', $request->getUri());
         self::assertEquals(
             [CONTENT_TYPE => [CONTENT_TYPE_HEADER[CONTENT_TYPE]]] + [ACCEPT => [ACCEPT_HEADER[ACCEPT]]],
             $request->getHeaders()
@@ -97,7 +97,7 @@ class FunctionsTest extends TestCase
         $request = registerNewSchemaVersionWithSubjectRequest('{"schema": "{\"type\": \"string\"}"}', 'test');
 
         self::assertEquals('POST', $request->getMethod());
-        self::assertEquals('/subjects/test/versions', $request->getUri());
+        self::assertEquals('subjects/test/versions', $request->getUri());
         self::assertEquals(
             [CONTENT_TYPE => [CONTENT_TYPE_HEADER[CONTENT_TYPE]]] + [ACCEPT => [ACCEPT_HEADER[ACCEPT]]],
             $request->getHeaders()
@@ -117,7 +117,7 @@ class FunctionsTest extends TestCase
         );
 
         self::assertEquals('POST', $request->getMethod());
-        self::assertEquals('/compatibility/subjects/test/versions/latest', $request->getUri());
+        self::assertEquals('compatibility/subjects/test/versions/latest', $request->getUri());
         self::assertEquals('{"schema":"{\"type\":\"test\"}"}', $request->getBody()->getContents());
         self::assertEquals(
             [CONTENT_TYPE => [CONTENT_TYPE_HEADER[CONTENT_TYPE]]] + [ACCEPT => [ACCEPT_HEADER[ACCEPT]]],
@@ -133,7 +133,7 @@ class FunctionsTest extends TestCase
         $request = checkIfSubjectHasSchemaRegisteredRequest('test', '{"type":"test"}');
 
         self::assertEquals('POST', $request->getMethod());
-        self::assertEquals('/subjects/test', $request->getUri());
+        self::assertEquals('subjects/test', $request->getUri());
         self::assertEquals('{"schema":"{\"type\":\"test\"}"}', $request->getBody()->getContents());
         self::assertEquals(
             [CONTENT_TYPE => [CONTENT_TYPE_HEADER[CONTENT_TYPE]]] + [ACCEPT => [ACCEPT_HEADER[ACCEPT]]],
@@ -149,7 +149,7 @@ class FunctionsTest extends TestCase
         $request = schemaRequest('3');
 
         self::assertEquals('GET', $request->getMethod());
-        self::assertEquals('/schemas/ids/3', $request->getUri());
+        self::assertEquals('schemas/ids/3', $request->getUri());
         self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 
@@ -161,7 +161,7 @@ class FunctionsTest extends TestCase
         $request = defaultCompatibilityLevelRequest();
 
         self::assertEquals('GET', $request->getMethod());
-        self::assertEquals('/config', $request->getUri());
+        self::assertEquals('config', $request->getUri());
         self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 
@@ -173,7 +173,7 @@ class FunctionsTest extends TestCase
         $request = changeDefaultCompatibilityLevelRequest(COMPATIBILITY_FULL);
 
         self::assertEquals('PUT', $request->getMethod());
-        self::assertEquals('/config', $request->getUri());
+        self::assertEquals('config', $request->getUri());
         self::assertEquals('{"compatibility":"FULL"}', $request->getBody()->getContents());
         self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
@@ -186,7 +186,7 @@ class FunctionsTest extends TestCase
         $request = subjectCompatibilityLevelRequest('test');
 
         self::assertEquals('GET', $request->getMethod());
-        self::assertEquals('/config/test', $request->getUri());
+        self::assertEquals('config/test', $request->getUri());
         self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 
@@ -198,7 +198,7 @@ class FunctionsTest extends TestCase
         $request = changeSubjectCompatibilityLevelRequest('test', COMPATIBILITY_FORWARD);
 
         self::assertEquals('PUT', $request->getMethod());
-        self::assertEquals('/config/test', $request->getUri());
+        self::assertEquals('config/test', $request->getUri());
         self::assertEquals('{"compatibility":"FORWARD"}', $request->getBody()->getContents());
         self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
@@ -224,11 +224,6 @@ class FunctionsTest extends TestCase
         self::assertJsonStringEqualsJsonString(
             '{"schema":"{\"type\":\"string\"}"}',
             prepareJsonSchemaForTransfer('{"type": "string"}')
-        );
-
-        self::assertJsonStringEqualsJsonString(
-            '{"schema":"{\"type\": \"string\"}"}',
-            prepareJsonSchemaForTransfer('{"schema":"{\"type\": \"string\"}"}')
         );
     }
 
@@ -367,7 +362,7 @@ class FunctionsTest extends TestCase
         $request = deleteSubjectRequest('test');
 
         self::assertEquals('DELETE', $request->getMethod());
-        self::assertEquals('/subjects/test', $request->getUri());
+        self::assertEquals('subjects/test', $request->getUri());
         self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 
@@ -379,13 +374,13 @@ class FunctionsTest extends TestCase
         $request = deleteSubjectVersionRequest('test', VERSION_LATEST);
 
         self::assertEquals('DELETE', $request->getMethod());
-        self::assertEquals('/subjects/test/versions/latest', $request->getUri());
+        self::assertEquals('subjects/test/versions/latest', $request->getUri());
         self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
 
         $request = deleteSubjectVersionRequest('test', '5');
 
         self::assertEquals('DELETE', $request->getMethod());
-        self::assertEquals('/subjects/test/versions/5', $request->getUri());
+        self::assertEquals('subjects/test/versions/5', $request->getUri());
         self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 }
