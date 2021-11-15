@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Exception;
 
 use Exception;
-use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
 use function array_key_exists;
+use function FlixTech\SchemaRegistryApi\Requests\jsonDecode;
 use function sprintf;
 
 final class ExceptionMap
@@ -31,38 +30,56 @@ final class ExceptionMap
         return self::$instance;
     }
 
+    /**
+     * @var array<int, callable>
+     */
+    private $map;
+
     private function __construct()
     {
+        $factoryFn = static function (string $exceptionClass): callable {
+            return static function (int $errorCode, string $errorMessage) use ($exceptionClass): SchemaRegistryException {
+                return new $exceptionClass($errorMessage, $errorCode);
+            };
+        };
+
+        $this->map = [
+            IncompatibleAvroSchemaException::errorCode() => $factoryFn(IncompatibleAvroSchemaException::class),
+            BackendDataStoreException::errorCode() => $factoryFn(BackendDataStoreException::class),
+            OperationTimedOutException::errorCode() => $factoryFn(OperationTimedOutException::class),
+            MasterProxyException::errorCode() => $factoryFn(MasterProxyException::class),
+            InvalidVersionException::errorCode() => $factoryFn(InvalidVersionException::class),
+            InvalidAvroSchemaException::errorCode() => $factoryFn(InvalidAvroSchemaException::class),
+            SchemaNotFoundException::errorCode() => $factoryFn(SchemaNotFoundException::class),
+            SubjectNotFoundException::errorCode() => $factoryFn(SubjectNotFoundException::class),
+            VersionNotFoundException::errorCode() => $factoryFn(VersionNotFoundException::class),
+            InvalidCompatibilityLevelException::errorCode() => $factoryFn(InvalidCompatibilityLevelException::class),
+        ];
     }
 
     /**
-     * Maps a RequestException to the internal SchemaRegistryException types.
+     * Maps a ResponseInterface to the internal SchemaRegistryException types.
      *
-     * @param RequestException $exception
+     * @param ResponseInterface $response
      *
      * @return SchemaRegistryException
      *
      * @throws RuntimeException
      */
-    public function __invoke(RequestException $exception): SchemaRegistryException
+    public function exceptionFor(ResponseInterface $response): SchemaRegistryException
     {
-        $response = $this->guardAgainstMissingResponse($exception);
         $decodedBody = $this->guardAgainstMissingErrorCode($response);
         $errorCode = $decodedBody[self::ERROR_CODE_FIELD_NAME];
-        $errorMessage = $decodedBody[self::ERROR_MESSAGE_FIELD_NAME];
+        $errorMessage = $decodedBody[self::ERROR_MESSAGE_FIELD_NAME] ?? "Unknown Error";
 
         return $this->mapErrorCodeToException($errorCode, $errorMessage);
     }
 
-    private function guardAgainstMissingResponse(RequestException $exception): ResponseInterface
+    public function hasMappableError(ResponseInterface $response): bool
     {
-        $response = $exception->getResponse();
+        $statusCode = $response->getStatusCode();
 
-        if (!$response) {
-            throw new RuntimeException('RequestException has no response to inspect', 0, $exception);
-        }
-
-        return $response;
+        return $statusCode >= 400 && $statusCode < 600;
     }
 
     /**
@@ -72,7 +89,7 @@ final class ExceptionMap
     private function guardAgainstMissingErrorCode(ResponseInterface $response): array
     {
         try {
-            $decodedBody = \GuzzleHttp\json_decode((string) $response->getBody(), true);
+            $decodedBody = jsonDecode((string) $response->getBody());
 
             if (!is_array($decodedBody) || !array_key_exists(self::ERROR_CODE_FIELD_NAME, $decodedBody)) {
                 throw new RuntimeException(
@@ -98,39 +115,10 @@ final class ExceptionMap
 
     private function mapErrorCodeToException(int $errorCode, string $errorMessage): SchemaRegistryException
     {
-        switch ($errorCode) {
-            case IncompatibleAvroSchemaException::errorCode():
-                return new IncompatibleAvroSchemaException($errorMessage, $errorCode);
-
-            case BackendDataStoreException::errorCode():
-                return new BackendDataStoreException($errorMessage, $errorCode);
-
-            case OperationTimedOutException::errorCode():
-                return new OperationTimedOutException($errorMessage, $errorCode);
-
-            case MasterProxyException::errorCode():
-                return new MasterProxyException($errorMessage, $errorCode);
-
-            case InvalidVersionException::errorCode():
-                return new InvalidVersionException($errorMessage, $errorCode);
-
-            case InvalidAvroSchemaException::errorCode():
-                return new InvalidAvroSchemaException($errorMessage, $errorCode);
-
-            case SchemaNotFoundException::errorCode():
-                return new SchemaNotFoundException($errorMessage, $errorCode);
-
-            case SubjectNotFoundException::errorCode():
-                return new SubjectNotFoundException($errorMessage, $errorCode);
-
-            case VersionNotFoundException::errorCode():
-                return new VersionNotFoundException($errorMessage, $errorCode);
-
-            case InvalidCompatibilityLevelException::errorCode():
-                return new InvalidCompatibilityLevelException($errorMessage, $errorCode);
-
-            default:
-                throw new RuntimeException(sprintf('Unknown error code "%d"', $errorCode));
+        if (!array_key_exists($errorCode, $this->map)) {
+            throw new RuntimeException(sprintf('Unknown error code "%d"', $errorCode));
         }
+
+        return $this->map[$errorCode]($errorCode, $errorMessage);
     }
 }

@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace FlixTech\SchemaRegistryApi\Test\Registry;
+namespace FlixTech\SchemaRegistryApi\Test\Registry\Decorators;
 
 use AvroSchema;
 use AvroSchemaParseException;
 use FlixTech\SchemaRegistryApi\AsynchronousRegistry;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
-use FlixTech\SchemaRegistryApi\Registry\BlockingRegistry;
+use FlixTech\SchemaRegistryApi\Registry\Decorators\BlockingDecorator;
 use FlixTech\SchemaRegistryApi\SynchronousRegistry;
 use GuzzleHttp\Promise\FulfilledPromise;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class BlockingRegistryTest extends TestCase
+class BlockingDecoratorTest extends TestCase
 {
     /**
      * @var AsynchronousRegistry|MockObject
@@ -32,7 +32,7 @@ class BlockingRegistryTest extends TestCase
     protected function setUp(): void
     {
         $this->asyncRegistry = $this->getMockForAbstractClass(AsynchronousRegistry::class);
-        $this->blockingRegistry = new BlockingRegistry($this->asyncRegistry);
+        $this->blockingRegistry = new BlockingDecorator($this->asyncRegistry);
     }
 
     /**

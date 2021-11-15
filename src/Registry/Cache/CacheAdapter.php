@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FlixTech\SchemaRegistryApi\Registry;
+namespace FlixTech\SchemaRegistryApi\Registry\Cache;
 
 use AvroSchema;
 

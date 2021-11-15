@@ -7,11 +7,7 @@ namespace FlixTech\SchemaRegistryApi\Registry\Cache;
 use AvroSchema;
 use AvroSchemaParseException;
 use Doctrine\Common\Cache\Cache;
-use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
 
-/**
- * {@inheritdoc}
- */
 class DoctrineCacheAdapter implements CacheAdapter
 {
     /**

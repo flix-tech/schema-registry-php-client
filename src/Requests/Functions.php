@@ -1,11 +1,14 @@
-<?php
+<?php /** @noinspection AdditionOperationOnArraysInspection */
 
 namespace FlixTech\SchemaRegistryApi\Requests;
 
 use Assert\Assert;
 use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use GuzzleHttp\Psr7\Request;
+use InvalidArgumentException;
+use JsonException;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD_TRANSITIVE;
@@ -17,6 +20,52 @@ use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function implode;
+use function json_decode;
+
+/**
+ * @param string $jsonString
+ * @param int $depth
+ *
+ * @return mixed
+ *
+ * @throws JsonException
+ */
+function jsonDecode(string $jsonString, int $depth = 512)
+{
+    return json_decode($jsonString, true, $depth, JSON_THROW_ON_ERROR);
+}
+
+/**
+ * @param mixed $data
+ *
+ * @return string
+ *
+ * @throws JsonException
+ */
+function jsonEncode($data): string
+{
+    return json_encode($data, JSON_THROW_ON_ERROR);
+}
+
+/**
+ * @param ResponseInterface $response
+ *
+ * @return array<mixed, mixed>
+ */
+function decodeResponse(ResponseInterface $response): array
+{
+    $body = (string) $response->getBody();
+
+    try {
+        return jsonDecode($body);
+    } catch (JsonException $e) {
+        throw new InvalidArgumentException(
+            sprintf('%s - with content "%s"', $e->getMessage(), $body),
+            $e->getCode(),
+            $e
+        );
+    }
+}
 
 function allSubjectsRequest(): RequestInterface
 {

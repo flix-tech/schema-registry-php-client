@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection AdditionOperationOnArraysInspection */
 
 declare(strict_types=1);
 
@@ -246,6 +246,11 @@ JSON,
         self::assertJsonStringEqualsJsonString(
             '{"schema":"{\"type\":\"string\"}"}',
             prepareJsonSchemaForTransfer('{"type":"string"}')
+        );
+
+        self::assertJsonStringEqualsJsonString(
+            '{"schema":"{\"type\": \"string\"}"}',
+            prepareJsonSchemaForTransfer('{"schema":"{\"type\": \"string\"}"}')
         );
     }
 

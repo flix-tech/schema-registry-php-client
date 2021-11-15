@@ -9,7 +9,7 @@ use AvroSchemaParseException;
 use Exception;
 use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
-use FlixTech\SchemaRegistryApi\Registry\PromisingRegistry;
+use FlixTech\SchemaRegistryApi\Registry\GuzzlePromiseAsyncRegistry;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -18,6 +18,8 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use const FlixTech\SchemaRegistryApi\Constants\ACCEPT;
+use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\checkIfSubjectHasSchemaRegisteredRequest;
 use function FlixTech\SchemaRegistryApi\Requests\registerNewSchemaVersionWithSubjectRequest;
@@ -26,11 +28,11 @@ use function FlixTech\SchemaRegistryApi\Requests\singleSubjectVersionRequest;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 
-class PromisingRegistryTest extends TestCase
+class GuzzlePromiseAsyncRegistryTest extends TestCase
 {
 
     /**
-     * @var PromisingRegistry
+     * @var GuzzlePromiseAsyncRegistry
      */
     private $registry;
 
@@ -49,12 +51,11 @@ class PromisingRegistryTest extends TestCase
         $expectedRequest = registerNewSchemaVersionWithSubjectRequest((string) $schema, $subject);
 
         $container = [];
-        $this->registry = new PromisingRegistry($this->clientWithMockResponses($responses, $container));
+        $client = $this->clientWithMockResponses($responses, $container);
 
-        $promise = $this->registry->register(
-            $subject,
-            $schema
-        );
+        $this->registry = new GuzzlePromiseAsyncRegistry($client);
+
+        $promise = $this->registry->register($subject, $schema);
 
         self::assertEquals(3, $promise->wait());
         $this->assertRequestCallable($expectedRequest)($container[0]['request']);
@@ -75,12 +76,9 @@ class PromisingRegistryTest extends TestCase
         $expectedRequest = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
 
         $container = [];
-        $this->registry = new PromisingRegistry($this->clientWithMockResponses($responses, $container));
+        $this->registry = new GuzzlePromiseAsyncRegistry($this->clientWithMockResponses($responses, $container));
 
-        $promise = $this->registry->schemaId(
-            $subject,
-            $schema,
-        );
+        $promise = $this->registry->schemaId($subject, $schema);
 
         self::assertEquals(2, $promise->wait());
         $this->assertRequestCallable($expectedRequest)($container[0]['request']);
@@ -100,11 +98,9 @@ class PromisingRegistryTest extends TestCase
         $expectedRequest = schemaRequest(validateSchemaId(1));
 
         $container = [];
-        $this->registry = new PromisingRegistry($this->clientWithMockResponses($responses, $container));
+        $this->registry = new GuzzlePromiseAsyncRegistry($this->clientWithMockResponses($responses, $container));
 
-        $promise = $this->registry->schemaForId(
-            1,
-        );
+        $promise = $this->registry->schemaForId(1);
 
         self::assertEquals($schema, $promise->wait());
         $this->assertRequestCallable($expectedRequest)($container[0]['request']);
@@ -126,12 +122,9 @@ class PromisingRegistryTest extends TestCase
         $expectedRequest = singleSubjectVersionRequest($subject, validateVersionId($version));
 
         $container = [];
-        $this->registry = new PromisingRegistry($this->clientWithMockResponses($responses, $container));
+        $this->registry = new GuzzlePromiseAsyncRegistry($this->clientWithMockResponses($responses, $container));
 
-        $promise = $this->registry->schemaForSubjectAndVersion(
-            $subject,
-            $version,
-        );
+        $promise = $this->registry->schemaForSubjectAndVersion($subject, $version);
 
         self::assertEquals($schema, $promise->wait());
         $this->assertRequestCallable($expectedRequest)($container[0]['request']);
@@ -152,12 +145,9 @@ class PromisingRegistryTest extends TestCase
         $expectedRequest = checkIfSubjectHasSchemaRegisteredRequest($subject, (string) $schema);
 
         $container = [];
-        $this->registry = new PromisingRegistry($this->clientWithMockResponses($responses, $container));
+        $this->registry = new GuzzlePromiseAsyncRegistry($this->clientWithMockResponses($responses, $container));
 
-        $promise = $this->registry->schemaVersion(
-            $subject,
-            $schema,
-        );
+        $promise = $this->registry->schemaVersion($subject, $schema);
 
         self::assertEquals(3, $promise->wait());
         $this->assertRequestCallable($expectedRequest)($container[0]['request']);
@@ -179,11 +169,9 @@ class PromisingRegistryTest extends TestCase
         $expectedRequest = singleSubjectVersionRequest($subject, VERSION_LATEST);
 
         $container = [];
-        $this->registry = new PromisingRegistry($this->clientWithMockResponses($responses, $container));
+        $this->registry = new GuzzlePromiseAsyncRegistry($this->clientWithMockResponses($responses, $container));
 
-        $promise = $this->registry->latestVersion(
-            $subject,
-        );
+        $promise = $this->registry->latestVersion($subject);
 
         self::assertEquals($schema, $promise->wait());
         $this->assertRequestCallable($expectedRequest)($container[0]['request']);
@@ -202,7 +190,8 @@ class PromisingRegistryTest extends TestCase
                 sprintf('{"error_code": %d, "message": "test"}', SchemaNotFoundException::ERROR_CODE)
             )
         ];
-        $this->registry = new PromisingRegistry($this->clientWithMockResponses($responses));
+
+        $this->registry = new GuzzlePromiseAsyncRegistry($this->clientWithMockResponses($responses));
 
         /** @var Exception $exception */
         $exception = $this->registry->schemaForId(1)->wait();
@@ -213,24 +202,27 @@ class PromisingRegistryTest extends TestCase
 
     /**
      * @param ResponseInterface[] $responses
-     * @param array               $container
+     * @param array $container
      *
      * @return Client
      */
     private function clientWithMockResponses(array $responses, array &$container = []): Client
     {
+        $history = Middleware::history($container);
+
         $mockHandler = new MockHandler($responses);
         $stack = HandlerStack::create($mockHandler);
-        $stack->push(Middleware::history($container));
+        $stack->push($history);
 
         return new Client(['handler' => $stack]);
     }
 
     private function assertRequestCallable(RequestInterface $expectedRequest): callable
     {
-        return function (RequestInterface $actual) use ($expectedRequest) {
+        return function (RequestInterface  $actual) use ($expectedRequest) {
             $this->assertEquals($expectedRequest->getUri(), $actual->getUri());
-            //$this->assertEquals($expectedRequest->getHeaders(), $actual->getHeaders());
+            $this->assertEquals($expectedRequest->getHeader(ACCEPT), $actual->getHeader(ACCEPT));
+            $this->assertEquals($expectedRequest->getHeader(CONTENT_TYPE), $actual->getHeader(CONTENT_TYPE));
             $this->assertEquals($expectedRequest->getMethod(), $actual->getMethod());
             $this->assertEquals($expectedRequest->getBody()->getContents(), $actual->getBody()->getContents());
 
