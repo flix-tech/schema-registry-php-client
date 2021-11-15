@@ -60,6 +60,12 @@ final class ExceptionMap
         ];
     }
 
+    public function __invoke(ResponseInterface $response): SchemaRegistryException
+    {
+        return $this->exceptionFor($response);
+    }
+
+
     /**
      * Maps a ResponseInterface to the internal SchemaRegistryException types.
      *
