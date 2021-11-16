@@ -17,8 +17,6 @@ use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Exception\SubjectNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\VersionNotFoundException;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use LogicException;
 use PHPUnit\Framework\TestCase;
