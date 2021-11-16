@@ -179,7 +179,7 @@ INCOMPATIBLE;
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
                         IncompatibleAvroSchemaException::class,
-                        (ExceptionMap::instance())($exception)
+                        (ExceptionMap::instance())($exception->getResponse()) /** @phpstan-ignore-line */
                     );
                 }
             )->wait();
@@ -190,7 +190,7 @@ INCOMPATIBLE;
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
                         InvalidAvroSchemaException::class,
-                        (ExceptionMap::instance())($exception)
+                        (ExceptionMap::instance())($exception->getResponse()) /** @phpstan-ignore-line */
                     );
                 }
             )->wait();
@@ -201,7 +201,7 @@ INCOMPATIBLE;
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
                         SubjectNotFoundException::class,
-                        (ExceptionMap::instance())($exception)
+                        (ExceptionMap::instance())($exception->getResponse()) /** @phpstan-ignore-line */
                     );
                 }
             )->wait();
@@ -212,7 +212,7 @@ INCOMPATIBLE;
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
                         InvalidVersionException::class,
-                        (ExceptionMap::instance())($exception)
+                        (ExceptionMap::instance())($exception->getResponse()) /** @phpstan-ignore-line */
                     );
                 }
             )->wait();
@@ -223,7 +223,7 @@ INCOMPATIBLE;
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
                         VersionNotFoundException::class,
-                        (ExceptionMap::instance())($exception)
+                        (ExceptionMap::instance())($exception->getResponse()) /** @phpstan-ignore-line */
                     );
                 }
             )->wait();
@@ -234,7 +234,7 @@ INCOMPATIBLE;
                 function (RequestException $exception) {
                     $this->assertInstanceOf(
                         SchemaNotFoundException::class,
-                        (ExceptionMap::instance())($exception)
+                        (ExceptionMap::instance())($exception->getResponse()) /** @phpstan-ignore-line */
                     );
                 }
             )->wait();
