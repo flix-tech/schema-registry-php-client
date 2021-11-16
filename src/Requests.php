@@ -9,6 +9,7 @@ use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\RequestInterface;
+use function count;
 
 final class Requests
 {
@@ -49,7 +50,7 @@ final class Requests
             'schema' => $schema
         ];
 
-        return !$references
+        return count($references) === 0
             ? Json::encode($return)
             : Json::encode(array_merge($return, ['references' => $references]));
     }

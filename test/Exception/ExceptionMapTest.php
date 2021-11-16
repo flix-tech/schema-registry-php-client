@@ -17,7 +17,8 @@ use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Exception\SubjectNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\VersionNotFoundException;
-use Generator;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use LogicException;
 use PHPUnit\Framework\TestCase;
@@ -34,7 +35,7 @@ class ExceptionMapTest extends TestCase
             InvalidAvroSchemaException::class,
             'Invalid Avro schema',
             42201,
-            (ExceptionMap::instance())->exceptionFor(
+            (ExceptionMap::instance())(
                 new Response(
                     422,
                     ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
@@ -53,7 +54,7 @@ class ExceptionMapTest extends TestCase
             IncompatibleAvroSchemaException::class,
             'Incompatible Avro schema',
             409,
-            (ExceptionMap::instance())->exceptionFor(
+            (ExceptionMap::instance())(
                 new Response(
                     409,
                     ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
@@ -72,7 +73,7 @@ class ExceptionMapTest extends TestCase
             BackendDataStoreException::class,
             'Error in the backend datastore',
             50001,
-            (ExceptionMap::instance())->exceptionFor(
+            (ExceptionMap::instance())(
                 new Response(
                     500,
                     ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
@@ -91,7 +92,7 @@ class ExceptionMapTest extends TestCase
             InvalidCompatibilityLevelException::class,
             'Invalid compatibility level',
             42203,
-            (ExceptionMap::instance())->exceptionFor(
+            (ExceptionMap::instance())(
                 new Response(
                     422,
                     ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
@@ -110,7 +111,7 @@ class ExceptionMapTest extends TestCase
             InvalidVersionException::class,
             'Invalid version',
             42202,
-            (ExceptionMap::instance())->exceptionFor(
+            (ExceptionMap::instance())(
                 new Response(
                     422,
                     ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
@@ -129,7 +130,7 @@ class ExceptionMapTest extends TestCase
             MasterProxyException::class,
             'Error while forwarding the request to the master',
             50003,
-            (ExceptionMap::instance())->exceptionFor(
+            (ExceptionMap::instance())(
                 new Response(
                     500,
                     ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
@@ -148,7 +149,7 @@ class ExceptionMapTest extends TestCase
             OperationTimedOutException::class,
             'Operation timed out',
             50002,
-            (ExceptionMap::instance())->exceptionFor(
+            (ExceptionMap::instance())(
                 new Response(
                     500,
                     ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
@@ -167,7 +168,7 @@ class ExceptionMapTest extends TestCase
             SchemaNotFoundException::class,
             'Schema not found',
             40403,
-            (ExceptionMap::instance())->exceptionFor(
+            (ExceptionMap::instance())(
                 new Response(
                     404,
                     ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
@@ -186,7 +187,7 @@ class ExceptionMapTest extends TestCase
             SubjectNotFoundException::class,
             'Subject not found',
             40401,
-            (ExceptionMap::instance())->exceptionFor(
+            (ExceptionMap::instance())(
                 new Response(
                     404,
                     ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
@@ -205,7 +206,7 @@ class ExceptionMapTest extends TestCase
             VersionNotFoundException::class,
             'Version not found',
             40402,
-            (ExceptionMap::instance())->exceptionFor(
+            (ExceptionMap::instance())(
                 new Response(
                     404,
                     ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
@@ -213,24 +214,6 @@ class ExceptionMapTest extends TestCase
                 )
             )
         );
-    }
-
-    /**
-     * @test
-     * @dataProvider statusCodeProvider
-     * @param int $statusCode
-     * @param bool $expected
-     */
-    public function it_should_be_able_to_determine_if_an_exception_should_be_thrown(int $statusCode, bool $expected): void
-    {
-        $actual = (ExceptionMap::instance())->hasMappableError(
-            new Response(
-                $statusCode,
-                ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
-                '{"error_code":40402,"message": "Version not found"}'
-            )
-        );
-        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -250,7 +233,7 @@ class ExceptionMapTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Invalid message body received - cannot find "error_code" field in response body');
 
-        (ExceptionMap::instance())->exceptionFor(
+        (ExceptionMap::instance())(
             new Response(
                 404,
                 ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
@@ -267,7 +250,7 @@ class ExceptionMapTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Unknown error code "99999"');
 
-        (ExceptionMap::instance())->exceptionFor(
+        (ExceptionMap::instance())(
             new Response(
                 404,
                 ['Content-Type' => 'application/vnd.schemaregistry.v1+json'],
@@ -285,13 +268,6 @@ class ExceptionMapTest extends TestCase
         self::assertInstanceOf($exceptionClass, $exception);
         self::assertEquals($errorCode, $exception->getCode());
         self::assertEquals($expectedMessage, $exception->getMessage());
-    }
-
-    public function statusCodeProvider(): ?Generator
-    {
-        yield 'Valid 400' => [400, true];
-        yield 'Valid 599' => [599, true];
-        yield 'Invalid 399' => [399, false];
     }
 }
 

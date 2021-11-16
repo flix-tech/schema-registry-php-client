@@ -27,15 +27,9 @@ class Psr18SyncRegistry implements SynchronousRegistry
      */
     private $client;
 
-    /**
-     * @var ExceptionMap
-     */
-    private $map;
-
     public function __construct(ClientInterface $client)
     {
         $this->client = $client;
-        $this->map = ExceptionMap::instance();
     }
 
     public function register(string $subject, AvroSchema $schema, AvroReference ...$references): int
@@ -105,9 +99,13 @@ class Psr18SyncRegistry implements SynchronousRegistry
      */
     private function guardAgainstErrorResponse(ResponseInterface $response): void
     {
-        if ($this->map->hasMappableError($response)) {
-            throw $this->map->exceptionFor($response);
+        $map = ExceptionMap::instance();
+
+        if (!$map->isHttpError($response)) {
+            return;
         }
+
+        throw $map($response);
     }
 
     private function makeRequest(RequestInterface $request): ResponseInterface

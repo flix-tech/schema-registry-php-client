@@ -12,6 +12,8 @@ use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Registry\GuzzlePromiseAsyncRegistry;
 use FlixTech\SchemaRegistryApi\Requests;
+use FlixTech\SchemaRegistryApi\Schema\AvroName;
+use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -41,14 +43,15 @@ class GuzzlePromiseAsyncRegistryTest extends TestCase
         ];
         $subject = 'test';
         $schema = AvroSchema::parse('{"type": "string"}');
-        $expectedRequest = Requests::registerNewSchemaVersionWithSubjectRequest((string)$schema, $subject);
+        $references = new AvroReference(new AvroName('test.name'), 'example-value', Constants::VERSION_LATEST);
+        $expectedRequest = Requests::registerNewSchemaVersionWithSubjectRequest((string)$schema, $subject, $references);
 
         $container = [];
         $client = $this->clientWithMockResponses($responses, $container);
 
         $this->registry = new GuzzlePromiseAsyncRegistry($client);
 
-        $promise = $this->registry->register($subject, $schema);
+        $promise = $this->registry->register($subject, $schema, $references);
 
         self::assertEquals(3, $promise->wait());
         $this->assertRequestCallable($expectedRequest)($container[0]['request']);

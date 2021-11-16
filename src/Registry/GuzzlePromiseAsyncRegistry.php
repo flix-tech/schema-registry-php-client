@@ -37,31 +37,18 @@ class GuzzlePromiseAsyncRegistry implements AsynchronousRegistry
         $this->client = $client;
         $exceptionMap = ExceptionMap::instance();
 
-        $responseExistenceGuard = static function (RequestException $exception): ResponseInterface {
-            $response = $exception->getResponse();
-
-            if (!$response) {
-                throw new RuntimeException(
-                    "RequestException does not provide a response to inspect.",
-                    $exception->getCode(),
-                    $exception
-                );
+        $this->rejectedCallback = static function (RequestException $exception) use ($exceptionMap): SchemaRegistryException {
+            if (!$exception->hasResponse()) {
+                throw new RuntimeException('RequestException has no response to inspect', RuntimeException::errorCode(), $exception);
             }
 
-            return $response;
-        };
-
-        $this->rejectedCallback = static function (RequestException $exception) use (
-            $exceptionMap,
-            $responseExistenceGuard
-        ): SchemaRegistryException {
-            return $exceptionMap->exceptionFor($responseExistenceGuard($exception));
+            return $exceptionMap($exception->getResponse()); /** @phpstan-ignore-line */
         };
     }
 
     /**
      * {@inheritdoc}
-     *
+     *x
      * @throws RuntimeException
      */
     public function register(string $subject, AvroSchema $schema, AvroReference ...$references): PromiseInterface

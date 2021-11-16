@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Exception;
 
-use Exception;
 use FlixTech\SchemaRegistryApi\Json;
+use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 use function array_key_exists;
 use function sprintf;
@@ -30,104 +30,90 @@ final class ExceptionMap
         return self::$instance;
     }
 
-    /**
-     * @var array<int, callable>
-     */
-    private $map;
-
     private function __construct()
     {
-        $factoryFn = static function (string $exceptionClass): callable {
-            return static function (int $errorCode, string $errorMessage) use ($exceptionClass): SchemaRegistryException {
-                /** @var SchemaRegistryException $e */
-                $e = new $exceptionClass($errorMessage, $errorCode);
-
-                return $e;
-            };
-        };
-
-        $this->map = [
-            IncompatibleAvroSchemaException::errorCode() => $factoryFn(IncompatibleAvroSchemaException::class),
-            BackendDataStoreException::errorCode() => $factoryFn(BackendDataStoreException::class),
-            OperationTimedOutException::errorCode() => $factoryFn(OperationTimedOutException::class),
-            MasterProxyException::errorCode() => $factoryFn(MasterProxyException::class),
-            InvalidVersionException::errorCode() => $factoryFn(InvalidVersionException::class),
-            InvalidAvroSchemaException::errorCode() => $factoryFn(InvalidAvroSchemaException::class),
-            SchemaNotFoundException::errorCode() => $factoryFn(SchemaNotFoundException::class),
-            SubjectNotFoundException::errorCode() => $factoryFn(SubjectNotFoundException::class),
-            VersionNotFoundException::errorCode() => $factoryFn(VersionNotFoundException::class),
-            InvalidCompatibilityLevelException::errorCode() => $factoryFn(InvalidCompatibilityLevelException::class),
-        ];
     }
-
-    public function __invoke(ResponseInterface $response): SchemaRegistryException
-    {
-        return $this->exceptionFor($response);
-    }
-
 
     /**
-     * Maps a ResponseInterface to the internal SchemaRegistryException types.
+     * Maps a RequestException to the internal SchemaRegistryException types.
      *
      * @param ResponseInterface $response
      *
      * @return SchemaRegistryException
-     *
-     * @throws RuntimeException
      */
-    public function exceptionFor(ResponseInterface $response): SchemaRegistryException
+    public function __invoke(ResponseInterface $response): SchemaRegistryException
     {
-        $decodedBody = $this->guardAgainstMissingErrorCode($response);
+        $this->guardAgainstValidHTPPCode($response);
+
+        $decodedBody = Json::decodeResponse($response);
+        $this->guardAgainstMissingErrorCode($decodedBody);
         $errorCode = $decodedBody[self::ERROR_CODE_FIELD_NAME];
-        $errorMessage = $decodedBody[self::ERROR_MESSAGE_FIELD_NAME] ?? "Unknown Error";
+        $errorMessage = $decodedBody[self::ERROR_MESSAGE_FIELD_NAME];
 
         return $this->mapErrorCodeToException($errorCode, $errorMessage);
     }
 
-    public function hasMappableError(ResponseInterface $response): bool
+    public function isHttpError(ResponseInterface $response): bool
     {
-        $statusCode = $response->getStatusCode();
-
-        return $statusCode >= 400 && $statusCode < 600;
+        return $response->getStatusCode() >= 400 && $response->getStatusCode() < 600;
     }
 
     /**
-     * @param ResponseInterface $response
-     * @return array<string, mixed>
+     * @param array<int|string,mixed> $decodedBody
      */
-    private function guardAgainstMissingErrorCode(ResponseInterface $response): array
+    private function guardAgainstMissingErrorCode(array $decodedBody): void
     {
-        try {
-            $decodedBody = Json::decode((string)$response->getBody());
-
-            if (!is_array($decodedBody) || !array_key_exists(self::ERROR_CODE_FIELD_NAME, $decodedBody)) {
-                throw new RuntimeException(
-                    sprintf(
-                        'Invalid message body received - cannot find "error_code" field in response body "%s"',
-                        (string) $response->getBody()
-                    )
-                );
-            }
-
-            return $decodedBody;
-        } catch (Exception $e) {
+        if (!is_array($decodedBody) || !array_key_exists(self::ERROR_CODE_FIELD_NAME, $decodedBody)) {
             throw new RuntimeException(
-                sprintf(
-                    'Invalid message body received - cannot find "error_code" field in response body "%s"',
-                    (string) $response->getBody()
-                ),
-                $e->getCode(),
-                $e
+                'Invalid message body received - cannot find "error_code" field in response body.'
             );
         }
     }
 
     private function mapErrorCodeToException(int $errorCode, string $errorMessage): SchemaRegistryException
     {
-        if (!array_key_exists($errorCode, $this->map)) {
-            throw new RuntimeException(sprintf('Unknown error code "%d"', $errorCode));
-        }
+        switch ($errorCode) {
+            case IncompatibleAvroSchemaException::errorCode():
+                return new IncompatibleAvroSchemaException($errorMessage, $errorCode);
 
-        return $this->map[$errorCode]($errorCode, $errorMessage);
+            case BackendDataStoreException::errorCode():
+                return new BackendDataStoreException($errorMessage, $errorCode);
+
+            case OperationTimedOutException::errorCode():
+                return new OperationTimedOutException($errorMessage, $errorCode);
+
+            case MasterProxyException::errorCode():
+                return new MasterProxyException($errorMessage, $errorCode);
+
+            case InvalidVersionException::errorCode():
+                return new InvalidVersionException($errorMessage, $errorCode);
+
+            case InvalidAvroSchemaException::errorCode():
+                return new InvalidAvroSchemaException($errorMessage, $errorCode);
+
+            case SchemaNotFoundException::errorCode():
+                return new SchemaNotFoundException($errorMessage, $errorCode);
+
+            case SubjectNotFoundException::errorCode():
+                return new SubjectNotFoundException($errorMessage, $errorCode);
+
+            case VersionNotFoundException::errorCode():
+                return new VersionNotFoundException($errorMessage, $errorCode);
+
+            case InvalidCompatibilityLevelException::errorCode():
+                return new InvalidCompatibilityLevelException($errorMessage, $errorCode);
+
+            default:
+                throw new RuntimeException(sprintf('Unknown error code "%d"', $errorCode));
+        }
+    }
+
+    private function guardAgainstValidHTPPCode(ResponseInterface $response): void
+    {
+        if (!$this->isHttpError($response)) {
+            throw new RuntimeException(
+                sprintf('Cannot process response without invalid HTTP code %d', $response->getStatusCode()),
+            );
+        }
     }
 }

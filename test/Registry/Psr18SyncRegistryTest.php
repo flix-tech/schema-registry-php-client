@@ -11,6 +11,8 @@ use FlixTech\SchemaRegistryApi\Exception\SchemaNotFoundException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Registry\Psr18SyncRegistry;
 use FlixTech\SchemaRegistryApi\Requests;
+use FlixTech\SchemaRegistryApi\Schema\AvroName;
+use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -39,12 +41,13 @@ class Psr18SyncRegistryTest extends TestCase
         ];
         $subject = 'test';
         $schema = AvroSchema::parse('{"type": "string"}');
-        $expectedRequest = Requests::registerNewSchemaVersionWithSubjectRequest((string)$schema, $subject);
+        $references = new AvroReference(new AvroName('test.name'), 'example-value', Constants::VERSION_LATEST);
+        $expectedRequest = Requests::registerNewSchemaVersionWithSubjectRequest((string)$schema, $subject, $references);
 
         $container = [];
         $this->registry = new Psr18SyncRegistry($this->clientWithMockResponses($responses, $container));
 
-        self::assertEquals(3, $this->registry->register($subject, $schema));
+        self::assertEquals(3, $this->registry->register($subject, $schema, $references));
         $this->assertRequestCallable($expectedRequest)($container[0]['request']);
     }
 
