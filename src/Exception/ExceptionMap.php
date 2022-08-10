@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FlixTech\SchemaRegistryApi\Exception;
 
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
@@ -38,14 +39,18 @@ final class ExceptionMap
     /**
      * Maps a RequestException to the internal SchemaRegistryException types.
      *
-     * @param RequestException $exception
+     * @param GuzzleException $exception
      *
      * @return SchemaRegistryException
      *
      * @throws RuntimeException
      */
-    public function __invoke(RequestException $exception): SchemaRegistryException
+    public function __invoke(GuzzleException $exception): SchemaRegistryException
     {
+        if (!$exception instanceof RequestException) {
+            throw $exception;
+        }
+
         $response = $this->guardAgainstMissingResponse($exception);
         $decodedBody = $this->guardAgainstMissingErrorCode($response);
         $errorCode = $decodedBody[self::ERROR_CODE_FIELD_NAME];

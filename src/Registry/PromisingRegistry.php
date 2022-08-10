@@ -10,7 +10,7 @@ use FlixTech\SchemaRegistryApi\AsynchronousRegistry;
 use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
 use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Promise\PromiseInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
@@ -45,7 +45,7 @@ class PromisingRegistry implements AsynchronousRegistry
         $this->client = $client;
         $exceptionMap = ExceptionMap::instance();
 
-        $this->rejectedCallback = static function (RequestException $exception) use ($exceptionMap) {
+        $this->rejectedCallback = static function (GuzzleException $exception) use ($exceptionMap) {
             return $exceptionMap($exception);
         };
     }
