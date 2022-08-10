@@ -2,20 +2,18 @@
 
 declare(strict_types=1);
 
-namespace FlixTech\SchemaRegistryApi\Registry;
+namespace FlixTech\SchemaRegistryApi\Registry\Decorators;
 
 use AvroSchema;
 use Exception;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Registry;
+use FlixTech\SchemaRegistryApi\Registry\Cache\CacheAdapter;
 use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use GuzzleHttp\Promise\PromiseInterface;
 use function call_user_func;
 
-/**
- * {@inheritdoc}
- */
-class CachedRegistry implements Registry
+class CachingDecorator implements Registry
 {
     /**
      * @var Registry

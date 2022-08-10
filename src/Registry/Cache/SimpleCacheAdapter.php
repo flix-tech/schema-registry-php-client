@@ -6,7 +6,6 @@ namespace FlixTech\SchemaRegistryApi\Registry\Cache;
 
 use AvroSchema;
 use AvroSchemaParseException;
-use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Exception\InvalidArgumentException;
 
@@ -77,11 +76,11 @@ class SimpleCacheAdapter implements CacheAdapter
     public function getIdWithHash(string $hash): ?int
     {
         $rawId = $this->cache->get($hash);
-        
+
         if (null === $rawId) {
             return null;
         }
-        
+
         return (int) $rawId;
     }
 

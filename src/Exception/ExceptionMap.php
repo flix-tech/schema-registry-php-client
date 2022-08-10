@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Exception;
 
-use Exception;
+use FlixTech\SchemaRegistryApi\Json;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
 use function array_key_exists;
 use function sprintf;
 
@@ -38,60 +37,35 @@ final class ExceptionMap
     /**
      * Maps a RequestException to the internal SchemaRegistryException types.
      *
-     * @param RequestException $exception
+     * @param ResponseInterface $response
      *
      * @return SchemaRegistryException
-     *
-     * @throws RuntimeException
      */
-    public function __invoke(RequestException $exception): SchemaRegistryException
+    public function __invoke(ResponseInterface $response): SchemaRegistryException
     {
-        $response = $this->guardAgainstMissingResponse($exception);
-        $decodedBody = $this->guardAgainstMissingErrorCode($response);
+        $this->guardAgainstValidHTPPCode($response);
+
+        $decodedBody = Json::decodeResponse($response);
+        $this->guardAgainstMissingErrorCode($decodedBody);
         $errorCode = $decodedBody[self::ERROR_CODE_FIELD_NAME];
         $errorMessage = $decodedBody[self::ERROR_MESSAGE_FIELD_NAME];
 
         return $this->mapErrorCodeToException($errorCode, $errorMessage);
     }
 
-    private function guardAgainstMissingResponse(RequestException $exception): ResponseInterface
+    public function isHttpError(ResponseInterface $response): bool
     {
-        $response = $exception->getResponse();
-
-        if (!$response) {
-            throw new RuntimeException('RequestException has no response to inspect', 0, $exception);
-        }
-
-        return $response;
+        return $response->getStatusCode() >= 400 && $response->getStatusCode() < 600;
     }
 
     /**
-     * @param ResponseInterface $response
-     * @return array<mixed, mixed>
+     * @param array<int|string,mixed> $decodedBody
      */
-    private function guardAgainstMissingErrorCode(ResponseInterface $response): array
+    private function guardAgainstMissingErrorCode(array $decodedBody): void
     {
-        try {
-            $decodedBody = \GuzzleHttp\json_decode((string) $response->getBody(), true);
-
-            if (!is_array($decodedBody) || !array_key_exists(self::ERROR_CODE_FIELD_NAME, $decodedBody)) {
-                throw new RuntimeException(
-                    sprintf(
-                        'Invalid message body received - cannot find "error_code" field in response body "%s"',
-                        (string) $response->getBody()
-                    )
-                );
-            }
-
-            return $decodedBody;
-        } catch (Exception $e) {
+        if (!is_array($decodedBody) || !array_key_exists(self::ERROR_CODE_FIELD_NAME, $decodedBody)) {
             throw new RuntimeException(
-                sprintf(
-                    'Invalid message body received - cannot find "error_code" field in response body "%s"',
-                    (string) $response->getBody()
-                ),
-                $e->getCode(),
-                $e
+                'Invalid message body received - cannot find "error_code" field in response body.'
             );
         }
     }
@@ -131,6 +105,15 @@ final class ExceptionMap
 
             default:
                 throw new RuntimeException(sprintf('Unknown error code "%d"', $errorCode));
+        }
+    }
+
+    private function guardAgainstValidHTPPCode(ResponseInterface $response): void
+    {
+        if (!$this->isHttpError($response)) {
+            throw new RuntimeException(
+                sprintf('Cannot process response without invalid HTTP code %d', $response->getStatusCode()),
+            );
         }
     }
 }

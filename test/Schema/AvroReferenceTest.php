@@ -19,9 +19,10 @@ class AvroReferenceTest extends TestCase
      * @param string     $subject
      * @param string|int $version
      * @param bool       $isValid
-     * @param string     $expectedJson
+     * @param ?string    $expectedJson
      */
-    public function it_should_be_constructable(string $avroName, string $subject, $version, bool $isValid, ?string $expectedJson): void {
+    public function it_should_be_constructable(string $avroName, string $subject, $version, bool $isValid, ?string $expectedJson): void
+    {
         if (!$isValid) {
             $this->expectException(InvalidArgumentException::class);
         }
@@ -32,7 +33,8 @@ class AvroReferenceTest extends TestCase
         );
     }
 
-    public static function references(): Generator {
+    public static function references(): Generator
+    {
         yield 'Valid version with latest' => [
             'test.example.MyRecord',
             'example-value',
@@ -68,6 +70,5 @@ JSON
             false,
             null,
         ];
-
     }
 }

@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Test\Requests;
 
-use FlixTech\SchemaRegistryApi\Schema\AvroName;
-use FlixTech\SchemaRegistryApi\Schema\AvroReference;
-use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use const FlixTech\SchemaRegistryApi\Constants\ACCEPT;
 use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER;
-use const FlixTech\SchemaRegistryApi\Constants\ACCEPT_HEADER_KEY;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_BACKWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD;
@@ -18,8 +15,8 @@ use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FORWARD_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_FULL_TRANSITIVE;
 use const FlixTech\SchemaRegistryApi\Constants\COMPATIBILITY_NONE;
+use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE;
 use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER;
-use const FlixTech\SchemaRegistryApi\Constants\CONTENT_TYPE_HEADER_KEY;
 use const FlixTech\SchemaRegistryApi\Constants\VERSION_LATEST;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectsRequest;
 use function FlixTech\SchemaRegistryApi\Requests\allSubjectVersionsRequest;
@@ -41,6 +38,9 @@ use function FlixTech\SchemaRegistryApi\Requests\validateSchemaId;
 use function FlixTech\SchemaRegistryApi\Requests\validateSchemaStringAsJson;
 use function FlixTech\SchemaRegistryApi\Requests\validateVersionId;
 
+/**
+ * @deprecated Use \FlixTech\SchemaRegistryApi\Test\Requests instead
+ */
 class FunctionsTest extends TestCase
 {
     /**
@@ -52,7 +52,7 @@ class FunctionsTest extends TestCase
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('subjects', $request->getUri());
-        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
+        self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 
     /**
@@ -64,7 +64,7 @@ class FunctionsTest extends TestCase
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('subjects/test/versions', $request->getUri());
-        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
+        self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 
     /**
@@ -76,59 +76,33 @@ class FunctionsTest extends TestCase
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('subjects/test/versions/3', $request->getUri());
-        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
+        self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 
     /**
      * @test
-     *
-     * @param string $initialSchema
-     * @param string $finalSchema
-     * @param AvroReference[] $references
-     * @dataProvider dataForRegisteringSchemas
      */
-    public function it_should_produce_a_request_to_register_a_new_schema_version(string $initialSchema, string $finalSchema, array $references): void
+    public function it_should_produce_a_request_to_register_a_new_schema_version(): void
     {
-        $request = registerNewSchemaVersionWithSubjectRequest($initialSchema, 'test', ...$references);
+        $request = registerNewSchemaVersionWithSubjectRequest('{"type": "string"}', 'test');
 
         self::assertEquals('POST', $request->getMethod());
         self::assertEquals('subjects/test/versions', $request->getUri());
-        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
-        self::assertEquals(CONTENT_TYPE_HEADER[CONTENT_TYPE_HEADER_KEY], $request->getHeader(CONTENT_TYPE_HEADER_KEY)[0]);
-        self::assertJsonStringEqualsJsonString($finalSchema, $request->getBody()->getContents());
-    }
+        self::assertEquals(
+            [CONTENT_TYPE => [CONTENT_TYPE_HEADER[CONTENT_TYPE]]] + [ACCEPT => [ACCEPT_HEADER[ACCEPT]]],
+            $request->getHeaders()
+        );
+        self::assertEquals('{"schema":"{\"type\":\"string\"}"}', $request->getBody()->getContents());
 
-    public static function dataForRegisteringSchemas(): Generator {
-        yield 'Schema without schema key' => [
-            '{"type":"string"}',
-            '{"schema":"{\"type\":\"string\"}"}',
-            [],
-        ];
+        $request = registerNewSchemaVersionWithSubjectRequest('{"schema": "{\"type\": \"string\"}"}', 'test');
 
-        yield 'Schema without schema key and references' => [
-            '{"type":"string"}',
-            /** @lang JSON */<<<JSON
-{
-  "schema": "{\"type\":\"string\"}",
-  "references": [
-    {
-      "name": "test.example.MyRecord",
-      "subject": "ref-subject",
-      "version": 12
-    },
-    {
-      "name": "test.example.AnotherRecord",
-      "subject": "another-subject",
-      "version": "latest"
-    }
-  ]
-}
-JSON,
-            [
-                new AvroReference(new AvroName('test.example.MyRecord'), 'ref-subject', 12),
-                new AvroReference(new AvroName('test.example.AnotherRecord'), 'another-subject', 'latest'),
-            ],
-        ];
+        self::assertEquals('POST', $request->getMethod());
+        self::assertEquals('subjects/test/versions', $request->getUri());
+        self::assertEquals(
+            [CONTENT_TYPE => [CONTENT_TYPE_HEADER[CONTENT_TYPE]]] + [ACCEPT => [ACCEPT_HEADER[ACCEPT]]],
+            $request->getHeaders()
+        );
+        self::assertEquals('{"schema":"{\"type\": \"string\"}"}', $request->getBody()->getContents());
     }
 
     /**
@@ -145,8 +119,10 @@ JSON,
         self::assertEquals('POST', $request->getMethod());
         self::assertEquals('compatibility/subjects/test/versions/latest', $request->getUri());
         self::assertEquals('{"schema":"{\"type\":\"test\"}"}', $request->getBody()->getContents());
-        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
-        self::assertEquals(CONTENT_TYPE_HEADER[CONTENT_TYPE_HEADER_KEY], $request->getHeader(CONTENT_TYPE_HEADER_KEY)[0]);
+        self::assertEquals(
+            [CONTENT_TYPE => [CONTENT_TYPE_HEADER[CONTENT_TYPE]]] + [ACCEPT => [ACCEPT_HEADER[ACCEPT]]],
+            $request->getHeaders()
+        );
     }
 
     /**
@@ -159,8 +135,10 @@ JSON,
         self::assertEquals('POST', $request->getMethod());
         self::assertEquals('subjects/test', $request->getUri());
         self::assertEquals('{"schema":"{\"type\":\"test\"}"}', $request->getBody()->getContents());
-        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
-        self::assertEquals(CONTENT_TYPE_HEADER[CONTENT_TYPE_HEADER_KEY], $request->getHeader(CONTENT_TYPE_HEADER_KEY)[0]);
+        self::assertEquals(
+            [CONTENT_TYPE => [CONTENT_TYPE_HEADER[CONTENT_TYPE]]] + [ACCEPT => [ACCEPT_HEADER[ACCEPT]]],
+            $request->getHeaders()
+        );
     }
 
     /**
@@ -172,7 +150,7 @@ JSON,
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('schemas/ids/3', $request->getUri());
-        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
+        self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 
     /**
@@ -184,7 +162,7 @@ JSON,
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('config', $request->getUri());
-        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
+        self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 
     /**
@@ -197,7 +175,7 @@ JSON,
         self::assertEquals('PUT', $request->getMethod());
         self::assertEquals('config', $request->getUri());
         self::assertEquals('{"compatibility":"FULL"}', $request->getBody()->getContents());
-        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
+        self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 
     /**
@@ -209,7 +187,7 @@ JSON,
 
         self::assertEquals('GET', $request->getMethod());
         self::assertEquals('config/test', $request->getUri());
-        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
+        self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 
     /**
@@ -222,7 +200,7 @@ JSON,
         self::assertEquals('PUT', $request->getMethod());
         self::assertEquals('config/test', $request->getUri());
         self::assertEquals('{"compatibility":"FORWARD"}', $request->getBody()->getContents());
-        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
+        self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 
     /**
@@ -245,7 +223,7 @@ JSON,
     {
         self::assertJsonStringEqualsJsonString(
             '{"schema":"{\"type\":\"string\"}"}',
-            prepareJsonSchemaForTransfer('{"type":"string"}')
+            prepareJsonSchemaForTransfer('{"type": "string"}')
         );
     }
 
@@ -385,7 +363,7 @@ JSON,
 
         self::assertEquals('DELETE', $request->getMethod());
         self::assertEquals('subjects/test', $request->getUri());
-        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
+        self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 
     /**
@@ -397,12 +375,12 @@ JSON,
 
         self::assertEquals('DELETE', $request->getMethod());
         self::assertEquals('subjects/test/versions/latest', $request->getUri());
-        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
+        self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
 
         $request = deleteSubjectVersionRequest('test', '5');
 
         self::assertEquals('DELETE', $request->getMethod());
         self::assertEquals('subjects/test/versions/5', $request->getUri());
-        self::assertEquals(ACCEPT_HEADER[ACCEPT_HEADER_KEY], $request->getHeader(ACCEPT_HEADER_KEY)[0]);
+        self::assertEquals([ACCEPT => [ACCEPT_HEADER[ACCEPT]]], $request->getHeaders());
     }
 }

@@ -9,6 +9,7 @@ $finder = PhpCsFixer\Finder::create()
 return (new PhpCsFixer\Config())
     ->setRules(
         [
+            '@PSR2' => true,
             'no_unused_imports' => true,
             'ordered_imports' => [
                 'sort_algorithm' => 'alpha',

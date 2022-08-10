@@ -7,9 +7,6 @@ namespace FlixTech\SchemaRegistryApi;
 use AvroSchema;
 use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 
-/**
- * {@inheritdoc}
- */
 interface SynchronousRegistry extends Registry
 {
     /**

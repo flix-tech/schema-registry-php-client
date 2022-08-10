@@ -8,9 +8,6 @@ use AvroSchema;
 use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use GuzzleHttp\Promise\PromiseInterface;
 
-/**
- * {@inheritdoc}
- */
 interface AsynchronousRegistry extends Registry
 {
     /**

@@ -77,10 +77,10 @@ major version upgrades will have incompatibilities that will be released in the 
 <?php
 
 use GuzzleHttp\Client;
-use FlixTech\SchemaRegistryApi\Registry\PromisingRegistry;
+use FlixTech\SchemaRegistryApi\Registry\GuzzlePromiseAsyncRegistry;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 
-$registry = new PromisingRegistry(
+$registry = new GuzzlePromiseAsyncRegistry(
     new Client(['base_uri' => 'registry.example.com'])
 );
 
@@ -140,12 +140,12 @@ $schemaId = $registry->schemaId('test-subject', $schema)->wait();
 ```php
 <?php
 
-use FlixTech\SchemaRegistryApi\Registry\BlockingRegistry;
-use FlixTech\SchemaRegistryApi\Registry\PromisingRegistry;
+use FlixTech\SchemaRegistryApi\Registry\Decorators\BlockingDecorator;
+use FlixTech\SchemaRegistryApi\Registry\GuzzlePromiseAsyncRegistry;
 use GuzzleHttp\Client;
 
-$registry = new BlockingRegistry(
-    new PromisingRegistry(
+$registry = new BlockingDecorator(
+    new GuzzlePromiseAsyncRegistry(
         new Client(['base_uri' => 'registry.example.com'])
     )
 );
@@ -173,21 +173,21 @@ It supports both async and sync APIs.
 ```php
 <?php
 
-use FlixTech\SchemaRegistryApi\Registry\BlockingRegistry;
-use FlixTech\SchemaRegistryApi\Registry\PromisingRegistry;
-use FlixTech\SchemaRegistryApi\Registry\CachedRegistry;
+use FlixTech\SchemaRegistryApi\Registry\Decorators\BlockingDecorator;
+use FlixTech\SchemaRegistryApi\Registry\GuzzlePromiseAsyncRegistry;
+use FlixTech\SchemaRegistryApi\Registry\Decorators\CachingDecorator;
 use FlixTech\SchemaRegistryApi\Registry\Cache\AvroObjectCacheAdapter;
 use FlixTech\SchemaRegistryApi\Registry\Cache\DoctrineCacheAdapter;
 use Doctrine\Common\Cache\ArrayCache;
 use GuzzleHttp\Client;
 
-$asyncApi = new PromisingRegistry(
+$asyncApi = new GuzzlePromiseAsyncRegistry(
     new Client(['base_uri' => 'registry.example.com'])
 );
 
-$syncApi = new BlockingRegistry($asyncApi);
+$syncApi = new BlockingDecorator($asyncApi);
 
-$doctrineCachedSyncApi = new CachedRegistry(
+$doctrineCachedSyncApi = new CachingDecorator(
     $asyncApi,
     new DoctrineCacheAdapter(
         new ArrayCache()
@@ -195,8 +195,8 @@ $doctrineCachedSyncApi = new CachedRegistry(
 );
 
 // All adapters support both APIs, for async APIs additional fulfillment callbacks will be registered.
-$avroObjectCachedAsyncApi = new CachedRegistry(
-    $syncApi,
+$avroObjectCachedAsyncApi = new CachingDecorator(
+    $asyncApi,
     new AvroObjectCacheAdapter()
 );
 
@@ -212,7 +212,7 @@ $sha1HashFunction = static function (AvroSchema $schema) {
 };
 
 // Pass the hash function as optional 3rd parameter to the CachedRegistry constructor
-$avroObjectCachedAsyncApi = new CachedRegistry(
+$avroObjectCachedAsyncApi = new CachingDecorator(
     $syncApi,
     new AvroObjectCacheAdapter(),
     $sha1HashFunction
