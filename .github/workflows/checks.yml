@@ -29,13 +29,13 @@ jobs:
         php:
           -
             version: 7.4
-            xdebug: 3.1.1
+            xdebug: 3.1.5
           -
             version: 8.0
-            xdebug: 3.1.1
+            xdebug: 3.1.5
           -
-            version: 8.1-rc
-            xdebug: 3.1.1
+            version: 8.1
+            xdebug: 3.1.5
     runs-on: ubuntu-20.04
     steps:
       -
@@ -85,7 +85,7 @@ jobs:
             version: 8.0
             composer: --prefer-lowest
           -
-            version: 8.1-rc
+            version: 8.1
             composer: --prefer-lowest
           -
             version: 7.4
@@ -94,7 +94,7 @@ jobs:
             version: 8.0
             composer: --prefer-stable
           -
-            version: 8.1-rc
+            version: 8.1
             composer: --prefer-stable
     steps:
       -
