@@ -37,7 +37,7 @@ final class AvroReference implements \JsonSerializable
         $this->version = $version;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'name' => (string) $this->name,
