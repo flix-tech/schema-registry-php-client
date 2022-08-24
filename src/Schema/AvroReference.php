@@ -13,7 +13,6 @@ final class AvroReference implements \JsonSerializable
      */
     private $name;
 
-
     /**
      * @var string
      */
@@ -37,6 +36,7 @@ final class AvroReference implements \JsonSerializable
         $this->version = $version;
     }
 
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return [
