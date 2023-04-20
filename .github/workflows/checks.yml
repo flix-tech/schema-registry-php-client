@@ -91,6 +91,9 @@ jobs:
             version: 8.1
             composer: --prefer-lowest
           -
+            version: 8.2
+            composer: --prefer-lowest
+          -
             version: 7.4
             composer: --prefer-stable
           -
@@ -98,6 +101,9 @@ jobs:
             composer: --prefer-stable
           -
             version: 8.1
+            composer: --prefer-stable
+          -
+            version: 8.2
             composer: --prefer-stable
     steps:
       -
