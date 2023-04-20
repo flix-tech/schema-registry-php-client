@@ -85,7 +85,7 @@ jobs:
             version: 7.4
             composer: --prefer-lowest
           -
-            version: 8.0
+            version: '8.0'
             composer: --prefer-lowest
           -
             version: 8.1
@@ -94,7 +94,7 @@ jobs:
             version: 7.4
             composer: --prefer-stable
           -
-            version: 8.0
+            version: '8.0'
             composer: --prefer-stable
           -
             version: 8.1
