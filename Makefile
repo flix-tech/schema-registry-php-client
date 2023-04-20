@@ -19,7 +19,7 @@ PHP_CS_FIXER_VERSION ?= 3.2.1
 PHPUNIT ?= vendor/bin/phpunit
 PHP ?= bin/php
 PHP_VERSION ?= 7.4
-XDEBUG_VERSION ?= 3.2.1
+XDEBUG_VERSION ?= 3.1.1
 XDEBUG_OPTIONS ?= -d xdebug.mode=off
 export
 
