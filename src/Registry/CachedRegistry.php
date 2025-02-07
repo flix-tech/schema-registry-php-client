@@ -32,7 +32,7 @@ class CachedRegistry implements Registry
      */
     private $hashAlgoFunc;
 
-    public function __construct(Registry $registry, CacheAdapter $cacheAdapter, callable $hashAlgoFunc = null)
+    public function __construct(Registry $registry, CacheAdapter $cacheAdapter, ?callable $hashAlgoFunc = null)
     {
         $this->registry = $registry;
         $this->cacheAdapter = $cacheAdapter;
