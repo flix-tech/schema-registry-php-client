@@ -70,13 +70,13 @@ install-phars:
 	chmod a+x bin/phpstan.phar
 
 platform:
-	docker-compose down
-	docker-compose up -d
+	docker compose down
+	docker compose up -d
 	bin/wait-for-all.sh
 
 platform-logs:
-	docker-compose logs -f
+	docker compose logs -f
 
 clean:
 	rm -rf build
-	docker-compose down
+	docker compose down
