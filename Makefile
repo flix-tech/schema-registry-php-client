@@ -53,7 +53,7 @@ phpunit:
 
 coverage:
 	mkdir -p build
-	PHP_VERSION=$(PHP_VERSION) $(PHP) -d xdebug.mode=coverage -d xdebug.coverage_enable=1 vendor/bin/phpunit --exclude-group integration \
+	PHP_VERSION=$(PHP_VERSION) $(PHP) -d xdebug.mode=coverage vendor/bin/phpunit --exclude-group integration \
 	  --coverage-clover=build/coverage.clover --coverage-text
 
 ci-local: cs-fixer phpstan phpunit
