@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Test\Registry;
 
-use AvroSchema;
-use AvroSchemaParseException;
+use Apache\Avro\Schema\AvroSchema;
+use Apache\Avro\Schema\AvroSchemaParseException;
 use FlixTech\SchemaRegistryApi\Exception\SchemaRegistryException;
 use FlixTech\SchemaRegistryApi\Exception\SubjectNotFoundException;
 use FlixTech\SchemaRegistryApi\Registry;

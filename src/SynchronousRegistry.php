@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi;
 
-use AvroSchema;
+use Apache\Avro\Schema\AvroSchema;
 use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 
 /**

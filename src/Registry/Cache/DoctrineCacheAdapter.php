@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Registry\Cache;
 
-use AvroSchema;
-use AvroSchemaParseException;
+use Apache\Avro\Schema\AvroSchema;
+use Apache\Avro\Schema\AvroSchemaParseException;
 use Doctrine\Common\Cache\Cache;
 use FlixTech\SchemaRegistryApi\Registry\CacheAdapter;
 

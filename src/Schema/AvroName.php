@@ -14,10 +14,7 @@ final class AvroName
      */
     private const REGEX = '/^[a-zA-Z_]+(\.[a-zA-Z0-9_]+)*?$/';
 
-    /**
-     * @var string
-     */
-    private $fullName;
+    private string $fullName;
 
     public function __construct(string $fullName)
     {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FlixTech\SchemaRegistryApi\Registry;
 
-use AvroSchema;
+use Apache\Avro\Schema\AvroSchema;
 use Closure;
 use FlixTech\SchemaRegistryApi\AsynchronousRegistry;
 use FlixTech\SchemaRegistryApi\Exception\ExceptionMap;
@@ -12,6 +12,7 @@ use FlixTech\SchemaRegistryApi\Schema\AvroReference;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\Utils;
 use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -174,7 +175,7 @@ class PromisingRegistry implements AsynchronousRegistry
         $body = (string) $response->getBody();
 
         try {
-            $decoded = \GuzzleHttp\json_decode($body, true);
+            $decoded = Utils::jsonDecode($body, true);
 
             if (!is_array($decoded)) {
                 throw new InvalidArgumentException(

@@ -91,10 +91,7 @@ COMPAT;
 }
 INCOMPATIBLE;
 
-    /**
-     * @var string
-     */
-    private $invalidSchema = '{"invalid": "invalid"}';
+    private string $invalidSchema = '{"invalid": "invalid"}';
 
 
     protected function setUp(): void
