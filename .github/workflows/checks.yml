@@ -17,7 +17,7 @@ jobs:
           make install-phars
       -
         name: Upload source directory
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: source
           path: .
@@ -37,7 +37,7 @@ jobs:
     steps:
       -
         name: Download sources
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v7
         with:
           name: source
       -
@@ -64,7 +64,7 @@ jobs:
           docker save schema-registry-client:${{ matrix.php.version }} -o schema-registry-client-${{ matrix.php.version }}.tgz
       -
         name: Upload docker image
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: schema-registry-client-${{ matrix.php.version }}
           path: schema-registry-client-${{ matrix.php.version }}.tgz
@@ -90,7 +90,7 @@ jobs:
     steps:
       -
         name: Download sources
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v7
         with:
           name: source
       -
@@ -168,7 +168,7 @@ jobs:
     steps:
       -
         name: Download sources
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v7
         with:
           name: source
       -
@@ -176,18 +176,18 @@ jobs:
         uses: docker/setup-buildx-action@v1
       -
         name: Download docker image
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v7
         with:
-          name: schema-registry-client-7.4
+          name: schema-registry-client-8.2
       -
         name: Load docker image
         run: |
-          docker load -i schema-registry-client-7.4.tgz
+          docker load -i schema-registry-client-8.2.tgz
       -
         name: Install vendors
         run: |
           docker run -i --rm --net=host --sig-proxy=true --pid=host \
-            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:7.4 \
+            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:8.2 \
             composer update --no-interaction --no-scripts --no-ansi --prefer-stable
       -
         name: Run PHPUnit Integration
@@ -198,5 +198,5 @@ jobs:
           make platform
           docker run -i --rm --net=host --sig-proxy=true --pid=host \
             -e ENABLE_INTEGRATION_TEST=1 -e TEST_SCHEMA_REGISTRY_HOST=172.68.0.103 -e TEST_SCHEMA_REGISTRY_PORT=8081 \
-            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:7.4 \
+            -v "${GITHUB_WORKSPACE}":"${GITHUB_WORKSPACE}" -w "${GITHUB_WORKSPACE}" schema-registry-client:8.2 \
             vendor/bin/phpunit --group integration
