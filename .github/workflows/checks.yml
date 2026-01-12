@@ -17,7 +17,7 @@ jobs:
           make install-phars
       -
         name: Upload source directory
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: source
           path: .
@@ -64,7 +64,7 @@ jobs:
           docker save schema-registry-client:${{ matrix.php.version }} -o schema-registry-client-${{ matrix.php.version }}.tgz
       -
         name: Upload docker image
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: schema-registry-client-${{ matrix.php.version }}
           path: schema-registry-client-${{ matrix.php.version }}.tgz
